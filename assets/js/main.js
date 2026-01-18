@@ -25,7 +25,7 @@
 		window.addEventListener('load', function() {
 			window.setTimeout(function() {
 				$body.classList.remove('is-preload');
-			}, 1000);
+			}, 11200);
 		});
 
 	// Slideshow Background.
@@ -36,12 +36,7 @@
 
 					// Images (in the format of 'url': 'alignment').
 						images: {
-							// 'images/bg01.jpg': 'center',
-							// 'images/bg02.jpg': 'center',
-							// 'images/bg03.jpg': 'center',
-							'images/coolbackgrounds-fractalize-spectrum.png': 'center',
-							// 'images/IG.png': 'center',
-							// 'images/bg02.jpg': 'center',
+							'images/20241026_195613_edited.png': 'center',
 						},
 
 					// Delay.
