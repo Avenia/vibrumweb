@@ -155,10 +155,10 @@ body {
     visibility: hidden;
     width: 150%; }
     #bg div.visible {
-      -moz-animation: bg 45s linear infinite;
-      -webkit-animation: bg 45s linear infinite;
-      -ms-animation: bg 45s linear infinite;
-      animation: bg 45s linear infinite;
+      -moz-animation: bg 30s linear infinite;
+      -webkit-animation: bg 30s linear infinite;
+      -ms-animation: bg 30s linear infinite;
+      animation: bg 30s linear infinite;
       opacity: 1;
       visibility: visible;
       z-index: 1; }
@@ -166,16 +166,16 @@ body {
         z-index: 2; }
       @media screen and (max-width: 1280px) {
         #bg div.visible {
-          -moz-animation: bg 29.25s linear infinite;
-          -webkit-animation: bg 29.25s linear infinite;
-          -ms-animation: bg 29.25s linear infinite;
-          animation: bg 29.25s linear infinite; } }
+          -moz-animation: bg 20s linear infinite;
+          -webkit-animation: bg 20s linear infinite;
+          -ms-animation: bg 20s linear infinite;
+          animation: bg 20s linear infinite; } }
       @media screen and (max-width: 736px) {
         #bg div.visible {
-          -moz-animation: bg 18s linear infinite;
-          -webkit-animation: bg 18s linear infinite;
-          -ms-animation: bg 18s linear infinite;
-          animation: bg 18s linear infinite; } }
+          -moz-animation: bg 15s linear infinite;
+          -webkit-animation: bg 15s linear infinite;
+          -ms-animation: bg 15s linear infinite;
+          animation: bg 15s linear infinite; } }
     #bg div:only-child {
       -moz-animation-direction: alternate !important;
       -webkit-animation-direction: alternate !important;

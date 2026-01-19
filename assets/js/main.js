@@ -36,7 +36,7 @@
 
 					// Images (in the format of 'url': 'alignment').
 						images: {
-							'images/20241026_195613_edited.png': 'center',
+							'images/pyrocaster.webp': 'center',
 						},
 
 					// Delay.
