@@ -8,13 +8,43 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
 ---
 
 <PageLayout
-  title="Vibrum Guitars — Handcrafted in Belgrade"
-  description="Handcrafted guitars made by Vibrum — where traditional craftsmanship meets design. Stories from the workshop in Belgrade, Serbia."
+  title="Vibrum | Handcrafted guitars"
+  description="Handcrafted guitars made by Vibrum, where traditional craftsmanship meets design. We are dedicated to creating unique, high-quality instruments that inspire musicians worldwide."
 >
+
+
   <div class="container section">
+    <div class="slideshow" id="slideshow" aria-label="Workshop slideshow">
+      {[
+        '/images/slideshow/Screenshot 2026-03-30 at 22-35-20 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-35-44 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-35-55 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-36-04 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-36-21 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-36-35 Instagram.png',
+        '/images/slideshow/Screenshot 2026-03-30 at 22-36-48 Instagram.png',
+      ].map((src, i) => (
+        <div class={`slide${i === 0 ? ' active' : ''}`} data-index={i}>
+          <img src={src} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+        </div>
+      ))}
+
+      <div class="typewriter-overlay">
+        <p class="tw-eyebrow">Vibrum Guitars</p>
+        <p class="tw-text"><span id="tw-target"></span><span class="tw-cursor">|</span></p>
+      </div>
+      <!-- <button class="slide-arrow slide-prev" aria-label="Previous slide">&#8592;</button> -->
+      <!-- <button class="slide-arrow slide-next" aria-label="Next slide">&#8594;</button> -->
+      <div class="slide-dots" id="slide-dots">
+        {[0,1,2,3,4,5,6].map(i => (
+          <button class={`slide-dot${i === 0 ? ' active' : ''}`} data-dot={i} aria-label={`Go to slide ${i + 1}`}></button>
+        ))}
+      </div>
+    </div>
+
     <header class="home-header">
       <p class="home-eyebrow">From the workshop</p>
-      <h1 class="home-title">Stories &amp; Updates</h1>
+      <h1 class="home-title">Check out our latest stories</h1>
       <p class="home-subtitle">
         Each build has a story. Follow the work — new instruments, materials, and ideas from Belgrade.
       </p>
@@ -44,8 +74,8 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
 
 <style>
   .home-header {
+    margin-top: var(--space-lg);
     margin-bottom: var(--space-lg);
-    max-width: 560px;
   }
 
   .home-eyebrow {
@@ -108,4 +138,240 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .empty-cta:hover {
     opacity: 0.7;
   }
+
+  /* ---- Slideshow ---- */
+  .slideshow {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 320px;
+    overflow: hidden;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform-origin: center center;
+  }
+
+  /* Ken Burns — different zoom origin per slide for variety */
+  .slide.active img {
+    animation: kb-zoom-in 6s ease-out forwards;
+  }
+
+  .slide.active:nth-child(2n) img {
+    animation: kb-zoom-out 6s ease-out forwards;
+    transform-origin: 70% 60%;
+  }
+
+  .slide.active:nth-child(3n) img {
+    animation: kb-pan-right 6s ease-out forwards;
+    transform-origin: 30% 50%;
+  }
+
+  @keyframes kb-zoom-in {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1.0); }
+  }
+
+  @keyframes kb-zoom-out {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.08); }
+  }
+
+  @keyframes kb-pan-right {
+    from { transform: scale(1.06) translateX(-1.5%); }
+    to   { transform: scale(1.06) translateX(1.5%); }
+  }
+
+  .typewriter-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: var(--space-md) var(--space-md) calc(var(--space-md) + 2rem);
+    background: linear-gradient(to top, rgba(10, 9, 6, 0.72) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .tw-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .tw-text {
+    font-family: var(--font-heading);
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    color: var(--color-text-bold);
+    line-height: 1.2;
+    margin: 0;
+    min-height: 1.2em;
+  }
+
+  .tw-cursor {
+    display: inline-block;
+    color: var(--color-accent);
+    animation: blink 0.75s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 9, 6, 0.55);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-bold);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), border-color var(--transition);
+    z-index: 10;
+  }
+
+  .slide-arrow:hover {
+    background: rgba(201, 168, 76, 0.18);
+    border-color: var(--color-accent);
+  }
+
+  .slide-prev { left: var(--space-sm); }
+  .slide-next { right: var(--space-sm); }
+
+  .slide-dots {
+    position: absolute;
+    bottom: var(--space-sm);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+  }
+
+  .slide-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 245, 220, 0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition), transform var(--transition);
+  }
+
+  .slide-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.4);
+  }
 </style>
+
+<script>
+  // --- Slideshow ---
+  const slides = document.querySelectorAll<HTMLElement>('.slide');
+  const dots = document.querySelectorAll<HTMLElement>('.slide-dot');
+  let current = 0;
+  let slideTimer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function startSlideTimer() {
+    slideTimer = setInterval(() => goTo(current + 1), 4500);
+  }
+
+  function resetSlideTimer() {
+    clearInterval(slideTimer);
+    startSlideTimer();
+  }
+
+  document.querySelector('.slide-next')?.addEventListener('click', () => { goTo(current + 1); resetSlideTimer(); });
+  document.querySelector('.slide-prev')?.addEventListener('click', () => { goTo(current - 1); resetSlideTimer(); });
+  dots.forEach(dot => dot.addEventListener('click', () => { goTo(Number(dot.dataset.dot)); resetSlideTimer(); }));
+
+  startSlideTimer();
+
+  // --- Typewriter ---
+  const phrases = [
+    'Handcrafted in Belgrade',
+    'Built to last a lifetime',
+    'Every detail considered',
+    'Wood, craft, soul',
+    'From the workshop',
+    'Traditional meets design',
+    'Unique instruments',
+  ];
+
+  const target = document.getElementById('tw-target')!;
+  const TYPE_SPEED = 65;
+  const ERASE_SPEED = 35;
+  const PAUSE_AFTER_TYPE = 2200;
+  const PAUSE_AFTER_ERASE = 400;
+
+  let phraseIndex = 0;
+
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function typewriter() {
+    while (true) {
+      const phrase = phrases[phraseIndex % phrases.length];
+      phraseIndex++;
+
+      // Type
+      for (let i = 0; i <= phrase.length; i++) {
+        target.textContent = phrase.slice(0, i);
+        await sleep(TYPE_SPEED);
+      }
+
+      await sleep(PAUSE_AFTER_TYPE);
+
+      // Erase
+      for (let i = phrase.length; i >= 0; i--) {
+        target.textContent = phrase.slice(0, i);
+        await sleep(ERASE_SPEED);
+      }
+
+      await sleep(PAUSE_AFTER_ERASE);
+    }
+  }
+
+  typewriter();
+</script>

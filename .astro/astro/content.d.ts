@@ -141,6 +141,48 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"guitars": {
+"pyrocaster copy 2.md": {
+	id: "pyrocaster copy 2.md";
+  slug: "pyrocaster-copy-2";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"pyrocaster copy 3.md": {
+	id: "pyrocaster copy 3.md";
+  slug: "pyrocaster-copy-3";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"pyrocaster copy 4.md": {
+	id: "pyrocaster copy 4.md";
+  slug: "pyrocaster-copy-4";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"pyrocaster copy 5.md": {
+	id: "pyrocaster copy 5.md";
+  slug: "pyrocaster-copy-5";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"pyrocaster copy 6.md": {
+	id: "pyrocaster copy 6.md";
+  slug: "pyrocaster-copy-6";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"pyrocaster copy.md": {
+	id: "pyrocaster copy.md";
+  slug: "pyrocaster-copy";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
 "pyrocaster.md": {
 	id: "pyrocaster.md";
   slug: "pyrocaster";
@@ -150,9 +192,30 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "stories": {
+"2024-12-pyrocaster-build copy.md": {
+	id: "2024-12-pyrocaster-build copy.md";
+  slug: "2024-12-pyrocaster-build-copy";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
 "2024-12-pyrocaster-build.md": {
 	id: "2024-12-pyrocaster-build.md";
   slug: "2024-12-pyrocaster-build";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster2 copy.md": {
+	id: "2024-12-pyrocaster2 copy.md";
+  slug: "2024-12-pyrocaster2-copy";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster2.md": {
+	id: "2024-12-pyrocaster2.md";
+  slug: "2024-12-pyrocaster2";
   body: string;
   collection: "stories";
   data: InferEntrySchema<"stories">
