@@ -1,0 +1,218 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import SpecTable from '../../components/SpecTable.astro';
+
+export async function getStaticPaths() {
+  const guitars = await getCollection('guitars');
+  return guitars.map(guitar => ({
+    params: { slug: guitar.slug },
+    props: { guitar },
+  }));
+}
+
+const { guitar } = Astro.props;
+const { Content } = await guitar.render();
+
+const statusLabels: Record<string, string> = {
+  available:     'Available',
+  sold:          'Sold',
+  'in-progress': 'In Progress',
+  commission:    'Commission',
+};
+
+const typeLabels: Record<string, string> = {
+  electric:  'Electric',
+  acoustic:  'Acoustic',
+  bass:      'Bass',
+  classical: 'Classical',
+};
+---
+
+<PageLayout
+  title={`${guitar.data.title} — Vibrum Guitars`}
+  description={guitar.data.excerpt}
+  ogImage={guitar.data.coverImage}
+  ogType="article"
+>
+  <div class="guitar-detail">
+    <!-- Hero image -->
+    <div class="guitar-hero">
+      <img
+        src={guitar.data.coverImage}
+        alt={guitar.data.title}
+        class="guitar-hero-img"
+      />
+    </div>
+
+    <div class="container">
+      <!-- Header -->
+      <header class="guitar-header">
+        <div class="guitar-meta-row">
+          <span class="guitar-type">{typeLabels[guitar.data.type]}</span>
+          <span class="guitar-year">{guitar.data.year}</span>
+          {guitar.data.status !== 'available' && (
+            <span class:list={['guitar-status', `guitar-status--${guitar.data.status}`]}>
+              {statusLabels[guitar.data.status]}
+            </span>
+          )}
+        </div>
+        <h1 class="guitar-title">{guitar.data.title}</h1>
+      </header>
+
+      <!-- Content + Specs -->
+      <div class="guitar-body">
+        <article class="guitar-prose prose">
+          <Content />
+        </article>
+
+        {guitar.data.specs && (
+          <aside class="guitar-specs">
+            <h2 class="specs-heading">Specifications</h2>
+            <SpecTable specs={guitar.data.specs} />
+          </aside>
+        )}
+      </div>
+
+      <!-- Additional images -->
+      {guitar.data.images.length > 0 && (
+        <section class="guitar-images">
+          <h2 class="images-heading">More photos</h2>
+          <div class="images-grid">
+            {guitar.data.images.map((src, i) => (
+              <img src={src} alt={`${guitar.data.title} detail ${i + 1}`} loading="lazy" />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <a href="/gallery" class="back-link">← Back to Gallery</a>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .guitar-hero {
+    width: 100%;
+    max-height: 70vh;
+    overflow: hidden;
+    background-color: var(--color-bg-raised);
+  }
+
+  .guitar-hero-img {
+    width: 100%;
+    height: 100%;
+    max-height: 70vh;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .guitar-header {
+    padding: var(--space-md) 0 var(--space-md);
+  }
+
+  .guitar-meta-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+  }
+
+  .guitar-type,
+  .guitar-year {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .guitar-type::after {
+    content: '·';
+    margin-left: var(--space-sm);
+    color: var(--color-border);
+  }
+
+  .guitar-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .guitar-status--in-progress {
+    color: var(--color-accent);
+    border-color: rgba(201, 168, 76, 0.4);
+  }
+
+  .guitar-title {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+  }
+
+  .guitar-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    padding-bottom: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .guitar-body {
+      grid-template-columns: 1fr 320px;
+    }
+  }
+
+  .guitar-prose {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .specs-heading,
+  .images-heading {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .guitar-images {
+    padding-bottom: var(--space-lg);
+  }
+
+  .images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .images-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    padding-bottom: var(--space-lg);
+    transition: color var(--transition);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+</style>

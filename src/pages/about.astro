@@ -1,0 +1,162 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="About — Vibrum Guitars"
+  description="Vibrum is a custom guitar workshop in Belgrade, Serbia. Each instrument is built by hand with traditional craftsmanship and uncompromising attention to detail."
+>
+  <div class="container section">
+    <header class="page-header">
+      <p class="eyebrow">The workshop</p>
+      <h1>About Vibrum</h1>
+    </header>
+
+    <div class="about-body">
+      <div class="about-prose prose">
+
+        <h2>The work</h2>
+        <p>
+          Vibrum is a custom guitar workshop based in Belgrade, Serbia. Every instrument is built by hand — from selecting raw tonewoods to cutting nuts and setting final action. No shortcuts, no outsourced parts, no compromise on the things that matter.
+        </p>
+        <p>
+          Each guitar is a collaboration between material and intention. Tonewoods are chosen for their acoustic properties first and appearance second. Hardware is selected for reliability and feel. Pickups for voice and dynamics. The result is an instrument built to last and to be played.
+        </p>
+
+        <h2>The philosophy</h2>
+        <p>
+          Good instruments are not defined by price or brand. They are defined by the quality of decisions made at every stage of construction. The right wood for the right build. The correct fret geometry for the intended playing style. A finish thin enough to let the wood breathe.
+        </p>
+        <p>
+          At Vibrum, we build slowly. One instrument at a time. Every detail receives the attention it deserves because an instrument that lasts decades earns that attention.
+        </p>
+
+        <h2>Commissions</h2>
+        <p>
+          We build custom instruments to specification. If you have a clear vision for your instrument — tonewoods, hardware, pickups, dimensions, aesthetics — we want to hear it. If you have a sound in your head but not a spec sheet, we can help you develop one.
+        </p>
+        <p>
+          Commission inquiries are handled through email. We discuss the build in detail before any commitment is made. Lead times vary and are communicated honestly.
+        </p>
+        <p>
+          <a href="/contact" class="inline-link">Get in touch →</a>
+        </p>
+
+        <h2>Belgrade, Serbia</h2>
+        <p>
+          The workshop is located in Belgrade. Instruments can be viewed and played by appointment. International shipping is available.
+        </p>
+
+      </div>
+
+      <aside class="about-aside">
+        <div class="aside-block">
+          <h3 class="aside-label">Based in</h3>
+          <p>Belgrade, Serbia</p>
+        </div>
+        <div class="aside-block">
+          <h3 class="aside-label">Builds</h3>
+          <p>Electric, acoustic, bass</p>
+        </div>
+        <div class="aside-block">
+          <h3 class="aside-label">Commissions</h3>
+          <p>Open — contact for details</p>
+        </div>
+        <div class="aside-block">
+          <h3 class="aside-label">Contact</h3>
+          <p>
+            <a href="mailto:info@vibrumguitars.com" class="inline-link">info@vibrumguitars.com</a>
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .about-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .about-body {
+      grid-template-columns: 1fr 240px;
+    }
+  }
+
+  .about-prose {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    max-width: 680px;
+  }
+
+  .inline-link {
+    color: var(--color-accent);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.4);
+    transition: border-color var(--transition);
+  }
+
+  .inline-link:hover {
+    border-color: var(--color-accent);
+  }
+
+  .about-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-aside {
+      padding-top: 0.5rem;
+      border-left: 1px solid var(--color-border);
+      padding-left: var(--space-md);
+    }
+  }
+
+  .aside-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .aside-label {
+    font-family: var(--font-body);
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .aside-block p {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .aside-block a {
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .aside-block a:hover {
+    color: var(--color-accent);
+  }
+</style>

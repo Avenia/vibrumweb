@@ -1,0 +1,257 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+
+const subject = encodeURIComponent('Guitar inquiry — Vibrum');
+const body = encodeURIComponent('Hi,\n\nI\'d like to ask about...\n\n');
+const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body}`;
+---
+
+<PageLayout
+  title="Contact — Vibrum Guitars"
+  description="Get in touch with Vibrum Guitars in Belgrade. Commission inquiries, availability questions, and workshop visits by appointment."
+>
+  <div class="container section">
+    <header class="page-header">
+      <p class="eyebrow">Get in touch</p>
+      <h1>Contact</h1>
+    </header>
+
+    <div class="contact-body">
+
+      <!-- Info column -->
+      <div class="contact-info">
+        <div class="info-block">
+          <h2 class="info-label">Email</h2>
+          <a href="mailto:info@vibrumguitars.com" class="info-value info-link">
+            info@vibrumguitars.com
+          </a>
+        </div>
+
+        <div class="info-block">
+          <h2 class="info-label">Location</h2>
+          <p class="info-value">Belgrade, Serbia</p>
+          <p class="info-note">Workshop visits by appointment only.</p>
+        </div>
+
+        <div class="info-block">
+          <h2 class="info-label">Social</h2>
+          <div class="social-links">
+            <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+              @vibrumguitars
+            </a>
+            <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+              @vibrumguitars
+            </a>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <h2 class="info-label">Response time</h2>
+          <p class="info-value">Usually within 2–3 business days.</p>
+        </div>
+      </div>
+
+      <!-- CTA column -->
+      <div class="contact-cta-col">
+        <div class="contact-cta-card">
+          <h2 class="cta-title">Send an email</h2>
+          <p class="cta-body">
+            Whether you're interested in a commission, want to ask about an available instrument, or just want to learn more about the work — email is the best way to reach us.
+          </p>
+          <a href={mailtoHref} class="cta-btn">
+            Open email client →
+          </a>
+          <p class="cta-note">
+            This opens your default email app with the subject and address pre-filled.
+          </p>
+        </div>
+
+        <div class="commission-note">
+          <h3 class="commission-title">Commission inquiries</h3>
+          <p>
+            If you're considering a custom build, include as much detail as you have in your first message: type of instrument, tonewoods you're interested in, hardware preferences, intended playing style, and budget range. The more context, the faster we can have a useful conversation.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .contact-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .contact-body {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Info column */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .info-block:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-family: var(--font-body);
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .info-value {
+    font-size: 1rem;
+    color: var(--color-text-bold);
+    margin: 0;
+  }
+
+  .info-note {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .info-link {
+    transition: color var(--transition);
+  }
+
+  .info-link:hover {
+    color: var(--color-accent);
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .social-link:hover {
+    color: var(--color-accent);
+  }
+
+  /* CTA column */
+  .contact-cta-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .contact-cta-card {
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .cta-title {
+    font-size: 1.3rem;
+  }
+
+  .cta-body {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    align-self: flex-start;
+    background-color: var(--color-accent);
+    color: #0a0906;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    transition: opacity var(--transition);
+  }
+
+  .cta-btn:hover {
+    opacity: 0.88;
+  }
+
+  .cta-note {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .commission-note {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-left: 2px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+  }
+
+  .commission-title {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+  }
+
+  .commission-note p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+</style>

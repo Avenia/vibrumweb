@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import GuitarCard from '../../components/GuitarCard.astro';
+
+const allGuitars = await getCollection('guitars');
+
+const typeOrder = ['electric', 'acoustic', 'bass', 'classical'] as const;
+const typeLabels: Record<string, string> = {
+  electric:  'Electric',
+  acoustic:  'Acoustic',
+  bass:      'Bass',
+  classical: 'Classical',
+};
+
+const grouped = typeOrder
+  .map(type => ({
+    type,
+    label: typeLabels[type],
+    guitars: allGuitars
+      .filter(g => g.data.type === type)
+      .sort((a, b) => b.data.year - a.data.year),
+  }))
+  .filter(group => group.guitars.length > 0);
+---
+
+<PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
+  <div class="container section">
+    <header class="page-header">
+      <h1>Gallery</h1>
+      <p class="page-subtitle">Every instrument is built by hand, one at a time.</p>
+    </header>
+
+    {grouped.map(({ label, guitars }) => (
+      <section class="guitar-group">
+        <h2 class="group-heading">{label}</h2>
+        <div class="guitar-grid">
+          {guitars.map(guitar => (
+            <GuitarCard
+              title={guitar.data.title}
+              slug={guitar.slug}
+              year={guitar.data.year}
+              status={guitar.data.status}
+              coverImage={guitar.data.coverImage}
+              excerpt={guitar.data.excerpt}
+            />
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</PageLayout>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    margin-top: var(--space-xs);
+  }
+
+  .guitar-group {
+    margin-bottom: var(--space-lg);
+  }
+
+  .group-heading {
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .guitar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-md);
+  }
+</style>

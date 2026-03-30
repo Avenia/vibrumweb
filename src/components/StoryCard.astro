@@ -1,0 +1,137 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  date: Date;
+  coverImage: string;
+  excerpt: string;
+  tags: string[];
+}
+
+const { title, slug, date, coverImage, excerpt, tags } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<a href={`/stories/${slug}`} class="story-card">
+  <div class="story-card-image">
+    <img src={coverImage} alt={title} loading="lazy" />
+  </div>
+  <div class="story-card-body">
+    {tags.length > 0 && (
+      <div class="story-card-tags">
+        {tags.slice(0, 2).map(tag => (
+          <span class="story-tag">{tag}</span>
+        ))}
+      </div>
+    )}
+    <h2 class="story-card-title">{title}</h2>
+    <p class="story-card-excerpt">{excerpt}</p>
+    <div class="story-card-footer">
+      <time datetime={date.toISOString()} class="story-card-date">{formattedDate}</time>
+      <span class="story-card-cta">Read more →</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .story-card {
+    display: block;
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .story-card:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+    background-color: var(--color-bg-surface);
+  }
+
+  .story-card:hover .story-card-image img {
+    transform: scale(1.02);
+  }
+
+  .story-card-image {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--color-bg-surface);
+  }
+
+  .story-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms ease;
+  }
+
+  .story-card-body {
+    padding: var(--space-md);
+  }
+
+  .story-card-tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-xs);
+  }
+
+  .story-tag {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    padding: 2px 7px;
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-dim);
+  }
+
+  .story-card-title {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    margin-bottom: var(--space-xs);
+    line-height: 1.3;
+  }
+
+  .story-card-excerpt {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-sm);
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .story-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+  }
+
+  .story-card-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .story-card-cta {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+    transition: opacity var(--transition);
+  }
+
+  .story-card:hover .story-card-cta {
+    opacity: 0.75;
+  }
+</style>

@@ -1,0 +1,177 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories', ({ data }) => !data.draft);
+  return stories.map(story => ({
+    params: { slug: story.slug },
+    props: { story },
+  }));
+}
+
+const { story } = Astro.props;
+const { Content } = await story.render();
+
+const formattedDate = story.data.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<PageLayout
+  title={`${story.data.title} — Vibrum Guitars`}
+  description={story.data.excerpt}
+  ogImage={story.data.coverImage}
+  ogType="article"
+>
+  <div class="story-detail">
+    <!-- Hero -->
+    <div class="story-hero">
+      <img src={story.data.coverImage} alt={story.data.title} class="story-hero-img" />
+    </div>
+
+    <div class="container">
+      <header class="story-header">
+        {story.data.tags.length > 0 && (
+          <div class="story-tags">
+            {story.data.tags.map(tag => (
+              <span class="story-tag">{tag}</span>
+            ))}
+          </div>
+        )}
+        <h1 class="story-title">{story.data.title}</h1>
+        <time datetime={story.data.date.toISOString()} class="story-date">{formattedDate}</time>
+      </header>
+
+      <div class="story-content-wrap">
+        <article class="story-prose prose">
+          <Content />
+        </article>
+
+        {story.data.guitar && (
+          <aside class="story-guitar-link">
+            <p class="story-guitar-label">Featured instrument</p>
+            <a href={`/gallery/${story.data.guitar}`} class="story-guitar-btn">
+              View the guitar →
+            </a>
+          </aside>
+        )}
+      </div>
+
+      <a href="/" class="back-link">← Back to Stories</a>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .story-hero {
+    width: 100%;
+    max-height: 60vh;
+    overflow: hidden;
+    background-color: var(--color-bg-raised);
+  }
+
+  .story-hero-img {
+    width: 100%;
+    max-height: 60vh;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .story-header {
+    padding: var(--space-md) 0 var(--space-sm);
+    max-width: 760px;
+  }
+
+  .story-tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .story-tag {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    padding: 2px 7px;
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-dim);
+  }
+
+  .story-title {
+    margin-bottom: var(--space-xs);
+  }
+
+  .story-date {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .story-content-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0 var(--space-lg);
+    max-width: 900px;
+  }
+
+  @media (min-width: 768px) {
+    .story-content-wrap {
+      grid-template-columns: 1fr 220px;
+    }
+  }
+
+  .story-prose {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    max-width: 680px;
+  }
+
+  .story-guitar-link {
+    padding-top: var(--space-xs);
+  }
+
+  .story-guitar-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-xs);
+  }
+
+  .story-guitar-btn {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--color-accent);
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-accent-dim);
+    transition: background-color var(--transition), border-color var(--transition);
+  }
+
+  .story-guitar-btn:hover {
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    padding-bottom: var(--space-lg);
+    transition: color var(--transition);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+</style>

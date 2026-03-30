@@ -1,0 +1,115 @@
+---
+type SpecValue = string | number | undefined;
+type SpecSection = Record<string, SpecValue>;
+
+interface Props {
+  specs: Record<string, SpecSection | undefined> | undefined;
+}
+
+const { specs } = Astro.props;
+
+const sectionLabels: Record<string, string> = {
+  body:        'Body',
+  neck:        'Neck',
+  fingerboard: 'Fingerboard',
+  hardware:    'Hardware',
+  electronics: 'Electronics',
+};
+
+const fieldLabels: Record<string, string> = {
+  wood:        'Wood',
+  finish:      'Finish',
+  binding:     'Binding',
+  weight:      'Weight',
+  profile:     'Profile',
+  scale:       'Scale length',
+  frets:       'Frets',
+  radius:      'Radius',
+  nut:         'Nut',
+  inlays:      'Inlays',
+  tuners:      'Tuners',
+  bridge:      'Bridge',
+  tailpiece:   'Tailpiece',
+  pickups:     'Pickups',
+  controls:    'Controls',
+  output:      'Output',
+};
+---
+
+{specs && (
+  <div class="spec-table">
+    {Object.entries(specs).map(([sectionKey, fields]) => {
+      if (!fields) return null;
+      const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
+      if (rows.length === 0) return null;
+      return (
+        <div class="spec-section">
+          <h4 class="spec-section-title">
+            {sectionLabels[sectionKey] ?? sectionKey}
+          </h4>
+          <dl class="spec-list">
+            {rows.map(([key, value]) => (
+              <div class="spec-row">
+                <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
+                <dd class="spec-val">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+<style>
+  .spec-table {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .spec-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .spec-section-title {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background-color: var(--color-bg-surface);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .spec-list {
+    background-color: var(--color-bg-raised);
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 14px;
+    gap: var(--space-sm);
+  }
+
+  .spec-row:nth-child(even) {
+    background-color: rgba(255, 245, 220, 0.02);
+  }
+
+  .spec-key {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .spec-val {
+    font-size: 0.82rem;
+    color: var(--color-text);
+    text-align: right;
+  }
+</style>

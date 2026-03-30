@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import StoryCard from '../components/StoryCard.astro';
+
+const stories = (await getCollection('stories', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PageLayout
+  title="Vibrum Guitars — Handcrafted in Belgrade"
+  description="Handcrafted guitars made by Vibrum — where traditional craftsmanship meets design. Stories from the workshop in Belgrade, Serbia."
+>
+  <div class="container section">
+    <header class="home-header">
+      <p class="home-eyebrow">From the workshop</p>
+      <h1 class="home-title">Stories &amp; Updates</h1>
+      <p class="home-subtitle">
+        Each build has a story. Follow the work — new instruments, materials, and ideas from Belgrade.
+      </p>
+    </header>
+
+    {stories.length > 0 ? (
+      <div class="stories-grid">
+        {stories.map(story => (
+          <StoryCard
+            title={story.data.title}
+            slug={story.slug}
+            date={story.data.date}
+            coverImage={story.data.coverImage}
+            excerpt={story.data.excerpt}
+            tags={story.data.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <p>Stories coming soon. Check back after the first build.</p>
+        <a href="/gallery" class="empty-cta">Browse the gallery →</a>
+      </div>
+    )}
+  </div>
+</PageLayout>
+
+<style>
+  .home-header {
+    margin-bottom: var(--space-lg);
+    max-width: 560px;
+  }
+
+  .home-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .home-title {
+    margin-bottom: var(--space-xs);
+  }
+
+  .home-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .stories-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .stories-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .stories-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+
+    /* First story spans full width */
+    .stories-grid > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .empty-state {
+    color: var(--color-text-muted);
+    padding: var(--space-lg) 0;
+  }
+
+  .empty-cta {
+    display: inline-block;
+    margin-top: var(--space-sm);
+    color: var(--color-accent);
+    font-size: 0.9rem;
+    transition: opacity var(--transition);
+  }
+
+  .empty-cta:hover {
+    opacity: 0.7;
+  }
+</style>
