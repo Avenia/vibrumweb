@@ -3,7 +3,7 @@ const pathname = Astro.url.pathname;
 
 const links = [
   { href: '/',        label: 'Home' },
-  { href: '/gallery', label: 'Gallery' },
+  { href: '/gallery', label: 'Guitars' },
   { href: '/about',   label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -106,7 +106,7 @@ function isActive(href: string): boolean {
   }
 
   .nav-accent-rule {
-    height: 1px;
+    height: 2px;
     background: linear-gradient(to right, transparent, var(--color-accent), transparent);
     opacity: 0.5;
   }
