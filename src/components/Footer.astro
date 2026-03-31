@@ -25,13 +25,19 @@ const year = new Date().getFullYear();
         </svg>
       </a>
     </div>
-    <p class="footer-copy">&copy; {year} Vibrum Guitars. Belgrade, Serbia.</p>
+    <p class="footer-copy">&copy; {year} Vibrum Guitars</p>
   </div>
 </footer>
 
 <style>
   .footer {
-    border-top: 1px solid var(--color-border);
+    border-top: 2px solid;
+    border-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--color-accent) 50%, transparent),
+      transparent
+    ) 1;
     padding: var(--space-md) 0;
     margin-top: var(--space-xl);
   }
