@@ -73,10 +73,13 @@ function isActive(href: string): boolean {
     letter-spacing: 0.2em;
     color: var(--color-text-bold);
     transition: color var(--transition);
+    transition: letter-spacing 0.2s ease-in-out
   }
 
   .nav-logo:hover {
     color: var(--color-accent);
+    letter-spacing: 6px;
+    /* transform:skew(15deg) */
   }
 
   .nav-links {
