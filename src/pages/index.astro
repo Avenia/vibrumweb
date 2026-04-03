@@ -276,19 +276,24 @@ const slides = [
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(10, 9, 6, 0.55) transparent;
+    background: rgba(10, 9, 6, 0.35);
     border: 2px solid var(--color-border);
     color: var(--color-text-bold);
-    width: 2.5rem;
-    height: 2.5rem;
+    width: clamp(2rem, 4vw, 2.5rem);
+    height: clamp(2rem, 4vw, 2.5rem);
     border-radius: 50%;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 1.5vw, 1.1rem);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--transition), border-color var(--transition);
+    opacity: 0;
+    transition: background var(--transition), border-color var(--transition), opacity var(--transition);
     z-index: 10;
+  }
+
+  .slideshow:hover .slide-arrow {
+    opacity: 1;
   }
 
   .slide-arrow:hover {
