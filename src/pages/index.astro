@@ -231,21 +231,26 @@ const slides = [
     letter-spacing: 0.04em;
     font-size: clamp(1.4rem, 3.5vw, 2.4rem);
     color: var(--color-text-bold);
-    line-height: 1.2;
+    line-height: 1.6;
     margin: 0;
-    display: inline-block;
-    width: fit-content;
     white-space: pre-line;
+  }
+
+  #tw-target {
     background: rgba(10, 9, 6, 0.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    padding: 0.2em 0.5em;
+    padding: 0.15em 0.5em;
     border-radius: var(--radius-sm, 4px);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
     transition: background 0.15s;
   }
 
-  .tw-text.tw-empty {
+  #tw-target.tw-empty {
     background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     padding-inline: 0;
   }
 
@@ -336,7 +341,7 @@ const slides = [
 
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
-  const twText = target.closest('.tw-text');
+
   const TYPE_SPEED = 25;
   const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
@@ -351,7 +356,7 @@ const slides = [
 
   function setText(text) {
     target.textContent = text;
-    twText.classList.toggle('tw-empty', text.replace(/\n/g, '') === '');
+    target.classList.toggle('tw-empty', text.replace(/\n/g, '') === '');
   }
 
   async function typePhrase(phrase) {
