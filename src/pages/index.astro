@@ -299,6 +299,10 @@ const slides = [
   .slide-prev { left: var(--space-sm); }
   .slide-next { right: var(--space-sm); }
 
+  @media (max-width: 639px) {
+    .slide-arrow { display: none; }
+  }
+
   .slide-dots {
     position: absolute;
     bottom: var(--space-sm);
