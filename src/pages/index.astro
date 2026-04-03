@@ -197,18 +197,18 @@ const slides = [
   }
 
   @keyframes kb-zoom-in {
-    from { transform: scale(1.08); }
-    to   { transform: scale(1.0); }
-  }
-
-  @keyframes kb-zoom-out {
     from { transform: scale(1.0); }
     to   { transform: scale(1.08); }
   }
 
+  @keyframes kb-zoom-out {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.06); }
+  }
+
   @keyframes kb-pan-right {
-    from { transform: scale(1.06) translateX(-1.5%); }
-    to   { transform: scale(1.06) translateX(1.5%); }
+    from { transform: scale(1.0) translateX(0%); }
+    to   { transform: scale(1.0) translateX(1.5%); }
   }
 
   .typewriter-overlay {
