@@ -6,14 +6,15 @@ import StoryCard from '../components/StoryCard.astro';
 const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
+  // TODO: move slideshow to a separate component and fetch images from a folder or CMS instead of hardcoding
 const slides = [
-  { src: '/images/guitars/pyrocaster/pyrocaster.webp', text: 'Handcrafted in Belgrade\nWith passion.\nWith precision.' },
+  { src: '/images/guitars/pyrocaster/pyrocaster.webp', text: 'Handcrafted in Belgrade\nWith passion.\nWith precision.\nWith Bla Bla bla' },
   { src: '/images/slideshow/Screenshot 2026-03-30 at 22-35-44 Instagram.png', text: 'Built to last a lifetime' },
   { src: '/images/slideshow/Screenshot 2026-03-30 at 22-35-55 Instagram.png', text: 'Every detail considered' },
-  // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-04 Instagram.png', text: 'Wood, craft, soul' },
-  // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-21 Instagram.png', text: 'From the workshop' },
-  // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-35 Instagram.png', text: 'Traditional meets design' },
-  // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-48 Instagram.png', text: 'Unique instruments' },
+  // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-04 Instagram.png'},
+  // // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-21 Instagram.png', text: 'From the workshop' },
+  // // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-35 Instagram.png', text: 'Traditional meets design' },
+  // // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-48 Instagram.png', text: 'Unique instruments' },
 ];
 ---
 
@@ -21,8 +22,6 @@ const slides = [
   title="Vibrum | Handcrafted guitars"
   description="Handcrafted guitars made by Vibrum, where traditional craftsmanship meets design. We are dedicated to creating unique, high-quality instruments that inspire musicians worldwide."
 >
-
-
   <div class="container section">
     <div class="slideshow" id="slideshow" aria-label="Workshop slideshow">
       {slides.map((slide, i) => (
@@ -32,7 +31,7 @@ const slides = [
       ))}
 
       <div class="typewriter-overlay">
-        <!-- <p class="tw-eyebrow">Vibrum Guitars</p> -->
+        <!-- <p class="tw-eyebrow">Vibrum Guitars</p> TODO: maybe add this to upper left corner as a static element, but make support to define in slides -->
         <!-- <p class="tw-text"><span id="tw-target"></span><span class="tw-cursor">|</span></p> -->
         <p class="tw-text"><span id="tw-target"></span></p>
       </div>
@@ -44,6 +43,9 @@ const slides = [
         ))}
       </div>
     </div>
+
+<!-- SLIDE SHOW ABOVE -->
+<!-- STORIES BELOW -->
 
     <header class="home-header">
       <p class="home-eyebrow">From the workshop</p>
@@ -241,7 +243,7 @@ const slides = [
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     padding: 0.15em 0.5em;
-    border-radius: var(--radius-sm, 4px);
+    border-radius: 8px;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     transition: background 0.15s;
