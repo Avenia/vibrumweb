@@ -160,13 +160,17 @@ const slides = [
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 0.5s ease;
     pointer-events: none;
   }
 
   .slide.active {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  .slide img {
+    animation: none;
   }
 
   .slide img {
@@ -177,18 +181,18 @@ const slides = [
     transform-origin: center center;
   }
 
-  /* Ken Burns — different zoom origin per slide for variety */
+  /* Ken Burns — fill-mode: both holds the `from` state during the fade-in delay */
   .slide.active img {
-    animation: kb-zoom-in 6s ease-out forwards;
+    animation: kb-zoom-in 6s ease-out both;
   }
 
   .slide.active:nth-child(2n) img {
-    animation: kb-zoom-out 6s ease-out forwards;
+    animation: kb-zoom-out 6s ease-out both;
     transform-origin: 70% 60%;
   }
 
   .slide.active:nth-child(3n) img {
-    animation: kb-pan-right 6s ease-out forwards;
+    animation: kb-pan-right 6s ease-out both;
     transform-origin: 30% 50%;
   }
 
@@ -229,7 +233,7 @@ const slides = [
   }
 
   .tw-text {
-    font-family: 'Courier New', monospace;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     letter-spacing: 0.04em;
     font-size: clamp(1.4rem, 3.5vw, 2.4rem);
@@ -370,7 +374,6 @@ const slides = [
   const TYPE_SPEED = 25;
   const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
-
   const PAUSE_AFTER_ERASE = 400;
 
   let generation = 0;
