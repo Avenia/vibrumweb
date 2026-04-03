@@ -33,7 +33,8 @@ const slides = [
 
       <div class="typewriter-overlay">
         <!-- <p class="tw-eyebrow">Vibrum Guitars</p> -->
-        <p class="tw-text"><span id="tw-target"></span><span class="tw-cursor">|</span></p>
+        <!-- <p class="tw-text"><span id="tw-target"></span><span class="tw-cursor">|</span></p> -->
+        <p class="tw-text"><span id="tw-target"></span></p>
       </div>
       <button class="slide-arrow slide-prev" aria-label="Previous slide">&#8592;</button>
       <button class="slide-arrow slide-next" aria-label="Next slide">&#8594;</button>
@@ -329,8 +330,8 @@ const slides = [
 
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
-  const TYPE_SPEED = 65;
-  const ERASE_SPEED = 35;
+  const TYPE_SPEED = 25;
+  const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
   const PAUSE_AFTER_ERASE = 400;
 
@@ -365,11 +366,11 @@ const slides = [
     if (generation !== gen) return;
 
     // Erase and loop back to first slide's text via slide advance
-    for (let i = phrase.length; i >= 0; i--) {
-      if (generation !== gen) return;
-      target.textContent = phrase.slice(0, i);
-      await sleep(ERASE_SPEED);
-    }
+    // for (let i = phrase.length; i >= 0; i--) {
+    //   if (generation !== gen) return;
+    //   target.textContent = phrase.slice(0, i);
+    //   await sleep(ERASE_SPEED);
+    // }
 
     await sleep(PAUSE_AFTER_ERASE);
   }
