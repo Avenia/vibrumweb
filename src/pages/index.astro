@@ -7,7 +7,7 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const slides = [
-  { src: '/images/guitars/pyrocaster/pyrocaster.webp', text: 'Handcrafted in Belgrade' },
+  { src: '/images/guitars/pyrocaster/pyrocaster.webp', text: 'Handcrafted in Belgrade\nWith passion.\nWith precision.' },
   { src: '/images/slideshow/Screenshot 2026-03-30 at 22-35-44 Instagram.png', text: 'Built to last a lifetime' },
   { src: '/images/slideshow/Screenshot 2026-03-30 at 22-35-55 Instagram.png', text: 'Every detail considered' },
   // { src: '/images/slideshow/Screenshot 2026-03-30 at 22-36-04 Instagram.png', text: 'Wood, craft, soul' },
@@ -233,14 +233,20 @@ const slides = [
     color: var(--color-text-bold);
     line-height: 1.2;
     margin: 0;
-    min-height: 1.2em;
     display: inline-block;
     width: fit-content;
+    white-space: pre-line;
     background: rgba(10, 9, 6, 0.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     padding: 0.2em 0.5em;
     border-radius: var(--radius-sm, 4px);
+    transition: background 0.15s;
+  }
+
+  .tw-text.tw-empty {
+    background: transparent;
+    padding-inline: 0;
   }
 
   .tw-cursor {
@@ -330,9 +336,11 @@ const slides = [
 
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
+  const twText = target.closest('.tw-text');
   const TYPE_SPEED = 25;
   const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
+
   const PAUSE_AFTER_ERASE = 400;
 
   let generation = 0;
@@ -341,24 +349,32 @@ const slides = [
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  function setText(text) {
+    target.textContent = text;
+    twText.classList.toggle('tw-empty', text.replace(/\n/g, '') === '');
+  }
+
   async function typePhrase(phrase) {
     const gen = ++generation;
 
-    // Erase whatever is currently shown
-    const current_text = target.textContent ?? '';
-    for (let i = current_text.length; i >= 0; i--) {
+    // Erase whatever is currently shown — all lines in parallel
+    const current_lines = (target.textContent ?? '').split('\n');
+    const currentMax = Math.max(...current_lines.map(l => l.length));
+    for (let i = currentMax; i >= 0; i--) {
       if (generation !== gen) return;
-      target.textContent = current_text.slice(0, i);
+      setText(current_lines.map(l => l.slice(0, i)).join('\n'));
       await sleep(ERASE_SPEED);
     }
 
     await sleep(PAUSE_AFTER_ERASE);
     if (generation !== gen) return;
 
-    // Type the new phrase
-    for (let i = 0; i <= phrase.length; i++) {
+    // Type the new phrase — all lines in parallel
+    const lines = phrase.split('\n');
+    const maxLen = Math.max(...lines.map(l => l.length));
+    for (let i = 0; i <= maxLen; i++) {
       if (generation !== gen) return;
-      target.textContent = phrase.slice(0, i);
+      setText(lines.map(l => l.slice(0, i)).join('\n'));
       await sleep(TYPE_SPEED);
     }
 
