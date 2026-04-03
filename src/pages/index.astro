@@ -268,6 +268,10 @@ const slides = [
     50% { opacity: 0; }
   }
 
+  @media (max-width: 639px) {
+    .slide-arrow { display: none; }
+  }
+
   .slide-arrow {
     position: absolute;
     top: 50%;
@@ -340,6 +344,15 @@ const slides = [
   document.querySelector('.slide-next')?.addEventListener('click', () => goTo(current + 1));
   document.querySelector('.slide-prev')?.addEventListener('click', () => goTo(current - 1));
   dots.forEach(dot => dot.addEventListener('click', () => goTo(Number(dot.dataset.dot))));
+
+  // --- Touch swipe ---
+  const slideshowEl = document.getElementById('slideshow');
+  let touchStartX = 0;
+  slideshowEl.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  slideshowEl.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+  }, { passive: true });
 
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
