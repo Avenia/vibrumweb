@@ -11,6 +11,22 @@
           "type": "string",
           "default": ""
         },
+        "button": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "url"
+          ],
+          "additionalProperties": false
+        },
         "$schema": {
           "type": "string"
         }

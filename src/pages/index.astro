@@ -16,11 +16,11 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
     <Slideshow />
 
     <header class="home-header">
-      <p class="home-eyebrow">From the workshop</p>
+      <p class="home-eyebrow">Vibrum guitars stories</p>
       <h1 class="home-title">Check out our latest stories</h1>
-      <p class="home-subtitle">
+      <!-- <p class="home-subtitle">
         Each build has a story. Follow the work — new instruments, materials, and ideas from Belgrade.
-      </p>
+      </p> -->
     </header>
 
     {stories.length > 0 ? (

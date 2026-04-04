@@ -65,6 +65,10 @@ const slides = defineCollection({
   schema: z.object({
     src: z.string(),
     text: z.string().default(''),
+    button: z.object({
+      label: z.string(),
+      url: z.string(),
+    }).optional(),
   }),
 });
 

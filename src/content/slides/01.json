@@ -1,4 +1,8 @@
 {
   "src": "/images/guitars/pyrocaster/pyrocaster.webp",
-  "text": "Handcrafted in Belgrade\nWith passion.\nWith precision."
+  "text": "Handcrafted in Belgrade\nWith passion.\nWith precision.",
+  "button": {
+    "label": "View Guitar →",
+    "url": "/gallery/pyrocaster-copy-2"
+  }
 }

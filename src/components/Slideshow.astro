@@ -12,7 +12,10 @@ const slides = slideEntries.map(e => e.data);
   ))}
 
   <div class="typewriter-overlay">
-    <p class="tw-text"><span id="tw-target"></span></p>
+    <div class="tw-row">
+      <p class="tw-text"><span id="tw-target"></span></p>
+      <a id="slide-btn" class="slide-btn" href="#"></a>
+    </div>
   </div>
   <button class="slide-arrow slide-prev" aria-label="Previous slide">&#8592;</button>
   <button class="slide-arrow slide-next" aria-label="Next slide">&#8594;</button>
@@ -99,7 +102,14 @@ const slides = slideEntries.map(e => e.data);
     pointer-events: none;
   }
 
+  .tw-row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+  }
+
   .tw-text {
+    flex: 1;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -108,6 +118,36 @@ const slides = slideEntries.map(e => e.data);
     line-height: 1.6;
     margin: 0;
     white-space: pre-line;
+  }
+
+  .slide-btn {
+    flex-shrink: 0;
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: #0a0906;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .slide-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .slide-btn:hover {
+    opacity: 0.88;
+  }
+
+  .slide-btn.visible:hover {
+    opacity: 0.88;
   }
 
   #tw-target {
@@ -187,7 +227,7 @@ const slides = slideEntries.map(e => e.data);
 
   .slide-dot.active {
     background: var(--color-accent);
-    transform: scale(1.4);
+    transform: scale(1.35);
   }
 </style>
 
@@ -203,7 +243,8 @@ const slides = slideEntries.map(e => e.data);
     current = (index + slideEls.length) % slideEls.length;
     slideEls[current].classList.add('active');
     dots[current].classList.add('active');
-    typePhrase(slides[current].text);
+    hideButton();
+    typePhrase(slides[current].text, slides[current].button);
   }
 
   document.querySelector('.slide-next')?.addEventListener('click', () => goTo(current + 1));
@@ -231,6 +272,23 @@ const slides = slideEntries.map(e => e.data);
   });
   slideshowEl.addEventListener('mouseleave', () => { dragging = false; });
 
+  // --- Slide button ---
+  const slideBtn = document.getElementById('slide-btn');
+
+  function showButton(btn) {
+    if (btn) {
+      slideBtn.textContent = btn.label;
+      slideBtn.href = btn.url;
+      slideBtn.classList.add('visible');
+    } else {
+      slideBtn.classList.remove('visible');
+    }
+  }
+
+  function hideButton() {
+    slideBtn.classList.remove('visible');
+  }
+
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
 
@@ -238,6 +296,7 @@ const slides = slideEntries.map(e => e.data);
   const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
   const PAUSE_AFTER_ERASE = 400;
+  const BUTTON_FADE = 250; // ms — matches .slide-btn CSS transition
 
   let generation = 0;
 
@@ -250,7 +309,7 @@ const slides = slideEntries.map(e => e.data);
     target.classList.toggle('tw-empty', text.replace(/\n/g, '') === '');
   }
 
-  async function typePhrase(phrase) {
+  async function typePhrase(phrase, button) {
     const gen = ++generation;
 
     // Erase whatever is currently shown — all lines in parallel
@@ -268,9 +327,11 @@ const slides = slideEntries.map(e => e.data);
     // Type the new phrase — all lines in parallel
     const lines = phrase.split('\n');
     const maxLen = Math.max(...lines.map(l => l.length));
+    const fadeStartAt = maxLen - Math.ceil(BUTTON_FADE / TYPE_SPEED);
     for (let i = 0; i <= maxLen; i++) {
       if (generation !== gen) return;
       setText(lines.map(l => l.slice(0, i)).join('\n'));
+      if (button && i >= fadeStartAt) showButton(button);
       await sleep(TYPE_SPEED);
     }
 
@@ -278,5 +339,5 @@ const slides = slideEntries.map(e => e.data);
   }
 
   // Start with the first slide's text
-  typePhrase(slides[0].text);
+  typePhrase(slides[0].text, slides[0].button);
 </script>
