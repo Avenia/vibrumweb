@@ -60,4 +60,12 @@ const stories = defineCollection({
   }),
 });
 
-export const collections = { guitars, stories };
+const slides = defineCollection({
+  type: 'data',
+  schema: z.object({
+    src: z.string(),
+    text: z.string().default(''),
+  }),
+});
+
+export const collections = { guitars, stories, slides };
