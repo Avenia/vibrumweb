@@ -81,6 +81,10 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
     .stories-grid {
       padding-inline: var(--space-sm);
     }
+
+    .home-header {
+      padding-inline: calc(var(--space-sm) + 0.5rem);
+    }
   }
 
   @media (min-width: 640px) {
