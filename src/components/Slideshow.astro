@@ -117,7 +117,6 @@ const slides = slideEntries.map(e => e.data);
     color: var(--color-text-bold);
     line-height: 1.6;
     margin: 0;
-    white-space: pre-line;
   }
 
   .slide-btn {
@@ -135,7 +134,7 @@ const slides = slideEntries.map(e => e.data);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.20s ease;
   }
 
   .slide-btn.visible {
@@ -153,7 +152,14 @@ const slides = slideEntries.map(e => e.data);
     /* border: #0a0906 2px solid; */
   }
 
-  #tw-target {
+  #tw-target.tw-empty .tw-line {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding-inline: 0;
+  }
+
+  .tw-line {
     background: rgba(10, 9, 6, 0.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -164,15 +170,17 @@ const slides = slideEntries.map(e => e.data);
     transition: background 0.15s;
   }
 
-  #tw-target.tw-empty {
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    padding-inline: 0;
-  }
-
   @media (max-width: 639px) {
     .slide-arrow { display: none; }
+
+    .tw-text {
+      position: absolute;
+      top: var(--space-md);
+      left: var(--space-md);
+      right: var(--space-md);
+      font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+      flex: none;
+    }
   }
 
   .slide-arrow {
@@ -295,11 +303,11 @@ const slides = slideEntries.map(e => e.data);
   // --- Typewriter ---
   const target = document.getElementById('tw-target');
 
-  const TYPE_SPEED = 25;
+  const TYPE_SPEED = 20;
   const ERASE_SPEED = 10;
   const PAUSE_AFTER_TYPE = 2200;
   const PAUSE_AFTER_ERASE = 400;
-  const BUTTON_FADE = 250; // ms — matches .slide-btn CSS transition
+  const BUTTON_FADE = 200; // ms — matches .slide-btn CSS transition
 
   let generation = 0;
 
@@ -308,7 +316,10 @@ const slides = slideEntries.map(e => e.data);
   }
 
   function setText(text) {
-    target.textContent = text;
+    const lines = text.split('\n');
+    target.innerHTML = lines
+      .map(line => `<span class="tw-line">${line}</span>`)
+      .join('<br>');
     target.classList.toggle('tw-empty', text.replace(/\n/g, '') === '');
   }
 
@@ -316,7 +327,8 @@ const slides = slideEntries.map(e => e.data);
     const gen = ++generation;
 
     // Erase whatever is currently shown — all lines in parallel
-    const current_lines = (target.textContent ?? '').split('\n');
+    const current_lines = Array.from(target.querySelectorAll('.tw-line')).map(s => s.textContent ?? '');
+    if (current_lines.length === 0) current_lines.push('');
     const currentMax = Math.max(...current_lines.map(l => l.length));
     for (let i = currentMax; i >= 0; i--) {
       if (generation !== gen) return;
