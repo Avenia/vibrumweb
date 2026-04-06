@@ -77,6 +77,12 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
     gap: var(--space-md);
   }
 
+  @media (max-width: 639px) {
+    .stories-grid {
+      padding-inline: var(--space-sm);
+    }
+  }
+
   @media (min-width: 640px) {
     .stories-grid {
       grid-template-columns: repeat(2, 1fr);
