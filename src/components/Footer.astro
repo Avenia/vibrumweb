@@ -78,4 +78,18 @@ const year = new Date().getFullYear();
       width: auto;
     }
   }
+
+  @media (max-width: 639px) {
+    .footer-inner {
+      flex-wrap: nowrap;
+    }
+
+    .footer-links {
+      gap: var(--space-sm);
+    }
+
+    .footer-copy {
+      display: none;
+    }
+  }
 </style>
