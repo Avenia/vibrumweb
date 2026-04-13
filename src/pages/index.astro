@@ -119,6 +119,7 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   /* Ghost mark */
   .stories-section {
     position: relative;
+    overflow: hidden;
   }
 
   .ghost-mark {
