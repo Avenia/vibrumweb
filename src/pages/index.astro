@@ -12,40 +12,150 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   title="Vibrum | Handcrafted guitars"
   description="Handcrafted guitars made by Vibrum, where traditional craftsmanship meets design. We are dedicated to creating unique, high-quality instruments that inspire musicians worldwide."
 >
+  <script slot="head" is:inline>
+    if (!sessionStorage.getItem('splashSeen')) {
+      sessionStorage.setItem('splashSeen', '1');
+      document.documentElement.classList.add('splash-show');
+    }
+  </script>
+  <div class="splash" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" aria-label="Vibrum logo" focusable="false">
+      <defs>
+        <style>
+          .logo-d { letter-spacing: .213em; }
+          .logo-e { letter-spacing: .217em; }
+          .logo-f { letter-spacing: .213em; }
+          .logo-g { font-family: 'TERMINAT', Terminator, serif; font-size: 27.486px; }
+          .logo-g, .logo-h { fill: #d8d4c0; }
+          .logo-i { letter-spacing: .212em; }
+          .logo-j { letter-spacing: .211em; }
+        </style>
+      </defs>
+      <path class="logo-h" d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
+      <path class="logo-h" d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
+      <path class="logo-h" d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
+      <text class="logo-g" transform="translate(62.698 243.05)"><tspan class="logo-f" x="0" y="0">V</tspan><tspan class="logo-e" x="35.853" y="0">I</tspan><tspan class="logo-j" x="50.063" y="0">BR</tspan><tspan class="logo-i" x="124.43" y="0">U</tspan><tspan class="logo-d" x="161.962" y="0">M</tspan></text>
+    </svg>
+  </div>
+
   <div class="container section">
     <Slideshow />
 
     <header class="home-header">
       <p class="home-eyebrow">Vibrum guitars stories</p>
       <h1 class="home-title">Check out our latest stories</h1>
-      <!-- <p class="home-subtitle">
-        Each build has a story. Follow the work — new instruments, materials, and ideas from Belgrade.
-      </p> -->
     </header>
 
-    {stories.length > 0 ? (
-      <div class="stories-grid">
-        {stories.map(story => (
-          <StoryCard
-            title={story.data.title}
-            slug={story.slug}
-            date={story.data.date}
-            coverImage={story.data.coverImage}
-            excerpt={story.data.excerpt}
-            tags={story.data.tags}
-          />
-        ))}
+    <div class="stories-section">
+      <div class="ghost-mark" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" aria-hidden="true" focusable="false">
+          <path d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
+          <path d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
+          <path d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
+        </svg>
       </div>
-    ) : (
-      <div class="empty-state">
-        <p>Stories coming soon. Check back after the first build.</p>
-        <a href="/gallery" class="empty-cta">Browse the gallery →</a>
-      </div>
-    )}
+
+      {stories.length > 0 ? (
+        <div class="stories-grid">
+          {stories.map(story => (
+            <StoryCard
+              title={story.data.title}
+              slug={story.slug}
+              date={story.data.date}
+              coverImage={story.data.coverImage}
+              excerpt={story.data.excerpt}
+              tags={story.data.tags}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>Stories coming soon. Check back after the first build.</p>
+          <a href="/gallery" class="empty-cta">Browse the gallery →</a>
+        </div>
+      )}
+    </div>
   </div>
 </PageLayout>
 
 <style>
+  /* Fullscreen splash — hidden by default, activated only on true first visit */
+  .splash {
+    display: none;
+  }
+
+  :global(.splash-show) .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 8vh;
+    background: var(--color-bg);
+    animation: splash-out 0.9s ease-in 2s forwards;
+  }
+
+  :global(.splash-show) .splash svg {
+    width: min(88vw, 88vh);
+    height: auto;
+    animation: splash-logo-in 0.7s ease-out both;
+  }
+
+  @keyframes splash-logo-in {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes splash-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.splash-show) .splash { display: none; }
+  }
+
+  /* Ghost mark */
+  .stories-section {
+    position: relative;
+  }
+
+  .ghost-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px;
+    height: 480px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ghost-mark svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--color-accent);
+    opacity: 0.05;
+    filter: blur(1px);
+    animation: ghost-rotate 120s linear infinite;
+  }
+
+  @keyframes ghost-rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .stories-grid, .empty-state {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ghost-mark svg { animation: none; }
+  }
+
+  /* Page content */
   .home-header {
     margin-top: var(--space-lg);
     margin-bottom: var(--space-lg);
@@ -62,13 +172,6 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
 
   .home-title {
     margin-bottom: var(--space-xs);
-  }
-
-  .home-subtitle {
-    color: var(--color-text-muted);
-    font-size: 1rem;
-    line-height: 1.65;
-    margin: 0;
   }
 
   .stories-grid {
@@ -99,7 +202,6 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
       gap: var(--space-lg);
     }
 
-    /* First story spans full width */
     .stories-grid > :first-child {
       grid-column: 1 / -1;
     }
@@ -122,3 +224,14 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
     opacity: 0.7;
   }
 </style>
+
+<script>
+  const splash = document.querySelector('.splash') as HTMLElement | null;
+  if (splash) {
+    splash.addEventListener('animationend', (e) => {
+      if ((e as AnimationEvent).animationName === 'splash-out') {
+        splash.style.display = 'none';
+      }
+    });
+  }
+</script>
