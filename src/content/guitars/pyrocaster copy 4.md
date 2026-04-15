@@ -1,7 +1,7 @@
 ---
 title: "Pyrocaster"
 type: "electric"
-status: "available"
+status: "sold"
 year: 2024
 coverImage: "/images/guitars/pyrocaster/pyrocaster.webp"
 images: []

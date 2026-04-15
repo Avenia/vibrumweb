@@ -22,7 +22,14 @@ const statusLabels: Record<string, string> = {
       <a href={`/gallery/${g.slug}`} class="strip-card">
         <div class="strip-card-image">
           <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
-          {g.data.status !== 'available' && (
+          {(g.data.status === 'sold' || g.data.status === 'available') && (
+            <div class:list={['strip-stamp', `strip-stamp--${g.data.status}`]}>
+              <span class="strip-stamp-text">
+                {g.data.status === 'sold' ? 'Sold Out' : 'Available'}
+              </span>
+            </div>
+          )}
+          {(g.data.status === 'in-progress' || g.data.status === 'commission') && (
             <span class:list={['strip-badge', `strip-badge--${g.data.status}`]}>
               {statusLabels[g.data.status]}
             </span>
@@ -71,7 +78,7 @@ const statusLabels: Record<string, string> = {
 
   /* Individual card */
   .strip-card {
-    flex: 0 0 180px;
+    flex: 0 0 360px;
     scroll-snap-align: start;
     display: block;
     background-color: var(--color-bg-raised);
@@ -106,7 +113,41 @@ const statusLabels: Record<string, string> = {
     transform: scale(1.04);
   }
 
-  /* Status badge — copied from GuitarCard.astro */
+  /* Diagonal stamp overlay for sold / available */
+  .strip-stamp {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .strip-stamp-text {
+    display: block;
+    transform: rotate(-30deg);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 1.35rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 3px solid currentColor;
+    border-radius: 3px;
+    opacity: 0.82;
+    /* Slight roughness via box-shadow to mimic worn ink */
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+
+  .strip-stamp--sold .strip-stamp-text {
+    color: #d93030;
+  }
+
+  .strip-stamp--available .strip-stamp-text {
+    color: #3aaa5c;
+  }
+
+  /* Small badge for in-progress / commission */
   .strip-badge {
     position: absolute;
     top: var(--space-xs);
@@ -120,10 +161,6 @@ const statusLabels: Record<string, string> = {
     background-color: var(--color-bg);
     color: var(--color-text-muted);
     border: 1px solid var(--color-border);
-  }
-
-  .strip-badge--sold {
-    color: rgba(255, 245, 220, 0.6);
   }
 
   .strip-badge--in-progress {
@@ -149,7 +186,7 @@ const statusLabels: Record<string, string> = {
   /* Arrow buttons */
   .strip-arrow {
     position: absolute;
-    top: calc(90px - 1.1rem); /* vertically centered on the image (half of 180px card) */
+    top: calc(180px - 1.1rem); /* vertically centered on the image (half of 360px card) */
     z-index: 2;
     width: 2rem;
     height: 2rem;
@@ -232,9 +269,9 @@ const statusLabels: Record<string, string> = {
   syncArrows();
   window.addEventListener('resize', syncArrows);
 
-  // 180px card + 16px gap = 196px per scroll step
+  // 360px card + 16px gap = 376px per scroll step
   document.querySelector('.strip-prev')
-    ?.addEventListener('click', () => strip?.scrollBy({ left: -196, behavior: 'smooth' }));
+    ?.addEventListener('click', () => strip?.scrollBy({ left: -376, behavior: 'smooth' }));
   document.querySelector('.strip-next')
-    ?.addEventListener('click', () => strip?.scrollBy({ left: 196, behavior: 'smooth' }));
+    ?.addEventListener('click', () => strip?.scrollBy({ left: 376, behavior: 'smooth' }));
 </script>

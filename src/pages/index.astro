@@ -42,14 +42,16 @@ const guitars = (await getCollection('guitars'))
       {stories.length > 0 ? (
         <div class="stories-grid">
           {stories.map(story => (
-            <StoryCard
-              title={story.data.title}
-              slug={story.slug}
-              date={story.data.date}
-              coverImage={story.data.coverImage}
-              excerpt={story.data.excerpt}
-              tags={story.data.tags}
-            />
+            <div class="story-reveal">
+              <StoryCard
+                title={story.data.title}
+                slug={story.slug}
+                date={story.data.date}
+                coverImage={story.data.coverImage}
+                excerpt={story.data.excerpt}
+                tags={story.data.tags}
+              />
+            </div>
           ))}
         </div>
       ) : (
@@ -210,8 +212,30 @@ const guitars = (await getCollection('guitars'))
       gap: var(--space-lg);
     }
 
-    .stories-grid > :first-child {
-      grid-column: 1 / -1;
+  }
+
+  /* Scroll-triggered card reveals */
+  .story-reveal {
+    opacity: 0;
+    transform: translateY(28px); /* default: waiting below, enter from bottom */
+    transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .story-reveal.from-top {
+    transform: translateY(-28px); /* waiting above, enter from top */
+  }
+
+  .story-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 
@@ -232,4 +256,39 @@ const guitars = (await getCollection('guitars'))
     opacity: 0.7;
   }
 </style>
+
+<script>
+  const cards = document.querySelectorAll<HTMLElement>('.story-reveal');
+
+  // Even-index cards appear immediately; odd-index cards lag 140ms.
+  // On the 2-column grid this gives a left→right cascade per row.
+  cards.forEach((card, i) => {
+    card.style.setProperty('--reveal-delay', i % 2 === 0 ? '0ms' : '140ms');
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        const el = entry.target as HTMLElement;
+        if (entry.isIntersecting) {
+          el.classList.add('is-visible');
+          el.classList.remove('from-top');
+        } else {
+          el.classList.remove('is-visible');
+          // Prep slide direction for next entry:
+          // top < 0 → card exited above → next entry comes from top
+          // top > 0 → card exited below → next entry comes from bottom (default)
+          if (entry.boundingClientRect.top < 0) {
+            el.classList.add('from-top');
+          } else {
+            el.classList.remove('from-top');
+          }
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  cards.forEach(card => observer.observe(card));
+</script>
 

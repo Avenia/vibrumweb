@@ -192,6 +192,83 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "stories": {
+"2024-12-pyrocaster-build copy 10.md": {
+	id: "2024-12-pyrocaster-build copy 10.md";
+  slug: "2024-12-pyrocaster-build-copy-10";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 11.md": {
+	id: "2024-12-pyrocaster-build copy 11.md";
+  slug: "2024-12-pyrocaster-build-copy-11";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 12.md": {
+	id: "2024-12-pyrocaster-build copy 12.md";
+  slug: "2024-12-pyrocaster-build-copy-12";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 2.md": {
+	id: "2024-12-pyrocaster-build copy 2.md";
+  slug: "2024-12-pyrocaster-build-copy-2";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 3.md": {
+	id: "2024-12-pyrocaster-build copy 3.md";
+  slug: "2024-12-pyrocaster-build-copy-3";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 4.md": {
+	id: "2024-12-pyrocaster-build copy 4.md";
+  slug: "2024-12-pyrocaster-build-copy-4";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 5.md": {
+	id: "2024-12-pyrocaster-build copy 5.md";
+  slug: "2024-12-pyrocaster-build-copy-5";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 6.md": {
+	id: "2024-12-pyrocaster-build copy 6.md";
+  slug: "2024-12-pyrocaster-build-copy-6";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 7.md": {
+	id: "2024-12-pyrocaster-build copy 7.md";
+  slug: "2024-12-pyrocaster-build-copy-7";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 8.md": {
+	id: "2024-12-pyrocaster-build copy 8.md";
+  slug: "2024-12-pyrocaster-build-copy-8";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2024-12-pyrocaster-build copy 9.md": {
+	id: "2024-12-pyrocaster-build copy 9.md";
+  slug: "2024-12-pyrocaster-build-copy-9";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
 "2024-12-pyrocaster-build copy.md": {
 	id: "2024-12-pyrocaster-build copy.md";
   slug: "2024-12-pyrocaster-build-copy";
