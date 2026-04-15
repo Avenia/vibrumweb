@@ -16,7 +16,7 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
     <Slideshow />
 
     <header class="home-header">
-      <p class="home-eyebrow">Vibrum guitars stories</p>
+      <p class="home-eyebrow">stories</p>
       <h1 class="home-title">Check out our latest stories</h1>
     </header>
 
@@ -100,12 +100,67 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   }
 
   .home-eyebrow {
-    font-size: 0.68rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--color-accent);
     margin-bottom: var(--space-xs);
+
+    /* Center with decorative lines */
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    text-align: center;
+    white-space: nowrap;
+
+    /* Shimmer sweep across text */
+    background: linear-gradient(
+      90deg,
+      #c9a84c 30%,
+      #fff3c4 47%,
+      #fffbe8 50%,
+      #fff3c4 53%,
+      #c9a84c 70%
+    );
+    background-size: 400% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: eyebrow-gloss 6s ease-in-out infinite alternate;
+  }
+
+  .home-eyebrow::before,
+  .home-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      #c9a84c 30%,
+      #fff3c4 47%,
+      #fffbe8 50%,
+      #fff3c4 53%,
+      #c9a84c 70%,
+      transparent 100%
+    );
+    background-size: 400% auto;
+    animation: eyebrow-gloss 6s ease-in-out infinite alternate;
+    opacity: 0.6;
+  }
+
+  @keyframes eyebrow-gloss {
+    0%   { background-position: 120% center; }
+    100% { background-position: -20% center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-eyebrow,
+    .home-eyebrow::before,
+    .home-eyebrow::after {
+      animation: none;
+      background-position: 0% center;
+    }
   }
 
   .home-title {
@@ -119,6 +174,11 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
   }
 
   @media (max-width: 639px) {
+    .home-eyebrow {
+      gap: 1.5rem;
+      font-size: 0.70rem;
+    }
+
     .stories-grid {
       padding-inline: var(--space-sm);
     }
