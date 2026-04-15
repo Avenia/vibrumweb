@@ -224,7 +224,7 @@ const slides = slideEntries.map(e => e.data);
   }
 
   .slideshow:hover .slide-arrow {
-    opacity: 1;
+    opacity: 0.85;
   }
 
   .slide-arrow:hover {
@@ -274,8 +274,18 @@ const slides = slideEntries.map(e => e.data);
   const slideEls = document.querySelectorAll('.slide');
   const dots = document.querySelectorAll('.slide-dot');
   let current = 0;
+  let isHovered = false;
+  let autoSlideTimer = null;
+
+  function scheduleAutoSlide() {
+    clearTimeout(autoSlideTimer);
+    if (!isHovered) {
+      autoSlideTimer = setTimeout(() => goTo(current + 1), 3600);
+    }
+  }
 
   function goTo(index) {
+    clearTimeout(autoSlideTimer);
     slideEls[current].classList.remove('active'); // animation pauses in place, no snap
     dots[current].classList.remove('active');
     current = (index + slideEls.length) % slideEls.length;
@@ -317,6 +327,15 @@ const slides = slideEntries.map(e => e.data);
   });
   slideshowEl.addEventListener('mouseleave', () => { dragging = false; });
 
+  slideshowEl.addEventListener('mouseenter', () => {
+    isHovered = true;
+    clearTimeout(autoSlideTimer);
+  });
+  slideshowEl.addEventListener('mouseleave', () => {
+    isHovered = false;
+    scheduleAutoSlide();
+  });
+
   // --- Slide button ---
   const slideBtn = document.getElementById('slide-btn');
 
@@ -339,7 +358,6 @@ const slides = slideEntries.map(e => e.data);
 
   const TYPE_SPEED = 20;
   const ERASE_SPEED = 10;
-  const PAUSE_AFTER_TYPE = 2200;
   const PAUSE_AFTER_ERASE = 400;
   const BUTTON_FADE = 200; // ms — matches .slide-btn CSS transition
 
@@ -384,7 +402,7 @@ const slides = slideEntries.map(e => e.data);
       await sleep(TYPE_SPEED);
     }
 
-    await sleep(PAUSE_AFTER_TYPE);
+    scheduleAutoSlide();
   }
 
   // Start with the first slide's text
