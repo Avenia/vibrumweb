@@ -186,8 +186,6 @@ const slides = slideEntries.map(e => e.data);
   }
 
   @media (max-width: 639px) {
-    .slide-arrow { display: none; }
-
     .tw-text {
       position: absolute;
       top: var(--space-md);
@@ -237,6 +235,10 @@ const slides = slideEntries.map(e => e.data);
 
   .slide-prev:hover { transform: translateY(-50%) translateX(-2px); }
   .slide-next:hover { transform: translateY(-50%) translateX(2px); }
+
+  @media (max-width: 639px), (hover: none) {
+    .slide-arrow { display: none; }
+  }
 
   .slide-dots {
     position: absolute;
