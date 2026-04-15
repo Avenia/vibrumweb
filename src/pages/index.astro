@@ -3,9 +3,14 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import StoryCard from '../components/StoryCard.astro';
 import Slideshow from '../components/Slideshow.astro';
+import GuitarStrip from '../components/GuitarStrip.astro';
 
 const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const guitars = (await getCollection('guitars'))
+  .sort((a, b) => b.data.year - a.data.year)
+  .slice(0, 6);
 ---
 
 <PageLayout
@@ -17,18 +22,12 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
 
     <header class="home-header">
       <p class="home-eyebrow">latest guitars</p>
-      <!-- <h1 class="home-title">Check out our latest stories</h1> -->
-      <!-- <p class="home-subtitle">
-        Each build has a story. Follow the work.
-      </p> -->
     </header>
+
+    {guitars.length > 0 && <GuitarStrip guitars={guitars} />}
 
     <header class="home-header">
       <p class="home-eyebrow">latest stories</p>
-      <!-- <h1 class="home-title">Check out our latest stories</h1> -->
-      <!-- <p class="home-subtitle">
-        Each build has a story. Follow the work.
-      </p> -->
     </header>
 
     <div class="stories-section">

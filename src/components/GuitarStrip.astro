@@ -1,0 +1,240 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  guitars: CollectionEntry<'guitars'>[];
+}
+
+const { guitars } = Astro.props;
+
+const statusLabels: Record<string, string> = {
+  available: 'Available',
+  sold: 'Sold',
+  'in-progress': 'In Progress',
+  commission: 'Commission',
+};
+---
+
+<div class="guitar-strip-wrap">
+  <button class="strip-arrow strip-prev" aria-label="Previous guitars">&#8592;</button>
+  <div class="guitar-strip" id="guitar-strip">
+    {guitars.map(g => (
+      <a href={`/gallery/${g.slug}`} class="strip-card">
+        <div class="strip-card-image">
+          <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
+          {g.data.status !== 'available' && (
+            <span class:list={['strip-badge', `strip-badge--${g.data.status}`]}>
+              {statusLabels[g.data.status]}
+            </span>
+          )}
+        </div>
+        <p class="strip-card-title">{g.data.title}</p>
+      </a>
+    ))}
+  </div>
+  <button class="strip-arrow strip-next" aria-label="Next guitars">&#8594;</button>
+</div>
+
+<div class="strip-footer">
+  <a href="/gallery" class="strip-view-all">View Gallery</a>
+</div>
+
+<style>
+  /* Wrapper positions the arrows absolutely and clips the bleed
+     so the negative-margin trick on .guitar-strip never causes
+     horizontal page scroll. */
+  .guitar-strip-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Horizontal scroll container
+     Negative margin bleed trick: offsets the .container's padding so cards
+     can scroll edge-to-edge. Must match --space-md (2rem) from global.css. */
+  .guitar-strip {
+    display: flex;
+    justify-content: safe center;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline-start: var(--space-md);
+    padding-block: var(--space-xs);
+    margin-inline: calc(-1 * var(--space-md));
+    padding-inline: var(--space-md);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .guitar-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Individual card */
+  .strip-card {
+    flex: 0 0 180px;
+    scroll-snap-align: start;
+    display: block;
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color var(--transition), background-color var(--transition);
+    text-decoration: none;
+  }
+
+  .strip-card:hover {
+    border-color: rgba(201, 168, 76, 0.35);
+    background-color: var(--color-bg-surface);
+  }
+
+  /* Square image area */
+  .strip-card-image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: var(--color-bg-surface);
+  }
+
+  .strip-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 350ms ease;
+  }
+
+  .strip-card:hover .strip-card-image img {
+    transform: scale(1.04);
+  }
+
+  /* Status badge — copied from GuitarCard.astro */
+  .strip-badge {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .strip-badge--sold {
+    color: rgba(255, 245, 220, 0.6);
+  }
+
+  .strip-badge--in-progress {
+    color: var(--color-accent);
+    border-color: rgba(201, 168, 76, 0.4);
+  }
+
+  /* Model name */
+  .strip-card-title {
+    padding: 0.55rem var(--space-xs) 0.65rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+    color: var(--color-text-bold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin: 0;
+  }
+
+  /* Arrow buttons */
+  .strip-arrow {
+    position: absolute;
+    top: calc(90px - 1.1rem); /* vertically centered on the image (half of 180px card) */
+    z-index: 2;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(10, 9, 6, 0.6);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-bold);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition), background var(--transition), border-color var(--transition);
+    padding: 0;
+    line-height: 1;
+  }
+
+  .guitar-strip-wrap.is-scrollable:hover .strip-arrow {
+    opacity: 0.85;
+  }
+
+  .strip-arrow:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .strip-prev { left: 0.25rem; }
+  .strip-next { right: 0.25rem; }
+
+  /* Hide arrows on touch/mobile — native scroll handles it */
+  @media (max-width: 639px), (hover: none) {
+    .strip-arrow { display: none; }
+  }
+
+  /* Footer link */
+  .strip-footer {
+    margin-top: var(--space-md);
+    text-align: center;
+  }
+
+  .strip-view-all {
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: #0a0906;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity var(--transition);
+  }
+
+  .strip-view-all:hover {
+    opacity: 0.88;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .strip-card-image img {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const strip = document.getElementById('guitar-strip');
+  const wrap = strip?.closest('.guitar-strip-wrap');
+
+  function syncArrows() {
+    if (!strip || !wrap) return;
+    wrap.classList.toggle('is-scrollable', strip.scrollWidth > strip.clientWidth);
+  }
+
+  syncArrows();
+  window.addEventListener('resize', syncArrows);
+
+  // 180px card + 16px gap = 196px per scroll step
+  document.querySelector('.strip-prev')
+    ?.addEventListener('click', () => strip?.scrollBy({ left: -196, behavior: 'smooth' }));
+  document.querySelector('.strip-next')
+    ?.addEventListener('click', () => strip?.scrollBy({ left: 196, behavior: 'smooth' }));
+</script>
