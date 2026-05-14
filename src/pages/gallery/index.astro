@@ -5,6 +5,25 @@ import GuitarCard from '../../components/GuitarCard.astro';
 
 const allGuitars = await getCollection('guitars');
 const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
+
+const typeLabels: Record<string, string> = {
+  electric:  'Electric',
+  acoustic:  'Acoustic',
+  bass:      'Bass',
+  classical: 'Classical',
+};
+
+const sectionLabels: Record<string, string> = {
+  body: 'Body', neck: 'Neck', fingerboard: 'Fingerboard',
+  hardware: 'Hardware', electronics: 'Electronics',
+};
+
+const fieldLabels: Record<string, string> = {
+  wood: 'Wood', finish: 'Finish', binding: 'Binding', weight: 'Weight',
+  profile: 'Profile', scale: 'Scale length', frets: 'Frets', radius: 'Radius',
+  nut: 'Nut', inlays: 'Inlays', tuners: 'Tuners', bridge: 'Bridge',
+  tailpiece: 'Tailpiece', pickups: 'Pickups', controls: 'Controls', output: 'Output',
+};
 ---
 
 <PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
@@ -78,33 +97,111 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     <!-- Guitar grid -->
     <div class="gallery-main">
       <div class="guitar-grid" id="guitar-grid">
-        {guitars.map(guitar => (
-          <div
-            class="guitar-card-wrapper"
-            data-status={guitar.data.status}
-            data-type={guitar.data.type}
-            data-strings={guitar.data.strings ?? ''}
-            data-electronics={guitar.data.electronics ?? ''}
-          >
-            <GuitarCard
-              title={guitar.data.title}
-              slug={guitar.slug}
-              year={guitar.data.year}
-              status={guitar.data.status}
-              coverImage={guitar.data.coverImage}
-              excerpt={guitar.data.excerpt}
-            />
-          </div>
-        ))}
+        {guitars.map(async (guitar) => {
+          const { Content } = await guitar.render();
+          const images = [guitar.data.coverImage, ...guitar.data.images];
+          return (
+            <div
+              class="guitar-card-wrapper"
+              data-status={guitar.data.status}
+              data-type={guitar.data.type}
+              data-strings={guitar.data.strings ?? ''}
+              data-electronics={guitar.data.electronics ?? ''}
+            >
+              <GuitarCard
+                title={guitar.data.title}
+                slug={guitar.slug}
+                year={guitar.data.year}
+                status={guitar.data.status}
+                coverImage={guitar.data.coverImage}
+                excerpt={guitar.data.excerpt}
+                modal={true}
+              />
+
+              <!-- Hidden modal data -->
+              <template class="modal-data">
+                <div
+                  data-title={guitar.data.title}
+                  data-year={guitar.data.year}
+                  data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
+                  data-status={guitar.data.status}
+                  data-images={JSON.stringify(images)}
+                >
+                  <div class="modal-specs">
+                    {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
+                      if (!fields) return null;
+                      const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
+                      if (rows.length === 0) return null;
+                      return (
+                        <div class="spec-section">
+                          <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
+                          <dl class="spec-list">
+                            {rows.map(([key, value]) => (
+                              <div class="spec-row">
+                                <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
+                                <dd class="spec-val">{value}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div class="modal-prose prose">
+                    <Content />
+                  </div>
+                </div>
+              </template>
+            </div>
+          );
+        })}
       </div>
 
       <p class="no-results" id="no-results" aria-live="polite">No guitars match the selected filters.</p>
     </div>
 
   </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+      <!-- Left: photo carousel -->
+      <div class="modal-photos">
+        <div class="modal-photo-stage">
+          <img class="modal-photo-img" id="modal-photo-img" src="" alt="" />
+          <button class="modal-nav modal-nav--prev" id="modal-prev" aria-label="Previous photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="modal-nav modal-nav--next" id="modal-next" aria-label="Next photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="modal-photo-counter" id="modal-counter"></div>
+        </div>
+        <div class="modal-thumbs-viewport">
+          <div class="modal-thumbs" id="modal-thumbs"></div>
+        </div>
+      </div>
+
+      <!-- Right: info panel -->
+      <div class="modal-info" id="modal-info">
+        <div class="modal-info-header">
+          <div class="modal-meta" id="modal-meta"></div>
+          <h2 class="modal-title" id="modal-title"></h2>
+        </div>
+        <div class="modal-info-body" id="modal-info-body"></div>
+      </div>
+
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+    </div>
+  </div>
 </PageLayout>
 
 <script>
+  // ---- Filters ----
   const checkboxes = document.querySelectorAll<HTMLInputElement>('input[data-filter]');
   const cards = document.querySelectorAll<HTMLElement>('.guitar-card-wrapper');
   const noResults = document.getElementById('no-results')!;
@@ -127,9 +224,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     let count = 0;
     cards.forEach(card => {
       if (!hasFilters) { count++; return; }
-      const match = Object.entries(active).every(([key, values]) => {
-        return values.has(card.dataset[key] ?? '');
-      });
+      const match = Object.entries(active).every(([key, values]) => values.has(card.dataset[key] ?? ''));
       if (match) count++;
     });
     return count;
@@ -139,21 +234,15 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     const active = getActiveFilters();
     const hasFilters = Object.keys(active).length > 0;
     let visible = 0;
-
     cards.forEach(card => {
       if (!hasFilters) { card.hidden = false; visible++; return; }
-      const match = Object.entries(active).every(([key, values]) => {
-        return values.has(card.dataset[key] ?? '');
-      });
+      const match = Object.entries(active).every(([key, values]) => values.has(card.dataset[key] ?? ''));
       card.hidden = !match;
       if (match) visible++;
     });
-
     noResults.hidden = visible > 0;
-
-    // Disable checkboxes that would produce zero results if checked
     checkboxes.forEach(cb => {
-      if (cb.checked) return; // never disable an already-checked box
+      if (cb.checked) return;
       const wouldShow = countVisible(getActiveFilters(cb));
       cb.disabled = wouldShow === 0;
       cb.closest<HTMLElement>('.filter-option')!.classList.toggle('filter-option--disabled', wouldShow === 0);
@@ -162,6 +251,107 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
 
   checkboxes.forEach(cb => cb.addEventListener('change', applyFilters));
   applyFilters();
+
+  // ---- Modal ----
+  const backdrop  = document.getElementById('modal-backdrop')!;
+  const imgEl     = document.getElementById('modal-photo-img') as HTMLImageElement;
+  const counterEl = document.getElementById('modal-counter')!;
+  const thumbsEl  = document.getElementById('modal-thumbs')!;
+  const titleEl   = document.getElementById('modal-title')!;
+  const metaEl    = document.getElementById('modal-meta')!;
+  const infoBody  = document.getElementById('modal-info-body')!;
+  const prevBtn   = document.getElementById('modal-prev')!;
+  const nextBtn   = document.getElementById('modal-next')!;
+  const closeBtn  = document.getElementById('modal-close')!;
+
+  let images: string[] = [];
+  let current = 0;
+
+  function showPhoto(index: number) {
+    current = (index + images.length) % images.length;
+    imgEl.src = images[current];
+    counterEl.textContent = images.length > 1 ? `${current + 1} / ${images.length}` : '';
+    thumbsEl.querySelectorAll<HTMLElement>('.modal-thumb').forEach((t, i) => {
+      t.classList.toggle('modal-thumb--active', i === current);
+      if (i === current) t.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    });
+    prevBtn.style.display = images.length > 1 ? '' : 'none';
+    nextBtn.style.display = images.length > 1 ? '' : 'none';
+  }
+
+  function openModal(card: HTMLElement) {
+    const tpl = card.querySelector('template.modal-data') as HTMLTemplateElement;
+    const data = tpl.content.querySelector<HTMLElement>('[data-title]')!;
+
+    images = JSON.parse(data.dataset.images!);
+    current = 0;
+
+    // Header
+    titleEl.textContent = data.dataset.title!;
+    const status = data.dataset.status!;
+    const statusHtml = status === 'sold'
+      ? `<span class="modal-status modal-status--sold">Sold</span>`
+      : '';
+    metaEl.innerHTML = `<span>${data.dataset.type}</span><span class="modal-meta-dot">·</span><span>${data.dataset.year}</span>${statusHtml}`;
+
+    // Info body: specs + prose
+    infoBody.innerHTML = '';
+    infoBody.appendChild(data.querySelector('.modal-specs')!.cloneNode(true));
+    infoBody.appendChild(data.querySelector('.modal-prose')!.cloneNode(true));
+
+    // Thumbnails
+    thumbsEl.innerHTML = '';
+    images.forEach((src, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'modal-thumb';
+      btn.setAttribute('aria-label', `Photo ${i + 1}`);
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.loading = 'lazy';
+      btn.appendChild(img);
+      btn.addEventListener('click', () => showPhoto(i));
+      thumbsEl.appendChild(btn);
+    });
+
+    showPhoto(0);
+
+    backdrop.setAttribute('aria-hidden', 'false');
+    backdrop.classList.add('modal-backdrop--open');
+    document.body.style.overflow = 'hidden';
+
+    // reset info scroll
+    document.getElementById('modal-info')!.scrollTop = 0;
+  }
+
+  function closeModal() {
+    backdrop.setAttribute('aria-hidden', 'true');
+    backdrop.classList.remove('modal-backdrop--open');
+    document.body.style.overflow = '';
+  }
+
+  // Wire up card clicks
+  document.querySelectorAll<HTMLElement>('.guitar-card-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const wrapper = trigger.closest<HTMLElement>('.guitar-card-wrapper')!;
+      openModal(wrapper);
+    });
+  });
+
+  prevBtn.addEventListener('click', () => showPhoto(current - 1));
+  nextBtn.addEventListener('click', () => showPhoto(current + 1));
+  closeBtn.addEventListener('click', closeModal);
+
+  backdrop.addEventListener('click', e => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!backdrop.classList.contains('modal-backdrop--open')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowLeft')  showPhoto(current - 1);
+    if (e.key === 'ArrowRight') showPhoto(current + 1);
+  });
 </script>
 
 <style>
@@ -183,9 +373,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     border-right: 1px solid rgba(201, 168, 76, 0.25);
   }
 
-  .filter-group {
-    margin-bottom: var(--space-md);
-  }
+  .filter-group { margin-bottom: var(--space-md); }
 
   .filter-label {
     font-size: 0.62rem;
@@ -209,9 +397,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     user-select: none;
   }
 
-  .filter-option:hover {
-    color: var(--color-text);
-  }
+  .filter-option:hover { color: var(--color-text); }
 
   .filter-option--disabled {
     opacity: 0.3;
@@ -254,9 +440,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
   }
 
   /* ---- Gallery main ---- */
-  .gallery-main {
-    padding-left: var(--space-md);
-  }
+  .gallery-main { padding-left: var(--space-md); }
 
   .guitar-grid {
     display: grid;
@@ -270,9 +454,318 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     padding: var(--space-md) 0;
   }
 
-  .no-results[hidden] {
+  .no-results[hidden] { display: none; }
+
+  /* ---- Modal backdrop ---- */
+  .modal-backdrop {
     display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(10, 9, 6, 0.88);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
   }
+
+  .modal-backdrop--open {
+    display: flex;
+    animation: fadeIn 180ms ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ---- Modal shell ---- */
+  .modal {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    grid-template-rows: 1fr;
+    width: 100%;
+    max-width: 1100px;
+    height: calc(100vh - var(--space-lg) * 2);
+    max-height: 780px;
+    background: var(--color-bg-raised);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    animation: slideUp 220ms ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* ---- Photos ---- */
+  .modal-photos {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    border-right: 1px solid rgba(201, 168, 76, 0.15);
+    overflow: hidden;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .modal-photo-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+  }
+
+  .modal-photo-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 9, 6, 0.55);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), border-color var(--transition);
+  }
+
+  .modal-nav:hover {
+    background: rgba(201, 168, 76, 0.15);
+    border-color: rgba(201, 168, 76, 0.5);
+  }
+
+  .modal-nav svg { width: 18px; height: 18px; }
+  .modal-nav--prev { left: 12px; }
+  .modal-nav--next { right: 12px; }
+
+  .modal-photo-counter {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    background: rgba(10, 9, 6, 0.6);
+    padding: 2px 10px;
+    border-radius: 99px;
+  }
+
+  .modal-thumbs-viewport {
+    flex-shrink: 0;
+    background: var(--color-bg-surface);
+    overflow-x: scroll;
+    overflow-y: hidden;
+    /* exactly 10 thumbs visible: 10×52px + 9×6px gaps + 20px padding */
+    width: calc(10 * 52px + 9 * 6px + 20px);
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 168, 76, 0.2) transparent;
+  }
+
+  .modal-thumbs {
+    display: inline-flex;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .modal-thumb {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity var(--transition), border-color var(--transition);
+    padding: 0;
+    background: none;
+  }
+
+  .modal-thumb:hover { opacity: 0.8; }
+
+  .modal-thumb--active {
+    opacity: 1;
+    border-color: var(--color-accent);
+  }
+
+  .modal-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ---- Info panel ---- */
+  .modal-info {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 168, 76, 0.15) transparent;
+  }
+
+  .modal-info-header {
+    padding: var(--space-md) var(--space-md) var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .modal-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+  }
+
+  .modal-meta-dot { opacity: 0.4; }
+
+  .modal-status {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-surface);
+    color: var(--color-text-muted);
+  }
+
+  .modal-status--sold { color: rgba(255, 245, 220, 0.5); }
+
+  .modal-title {
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    color: var(--color-text-bold);
+    line-height: 1.2;
+  }
+
+  .modal-info-body {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* Specs inside modal */
+  .modal-info-body :global(.modal-specs) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .modal-info-body :global(.spec-section) {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .modal-info-body :global(.spec-section-title) {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-bg-surface);
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .modal-info-body :global(.spec-list) {
+    background: var(--color-bg-raised);
+  }
+
+  .modal-info-body :global(.spec-row) {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: 7px 12px;
+  }
+
+  .modal-info-body :global(.spec-row:nth-child(even)) {
+    background: rgba(255, 245, 220, 0.02);
+  }
+
+  .modal-info-body :global(.spec-key) {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .modal-info-body :global(.spec-val) {
+    font-size: 0.78rem;
+    color: var(--color-text);
+    text-align: right;
+  }
+
+  /* Prose inside modal */
+  .modal-info-body :global(.modal-prose) {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-md);
+  }
+
+  .modal-info-body :global(.modal-prose p + p) {
+    margin-top: 0.9em;
+  }
+
+  /* ---- Close button ---- */
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 9, 6, 0.6);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    z-index: 10;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+  }
+
+  .modal-close:hover {
+    color: var(--color-text);
+    border-color: rgba(201, 168, 76, 0.5);
+    background: rgba(201, 168, 76, 0.1);
+  }
+
+  .modal-close svg { width: 16px; height: 16px; }
 
   /* ---- Responsive ---- */
   @media (max-width: 768px) {
@@ -292,8 +785,17 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
       gap: var(--space-sm) var(--space-md);
     }
 
-    .gallery-main {
-      padding-left: 0;
+    .gallery-main { padding-left: 0; }
+
+    .modal {
+      grid-template-columns: 1fr;
+      grid-template-rows: 55vw 1fr;
+      max-height: 92vh;
+    }
+
+    .modal-photos {
+      border-right: none;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.15);
     }
   }
 </style>
