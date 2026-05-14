@@ -178,9 +178,7 @@ const fieldLabels: Record<string, string> = {
           </button>
           <div class="modal-photo-counter" id="modal-counter"></div>
         </div>
-        <div class="modal-thumbs-viewport">
-          <div class="modal-thumbs" id="modal-thumbs"></div>
-        </div>
+        <div class="modal-thumbs" id="modal-thumbs"></div>
       </div>
 
       <!-- Right: info panel -->
@@ -272,8 +270,11 @@ const fieldLabels: Record<string, string> = {
     imgEl.src = images[current];
     counterEl.textContent = images.length > 1 ? `${current + 1} / ${images.length}` : '';
     thumbsEl.querySelectorAll<HTMLElement>('.modal-thumb').forEach((t, i) => {
-      t.classList.toggle('modal-thumb--active', i === current);
-      if (i === current) t.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+      const active = i === current;
+      t.style.opacity = active ? '1' : '0.46';
+      t.style.outline = active ? '2px solid var(--color-accent)' : 'none';
+      t.style.outlineOffset = '2px';
+      if (active) t.scrollIntoView({ inline: 'nearest', block: 'nearest' });
     });
     prevBtn.style.display = images.length > 1 ? '' : 'none';
     nextBtn.style.display = images.length > 1 ? '' : 'none';
@@ -299,29 +300,45 @@ const fieldLabels: Record<string, string> = {
     infoBody.appendChild(data.querySelector('.modal-specs')!.cloneNode(true));
     infoBody.appendChild(data.querySelector('.modal-prose')!.cloneNode(true));
 
-    // Thumbnails
-    thumbsEl.innerHTML = '';
-    images.forEach((src, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'modal-thumb';
-      btn.setAttribute('aria-label', `Photo ${i + 1}`);
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = '';
-      img.loading = 'lazy';
-      btn.appendChild(img);
-      btn.addEventListener('click', () => showPhoto(i));
-      thumbsEl.appendChild(btn);
-    });
-
-    showPhoto(0);
-
+    // Show modal first so the strip has real dimensions
     backdrop.setAttribute('aria-hidden', 'false');
     backdrop.classList.add('modal-backdrop--open');
     document.body.style.overflow = 'hidden';
-
-    // reset info scroll
     document.getElementById('modal-info')!.scrollTop = 0;
+
+    // Build thumbnails after layout so clientWidth is non-zero
+    setTimeout(() => {
+      const stripWidth = thumbsEl.clientWidth || 600;
+      const thumbSize = Math.floor((stripWidth - 20 - 10 * 6) / 10);
+
+      thumbsEl.innerHTML = '';
+      images.forEach((src, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'modal-thumb';
+        btn.style.width = thumbSize + 'px';
+        btn.style.marginRight = '6px';
+        btn.style.cursor = 'pointer';
+        btn.style.padding = '0';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '4px';
+        btn.style.flexShrink = '0';
+        btn.style.verticalAlign = 'top';
+        btn.setAttribute('aria-label', `Photo ${i + 1}`);
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.borderRadius = '4px';
+        btn.appendChild(img);
+        btn.addEventListener('click', () => showPhoto(i));
+        thumbsEl.appendChild(btn);
+      });
+
+      showPhoto(0);
+    }, 0);
   }
 
   function closeModal() {
@@ -572,28 +589,23 @@ const fieldLabels: Record<string, string> = {
     border-radius: 99px;
   }
 
-  .modal-thumbs-viewport {
-    flex-shrink: 0;
-    background: var(--color-bg-surface);
+  .modal-thumbs {
+    display: block;
+    white-space: nowrap;
     overflow-x: scroll;
-    overflow-y: hidden;
-    /* exactly 10 thumbs visible: 10×52px + 9×6px gaps + 20px padding */
-    width: calc(10 * 52px + 9 * 6px + 20px);
-    max-width: 100%;
+    overflow-y: visible;
+    flex-shrink: 0;
+    padding: 10px 10px 14px;
+    background: var(--color-bg-surface);
     scrollbar-width: thin;
     scrollbar-color: rgba(201, 168, 76, 0.2) transparent;
   }
 
-  .modal-thumbs {
-    display: inline-flex;
-    gap: 6px;
-    padding: 10px;
-  }
-
   .modal-thumb {
-    flex-shrink: 0;
-    width: 52px;
-    height: 52px;
+    display: inline-block;
+    vertical-align: top;
+    /* width/height/margin computed in JS */
+    aspect-ratio: 1;
     border-radius: var(--radius-sm);
     overflow: hidden;
     border: 1px solid var(--color-border);
