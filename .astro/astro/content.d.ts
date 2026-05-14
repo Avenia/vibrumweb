@@ -141,6 +141,62 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"guitars": {
+"ashfall.md": {
+	id: "ashfall.md";
+  slug: "ashfall";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"cinderblock-5.md": {
+	id: "cinderblock-5.md";
+  slug: "cinderblock-5";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"driftwood-om.md": {
+	id: "driftwood-om.md";
+  slug: "driftwood-om";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"fieldstone.md": {
+	id: "fieldstone.md";
+  slug: "fieldstone";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"greyline-bass.md": {
+	id: "greyline-bass.md";
+  slug: "greyline-bass";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"ironveil.md": {
+	id: "ironveil.md";
+  slug: "ironveil";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"lowline-j.md": {
+	id: "lowline-j.md";
+  slug: "lowline-j";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"mireille.md": {
+	id: "mireille.md";
+  slug: "mireille";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
 "pyrocaster copy 2.md": {
 	id: "pyrocaster copy 2.md";
   slug: "pyrocaster-copy-2";
@@ -186,6 +242,20 @@ declare module 'astro:content' {
 "pyrocaster.md": {
 	id: "pyrocaster.md";
   slug: "pyrocaster";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"redgate.md": {
+	id: "redgate.md";
+  slug: "redgate";
+  body: string;
+  collection: "guitars";
+  data: InferEntrySchema<"guitars">
+} & { render(): Render[".md"] };
+"saltmarsh.md": {
+	id: "saltmarsh.md";
+  slug: "saltmarsh";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">

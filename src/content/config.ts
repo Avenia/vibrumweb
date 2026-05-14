@@ -38,8 +38,10 @@ const guitars = defineCollection({
   schema: z.object({
     title: z.string(),
     type: z.enum(['electric', 'acoustic', 'bass', 'classical']),
-    status: z.enum(['available', 'sold', 'in-progress', 'commission']).default('available'),
+    status: z.enum(['available', 'sold']).default('available'),
     year: z.number(),
+    strings: z.number().optional(),
+    electronics: z.enum(['active', 'passive']).optional(),
     coverImage: z.string(),
     images: z.array(z.string()).default([]),
     specs: specsSchema,

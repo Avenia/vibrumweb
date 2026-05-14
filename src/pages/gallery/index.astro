@@ -4,38 +4,88 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import GuitarCard from '../../components/GuitarCard.astro';
 
 const allGuitars = await getCollection('guitars');
-
-const typeOrder = ['electric', 'acoustic', 'bass', 'classical'] as const;
-const typeLabels: Record<string, string> = {
-  electric:  'Electric',
-  acoustic:  'Acoustic',
-  bass:      'Bass',
-  classical: 'Classical',
-};
-
-const grouped = typeOrder
-  .map(type => ({
-    type,
-    label: typeLabels[type],
-    guitars: allGuitars
-      .filter(g => g.data.type === type)
-      .sort((a, b) => b.data.year - a.data.year),
-  }))
-  .filter(group => group.guitars.length > 0);
+const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
 ---
 
 <PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
-  <div class="container section">
-    <header class="page-header">
-      <h1>Gallery</h1>
-      <p class="page-subtitle">Every instrument is built by hand, one at a time.</p>
-    </header>
+  <div class="gallery-layout container">
 
-    {grouped.map(({ label, guitars }) => (
-      <section class="guitar-group">
-        <h2 class="group-heading">{label}</h2>
-        <div class="guitar-grid">
-          {guitars.map(guitar => (
+    <!-- Sidebar filters -->
+    <aside class="filters" id="filters">
+
+      <div class="filter-group">
+        <p class="filter-label">Availability</p>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="status" value="available" />
+          <span>Available</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="status" value="sold" />
+          <span>Sold out</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <p class="filter-label">Instrument type</p>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="type" value="acoustic" />
+          <span>Acoustic guitar</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="type" value="electric" />
+          <span>Electric guitar</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="type" value="bass" />
+          <span>Bass guitar</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <p class="filter-label">Number of strings</p>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="strings" value="4" />
+          <span>4 strings</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="strings" value="5" />
+          <span>5 strings</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="strings" value="6" />
+          <span>6 strings</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="strings" value="7" />
+          <span>7 strings</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <p class="filter-label">Electronics</p>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="electronics" value="active" />
+          <span>Active</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" data-filter="electronics" value="passive" />
+          <span>Passive</span>
+        </label>
+      </div>
+
+    </aside>
+
+    <!-- Guitar grid -->
+    <div class="gallery-main">
+      <div class="guitar-grid" id="guitar-grid">
+        {guitars.map(guitar => (
+          <div
+            class="guitar-card-wrapper"
+            data-status={guitar.data.status}
+            data-type={guitar.data.type}
+            data-strings={guitar.data.strings ?? ''}
+            data-electronics={guitar.data.electronics ?? ''}
+          >
             <GuitarCard
               title={guitar.data.title}
               slug={guitar.slug}
@@ -44,43 +94,206 @@ const grouped = typeOrder
               coverImage={guitar.data.coverImage}
               excerpt={guitar.data.excerpt}
             />
-          ))}
-        </div>
-      </section>
-    ))}
+          </div>
+        ))}
+      </div>
+
+      <p class="no-results" id="no-results" aria-live="polite">No guitars match the selected filters.</p>
+    </div>
+
   </div>
 </PageLayout>
 
+<script>
+  const checkboxes = document.querySelectorAll<HTMLInputElement>('input[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('.guitar-card-wrapper');
+  const noResults = document.getElementById('no-results')!;
+
+  function getActiveFilters(extra?: HTMLInputElement): Record<string, Set<string>> {
+    const active: Record<string, Set<string>> = {};
+    checkboxes.forEach(cb => {
+      const on = cb === extra ? true : cb.checked;
+      if (on) {
+        const key = cb.dataset.filter!;
+        if (!active[key]) active[key] = new Set();
+        active[key].add(cb.value);
+      }
+    });
+    return active;
+  }
+
+  function countVisible(active: Record<string, Set<string>>): number {
+    const hasFilters = Object.keys(active).length > 0;
+    let count = 0;
+    cards.forEach(card => {
+      if (!hasFilters) { count++; return; }
+      const match = Object.entries(active).every(([key, values]) => {
+        return values.has(card.dataset[key] ?? '');
+      });
+      if (match) count++;
+    });
+    return count;
+  }
+
+  function applyFilters() {
+    const active = getActiveFilters();
+    const hasFilters = Object.keys(active).length > 0;
+    let visible = 0;
+
+    cards.forEach(card => {
+      if (!hasFilters) { card.hidden = false; visible++; return; }
+      const match = Object.entries(active).every(([key, values]) => {
+        return values.has(card.dataset[key] ?? '');
+      });
+      card.hidden = !match;
+      if (match) visible++;
+    });
+
+    noResults.hidden = visible > 0;
+
+    // Disable checkboxes that would produce zero results if checked
+    checkboxes.forEach(cb => {
+      if (cb.checked) return; // never disable an already-checked box
+      const wouldShow = countVisible(getActiveFilters(cb));
+      cb.disabled = wouldShow === 0;
+      cb.closest<HTMLElement>('.filter-option')!.classList.toggle('filter-option--disabled', wouldShow === 0);
+    });
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', applyFilters));
+  applyFilters();
+</script>
+
 <style>
-  .page-header {
-    margin-bottom: var(--space-lg);
+  /* ---- Layout ---- */
+  .gallery-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    align-items: start;
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
   }
 
-  .page-subtitle {
-    color: var(--color-text-muted);
-    font-size: 1.1rem;
-    margin-top: var(--space-xs);
+  /* ---- Sidebar ---- */
+  .filters {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-md));
+    padding-right: var(--space-md);
+    border-right: 1px solid rgba(201, 168, 76, 0.25);
   }
 
-  .guitar-group {
-    margin-bottom: var(--space-lg);
+  .filter-group {
+    margin-bottom: var(--space-md);
   }
 
-  .group-heading {
-    font-size: 0.7rem;
+  .filter-label {
+    font-size: 0.62rem;
     font-family: var(--font-body);
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 3px 0;
     color: var(--color-text-muted);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-xs);
-    border-bottom: 1px solid var(--color-border);
+    font-size: 0.85rem;
+    transition: color var(--transition);
+    user-select: none;
+  }
+
+  .filter-option:hover {
+    color: var(--color-text);
+  }
+
+  .filter-option--disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .filter-option input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 13px;
+    height: 13px;
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .filter-option input[type="checkbox"]:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .filter-option input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8'%3E%3Cpath d='M1 4l3 3 5-6' stroke='%230a0906' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 9px 7px;
+  }
+
+  .filter-option input[type="checkbox"]:focus-visible {
+    outline: 1px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* ---- Gallery main ---- */
+  .gallery-main {
+    padding-left: var(--space-md);
   }
 
   .guitar-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: var(--space-md);
+  }
+
+  .no-results {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    padding: var(--space-md) 0;
+  }
+
+  .no-results[hidden] {
+    display: none;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .gallery-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .filters {
+      position: static;
+      border-right: none;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+      padding-right: 0;
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-md);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm) var(--space-md);
+    }
+
+    .gallery-main {
+      padding-left: 0;
+    }
   }
 </style>
