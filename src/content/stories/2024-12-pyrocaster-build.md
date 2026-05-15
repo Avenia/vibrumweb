@@ -1,7 +1,7 @@
 ---
 title: "Building the Pyrocaster: From Blank to Build"
 date: 2024-12-15
-coverImage: "/images/guitars/pyrocaster/pyrocaster.webp"
+coverImage: "/images/guitars/pyrocaster/photo-1.png"
 guitar: "pyrocaster"
 tags: ["build diary", "electric"]
 excerpt: "The Pyrocaster began as a question about what a vintage-voiced electric could become when nothing was rushed. This is its story."

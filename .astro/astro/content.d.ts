@@ -197,48 +197,6 @@ declare module 'astro:content' {
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
-"pyrocaster copy 2.md": {
-	id: "pyrocaster copy 2.md";
-  slug: "pyrocaster-copy-2";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster copy 3.md": {
-	id: "pyrocaster copy 3.md";
-  slug: "pyrocaster-copy-3";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster copy 4.md": {
-	id: "pyrocaster copy 4.md";
-  slug: "pyrocaster-copy-4";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster copy 5.md": {
-	id: "pyrocaster copy 5.md";
-  slug: "pyrocaster-copy-5";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster copy 6.md": {
-	id: "pyrocaster copy 6.md";
-  slug: "pyrocaster-copy-6";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster copy.md": {
-	id: "pyrocaster copy.md";
-  slug: "pyrocaster-copy";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
 "pyrocaster.md": {
 	id: "pyrocaster.md";
   slug: "pyrocaster";
@@ -262,90 +220,6 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "stories": {
-"2024-12-pyrocaster-build copy 10.md": {
-	id: "2024-12-pyrocaster-build copy 10.md";
-  slug: "2024-12-pyrocaster-build-copy-10";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 11.md": {
-	id: "2024-12-pyrocaster-build copy 11.md";
-  slug: "2024-12-pyrocaster-build-copy-11";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 12.md": {
-	id: "2024-12-pyrocaster-build copy 12.md";
-  slug: "2024-12-pyrocaster-build-copy-12";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 2.md": {
-	id: "2024-12-pyrocaster-build copy 2.md";
-  slug: "2024-12-pyrocaster-build-copy-2";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 3.md": {
-	id: "2024-12-pyrocaster-build copy 3.md";
-  slug: "2024-12-pyrocaster-build-copy-3";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 4.md": {
-	id: "2024-12-pyrocaster-build copy 4.md";
-  slug: "2024-12-pyrocaster-build-copy-4";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 5.md": {
-	id: "2024-12-pyrocaster-build copy 5.md";
-  slug: "2024-12-pyrocaster-build-copy-5";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 6.md": {
-	id: "2024-12-pyrocaster-build copy 6.md";
-  slug: "2024-12-pyrocaster-build-copy-6";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 7.md": {
-	id: "2024-12-pyrocaster-build copy 7.md";
-  slug: "2024-12-pyrocaster-build-copy-7";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 8.md": {
-	id: "2024-12-pyrocaster-build copy 8.md";
-  slug: "2024-12-pyrocaster-build-copy-8";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy 9.md": {
-	id: "2024-12-pyrocaster-build copy 9.md";
-  slug: "2024-12-pyrocaster-build-copy-9";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2024-12-pyrocaster-build copy.md": {
-	id: "2024-12-pyrocaster-build copy.md";
-  slug: "2024-12-pyrocaster-build-copy";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
 "2024-12-pyrocaster-build.md": {
 	id: "2024-12-pyrocaster-build.md";
   slug: "2024-12-pyrocaster-build";
@@ -353,16 +227,44 @@ declare module 'astro:content' {
   collection: "stories";
   data: InferEntrySchema<"stories">
 } & { render(): Render[".md"] };
-"2024-12-pyrocaster2 copy.md": {
-	id: "2024-12-pyrocaster2 copy.md";
-  slug: "2024-12-pyrocaster2-copy";
+"2025-01-pyrocaster-delivery.md": {
+	id: "2025-01-pyrocaster-delivery.md";
+  slug: "2025-01-pyrocaster-delivery";
   body: string;
   collection: "stories";
   data: InferEntrySchema<"stories">
 } & { render(): Render[".md"] };
-"2024-12-pyrocaster2.md": {
-	id: "2024-12-pyrocaster2.md";
-  slug: "2024-12-pyrocaster2";
+"2025-03-ironveil-build.md": {
+	id: "2025-03-ironveil-build.md";
+  slug: "2025-03-ironveil-build";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2025-06-ironveil-complete.md": {
+	id: "2025-06-ironveil-complete.md";
+  slug: "2025-06-ironveil-complete";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2025-07-driftwood-om-concept.md": {
+	id: "2025-07-driftwood-om-concept.md";
+  slug: "2025-07-driftwood-om-concept";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2025-09-driftwood-om-build.md": {
+	id: "2025-09-driftwood-om-build.md";
+  slug: "2025-09-driftwood-om-build";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2025-11-driftwood-om-complete.md": {
+	id: "2025-11-driftwood-om-complete.md";
+  slug: "2025-11-driftwood-om-complete";
   body: string;
   collection: "stories";
   data: InferEntrySchema<"stories">
@@ -385,6 +287,26 @@ declare module 'astro:content' {
 };
 "03": {
 	id: "03";
+  collection: "slides";
+  data: InferEntrySchema<"slides">
+};
+"04": {
+	id: "04";
+  collection: "slides";
+  data: InferEntrySchema<"slides">
+};
+"05": {
+	id: "05";
+  collection: "slides";
+  data: InferEntrySchema<"slides">
+};
+"06": {
+	id: "06";
+  collection: "slides";
+  data: InferEntrySchema<"slides">
+};
+"07": {
+	id: "07";
   collection: "slides";
   data: InferEntrySchema<"slides">
 };
