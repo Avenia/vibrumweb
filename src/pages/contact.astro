@@ -1,9 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 
-const subject = encodeURIComponent('Guitar inquiry — Vibrum');
-const body = encodeURIComponent('Hi,\n\nI\'d like to ask about...\n\n');
-const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body}`;
 ---
 
 <PageLayout
@@ -13,72 +10,79 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
   <div class="container section">
     <header class="page-header">
       <p class="eyebrow">Get in touch</p>
-      <h1>Contact</h1>
+      <h3>We'd love to hear from you</h3>
+      <p class="page-lead">
+      Whether you're thinking about building a custom guitar, have questions about any of our available or even unavailable instrument, or simply want to learn more about who we are and what we do, feel free to reach out. If you are interested in a collaboration, let us know. You're always welcome to visit our workshop in Belgrade, just get in touch first so we can set aside the time for you. 
+      </p>
     </header>
 
     <div class="contact-body">
 
-      <!-- Info column -->
-      <div class="contact-info">
-        <div class="info-block">
-          <h2 class="info-label">Email</h2>
-          <a href="mailto:info@vibrumguitars.com" class="info-value info-link">
-            info@vibrumguitars.com
-          </a>
-        </div>
+      <!-- Form column -->
+      <div class="contact-form-col">
+        <p class="eyebrow">Send message</p>
+        <div class="contact-cta-card">
+          <form class="contact-form" id="contact-form">
+            <div class="form-field">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Your name" maxlength="64" autocomplete="off" required />
+              <span class="field-error" id="name-error">Please enter your name.</span>
+            </div>
+            <div class="form-field">
+              <label for="email" class="form-label">Your Email</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" maxlength="64" autocomplete="off" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
+              <span class="field-error" id="email-error">Please enter a valid email address.</span>
+            </div>
+            <div class="form-field">
+              <label for="message" class="form-label">Message</label>
+              <textarea id="message" name="message" class="form-input form-textarea" placeholder="Write your message here..." autocomplete="off" required oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+              <span class="field-error" id="message-error">Please write your message.</span>
+            </div>
+            <button type="submit" class="cta-btn">Send message →</button>
+          </form>
 
-        <div class="info-block">
-          <h2 class="info-label">Location</h2>
-          <p class="info-value">Belgrade, Serbia</p>
-          <p class="info-note">Workshop visits by appointment only.</p>
-        </div>
-
-        <div class="info-block">
-          <h2 class="info-label">Social</h2>
-          <div class="social-links">
-            <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="social-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-              @vibrumguitars
-            </a>
-            <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="social-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-              </svg>
-              @vibrumguitars
-            </a>
+          <div class="confirm-message" id="confirm-view" style="display:none">
+            <p class="confirm-label">Name</p>
+            <p class="confirm-value" id="confirm-name"></p>
+            <p class="confirm-label">Email</p>
+            <p class="confirm-value" id="confirm-email"></p>
+            <p class="confirm-label">Message</p>
+            <p class="confirm-value confirm-body" id="confirm-msg"></p>
+            <div class="confirm-actions">
+              <button class="cta-btn" id="confirm-send">Confirm & send →</button>
+              <button class="confirm-back" id="confirm-back">Go back</button>
+            </div>
           </div>
-        </div>
 
-        <div class="info-block">
-          <h2 class="info-label">Response time</h2>
-          <p class="info-value">Usually within 2–3 business days.</p>
+          <div class="success-message" id="success-view" style="display:none">
+            <p class="success-title">Message sent.</p>
+            <p class="success-body">Thank you for reaching out. We'll get back to you soon.</p>
+          </div>
         </div>
       </div>
 
-      <!-- CTA column -->
-      <div class="contact-cta-col">
-        <div class="contact-cta-card">
-          <h2 class="cta-title">Send an email</h2>
-          <p class="cta-body">
-            Whether you're interested in a commission, want to ask about an available instrument, or just want to learn more about the work — email is the best way to reach us.
-          </p>
-          <a href={mailtoHref} class="cta-btn">
-            Open email client →
+      <!-- Network column -->
+      <div class="network-section">
+        <p class="eyebrow">Network</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
           </a>
-          <p class="cta-note">
-            This opens your default email app with the subject and address pre-filled.
-          </p>
-        </div>
-
-        <div class="commission-note">
-          <h3 class="commission-title">Commission inquiries</h3>
-          <p>
-            If you're considering a custom build, include as much detail as you have in your first message: type of instrument, tonewoods you're interested in, hardware preferences, intended playing style, and budget range. The more context, the faster we can have a useful conversation.
-          </p>
+          <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="mailto:contact@vibrumguitars.com" class="icon-link" aria-label="Email">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </a>
         </div>
       </div>
 
@@ -86,9 +90,90 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
   </div>
 </PageLayout>
 
+<script>
+  const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const confirmView = document.getElementById('confirm-view') as HTMLElement;
+  const successView = document.getElementById('success-view') as HTMLElement;
+
+  form.querySelectorAll('input').forEach((input) => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') e.preventDefault();
+    });
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = (document.getElementById('name') as HTMLInputElement).value;
+    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const message = (document.getElementById('message') as HTMLTextAreaElement).value;
+
+    (document.getElementById('confirm-name') as HTMLElement).textContent = name;
+    (document.getElementById('confirm-email') as HTMLElement).textContent = email;
+    (document.getElementById('confirm-msg') as HTMLElement).innerHTML = message.replace(/\n/g, '<br>');
+
+    form.style.display = 'none';
+    confirmView.style.display = 'flex';
+  });
+
+  document.getElementById('confirm-send')!.addEventListener('click', () => {
+    confirmView.style.display = 'none';
+    successView.style.display = 'flex';
+    history.replaceState(null, '', window.location.pathname);
+  });
+
+  document.getElementById('confirm-back')!.addEventListener('click', () => {
+    confirmView.style.display = 'none';
+    form.style.display = 'flex';
+  });
+
+  const fields = [
+    { input: document.getElementById('name') as HTMLInputElement, error: document.getElementById('name-error') as HTMLElement, validate: null },
+    { input: document.getElementById('email') as HTMLInputElement, error: document.getElementById('email-error') as HTMLElement, validate: (v: string) => emailRegex.test(v) },
+    { input: document.getElementById('message') as HTMLInputElement, error: document.getElementById('message-error') as HTMLElement, validate: null },
+  ];
+
+  for (const { input, error, validate } of fields) {
+    input.addEventListener('invalid', (e) => {
+      e.preventDefault();
+      error.classList.add('visible');
+    });
+
+    input.addEventListener('input', () => {
+      if (validate) {
+        if (validate(input.value)) {
+          input.setCustomValidity('');
+          error.classList.remove('visible');
+        } else {
+          input.setCustomValidity('invalid');
+        }
+      } else if (input.validity.valid) {
+        error.classList.remove('visible');
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      if (validate && input.value && !validate(input.value)) {
+        error.classList.add('visible');
+      }
+    });
+  }
+</script>
+
 <style>
   .page-header {
     margin-bottom: var(--space-lg);
+  }
+
+
+  .page-lead {
+    margin-top: var(--space-sm);
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    text-align: justify;
   }
 
   .eyebrow {
@@ -97,7 +182,7 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-sm);
   }
 
   .contact-body {
@@ -108,27 +193,20 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
 
   @media (min-width: 768px) {
     .contact-body {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 3fr 2fr;
     }
   }
 
-  /* Info column */
-  .contact-info {
+  .contact-form-col {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-sm);
   }
 
-  .info-block {
+  .network-section {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding-bottom: var(--space-md);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .info-block:last-child {
-    border-bottom: none;
+    gap: var(--space-sm);
   }
 
   .info-label {
@@ -138,6 +216,7 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--color-accent);
+    margin-bottom: var(--space-sm);
   }
 
   .info-value {
@@ -162,28 +241,18 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
 
   .social-links {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    gap: var(--space-sm);
   }
 
-  .social-link {
+  .icon-link {
     display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
     color: var(--color-text);
     transition: color var(--transition);
   }
 
-  .social-link:hover {
+  .icon-link:hover {
     color: var(--color-accent);
-  }
-
-  /* CTA column */
-  .contact-cta-col {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
   }
 
   .contact-cta-card {
@@ -224,10 +293,143 @@ const mailtoHref = `mailto:info@vibrumguitars.com?subject=${subject}&body=${body
     opacity: 0.88;
   }
 
-  .cta-note {
-    font-size: 0.72rem;
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
+  }
+
+  .form-input {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    color: var(--color-accent);
+    outline: none;
+    transition: border-color var(--transition);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .form-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.62;
+  }
+
+  :global(.confirm-message) {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  :global(.confirm-label) {
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: var(--space-sm) 0 0;
+  }
+
+  :global(.confirm-label:first-child) {
+    margin-top: 0;
+  }
+
+  :global(.confirm-value) {
+    font-size: 0.95rem;
+    color: var(--color-text);
     margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: justify;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
+  :global(.confirm-body) {
+    white-space: pre-wrap;
+  }
+
+  :global(.confirm-actions) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+
+  :global(.confirm-back) {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.5;
+    transition: opacity var(--transition);
+  }
+
+  :global(.confirm-back:hover) {
+    opacity: 1;
+  }
+
+  :global(.success-message) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+  }
+
+  :global(.success-title) {
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    color: var(--color-text-bold);
+    margin: 0;
+  }
+
+  :global(.success-body) {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .field-error {
+    display: none;
+    font-size: 0.75rem;
+    color: #c0392b;
+    margin-top: 4px;
+  }
+
+  .field-error.visible {
+    display: block;
+  }
+
+  .form-textarea {
+    resize: none;
+    min-height: 140px;
+    overflow: hidden;
   }
 
   .commission-note {
