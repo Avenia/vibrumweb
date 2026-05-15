@@ -92,6 +92,8 @@ const fieldLabels: Record<string, string> = {
         </label>
       </div>
 
+      <button class="filters-clear" id="filters-clear" hidden>Clear filters</button>
+
     </aside>
 
     <!-- Guitar grid -->
@@ -203,10 +205,12 @@ const fieldLabels: Record<string, string> = {
   const checkboxes = document.querySelectorAll<HTMLInputElement>('input[data-filter]');
   const cards = document.querySelectorAll<HTMLElement>('.guitar-card-wrapper');
   const noResults = document.getElementById('no-results')!;
+  const clearBtn = document.getElementById('filters-clear')!;
 
   function getActiveFilters(extra?: HTMLInputElement): Record<string, Set<string>> {
     const active: Record<string, Set<string>> = {};
     checkboxes.forEach(cb => {
+      if (extra && cb !== extra && cb.dataset.filter === extra.dataset.filter) return;
       const on = cb === extra ? true : cb.checked;
       if (on) {
         const key = cb.dataset.filter!;
@@ -239,6 +243,7 @@ const fieldLabels: Record<string, string> = {
       if (match) visible++;
     });
     noResults.hidden = visible > 0;
+    clearBtn.hidden = !Array.from(checkboxes).some(cb => cb.checked);
     checkboxes.forEach(cb => {
       if (cb.checked) return;
       const wouldShow = countVisible(getActiveFilters(cb));
@@ -248,6 +253,10 @@ const fieldLabels: Record<string, string> = {
   }
 
   checkboxes.forEach(cb => cb.addEventListener('change', applyFilters));
+  clearBtn.addEventListener('click', () => {
+    checkboxes.forEach(cb => { cb.checked = false; });
+    applyFilters();
+  });
   applyFilters();
 
   // ---- Modal ----
@@ -415,6 +424,22 @@ const fieldLabels: Record<string, string> = {
   }
 
   .filter-option:hover { color: var(--color-text); }
+
+  .filters-clear {
+    display: block;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    opacity: 0.7;
+    transition: opacity var(--transition);
+    margin-top: var(--space-xs);
+  }
+
+  .filters-clear:hover { opacity: 1; }
+  .filters-clear[hidden] { display: none; }
 
   .filter-option--disabled {
     opacity: 0.3;
@@ -797,6 +822,7 @@ const fieldLabels: Record<string, string> = {
       gap: var(--space-sm) var(--space-md);
     }
 
+    .filters-clear { grid-column: 1 / -1; }
     .gallery-main { padding-left: 0; }
 
     .modal {
