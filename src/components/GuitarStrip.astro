@@ -13,24 +13,83 @@ const statusLabels: Record<string, string> = {
   'in-progress': 'In Progress',
   commission: 'Commission',
 };
+
+const typeLabels: Record<string, string> = {
+  electric:  'Electric',
+  acoustic:  'Acoustic',
+  bass:      'Bass',
+  classical: 'Classical',
+};
+
+const sectionLabels: Record<string, string> = {
+  body: 'Body', neck: 'Neck', fingerboard: 'Fingerboard',
+  hardware: 'Hardware', electronics: 'Electronics',
+};
+
+const fieldLabels: Record<string, string> = {
+  wood: 'Wood', finish: 'Finish', binding: 'Binding', weight: 'Weight',
+  profile: 'Profile', scale: 'Scale length', frets: 'Frets', radius: 'Radius',
+  nut: 'Nut', inlays: 'Inlays', tuners: 'Tuners', bridge: 'Bridge',
+  tailpiece: 'Tailpiece', pickups: 'Pickups', controls: 'Controls', output: 'Output',
+};
+
+const rendered = await Promise.all(guitars.map(g => g.render()));
 ---
 
 <div class="guitar-strip-wrap">
   <button class="strip-arrow strip-prev" aria-label="Previous guitars">&#8592;</button>
   <div class="guitar-strip" id="guitar-strip">
-    {guitars.map(g => (
-      <a href={`/gallery/${g.slug}`} class="strip-card">
-        <div class="strip-card-image">
-          <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
-          {g.data.status && (
-            <span class:list={['strip-badge', `strip-badge--${g.data.status}`]}>
-              {statusLabels[g.data.status]}
-            </span>
-          )}
-        </div>
-        <p class="strip-card-title">{g.data.title}</p>
-      </a>
-    ))}
+    {guitars.map((g, i) => {
+      const { Content } = rendered[i];
+      const images = [g.data.coverImage, ...(g.data.images ?? [])];
+      return (
+        <button type="button" class="strip-card strip-card-trigger">
+          <div class="strip-card-image">
+            <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
+            {g.data.status === 'sold' && (
+              <span class:list={['strip-badge', 'strip-badge--sold']}>
+                {statusLabels['sold']}
+              </span>
+            )}
+          </div>
+          <p class="strip-card-title">{g.data.title}</p>
+
+          <template class="modal-data">
+            <div
+              data-title={g.data.title}
+              data-year={g.data.year}
+              data-type={typeLabels[g.data.type] ?? g.data.type}
+              data-status={g.data.status}
+              data-images={JSON.stringify(images)}
+            >
+              <div class="modal-specs">
+                {g.data.specs && Object.entries(g.data.specs).map(([sectionKey, fields]) => {
+                  if (!fields) return null;
+                  const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
+                  if (rows.length === 0) return null;
+                  return (
+                    <div class="spec-section">
+                      <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
+                      <dl class="spec-list">
+                        {rows.map(([key, value]) => (
+                          <div class="spec-row">
+                            <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
+                            <dd class="spec-val">{String(value)}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  );
+                })}
+              </div>
+              <div class="modal-prose prose">
+                <Content />
+              </div>
+            </div>
+          </template>
+        </button>
+      );
+    })}
     <a href="/gallery" class="strip-card--view-all" aria-label="View all guitars">
       <span class="strip-view-all-btn">View All Guitars &#8594;</span>
     </a>
@@ -38,22 +97,46 @@ const statusLabels: Record<string, string> = {
   <button class="strip-arrow strip-next" aria-label="Next guitars">&#8594;</button>
 </div>
 
-<!-- <div class="strip-footer">
-  <a href="/gallery" class="strip-view-all">View Gallery</a>
-</div> -->
+<!-- Modal -->
+<div class="modal-backdrop" id="strip-modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="strip-modal-title">
+
+    <div class="modal-photos">
+      <div class="modal-photo-stage">
+        <img class="modal-photo-img" id="strip-modal-photo-img" src="" alt="" />
+        <button class="modal-nav modal-nav--prev" id="strip-modal-prev" aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="modal-nav modal-nav--next" id="strip-modal-next" aria-label="Next photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="modal-photo-counter" id="strip-modal-counter"></div>
+      </div>
+      <div class="modal-thumbs" id="strip-modal-thumbs"></div>
+    </div>
+
+    <div class="modal-info" id="strip-modal-info">
+      <div class="modal-info-header">
+        <div class="modal-meta" id="strip-modal-meta"></div>
+        <h2 class="modal-title" id="strip-modal-title"></h2>
+      </div>
+      <div class="modal-info-body" id="strip-modal-info-body"></div>
+    </div>
+
+    <button class="modal-close" id="strip-modal-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+  </div>
+</div>
 
 <style>
-  /* Wrapper positions the arrows absolutely and clips the bleed
-     so the negative-margin trick on .guitar-strip never causes
-     horizontal page scroll. */
+  /* ---- Strip wrap ---- */
   .guitar-strip-wrap {
     position: relative;
     overflow: hidden;
   }
 
-  /* Horizontal scroll container
-     Negative margin bleed trick: offsets the .container's padding so cards
-     can scroll edge-to-edge. Must match --space-md (2rem) from global.css. */
   .guitar-strip {
     display: flex;
     justify-content: safe center;
@@ -72,7 +155,7 @@ const statusLabels: Record<string, string> = {
     display: none;
   }
 
-  /* Individual card */
+  /* Individual card — now a <button>, so reset button defaults */
   .strip-card {
     flex: 0 0 360px;
     scroll-snap-align: start;
@@ -83,6 +166,9 @@ const statusLabels: Record<string, string> = {
     overflow: hidden;
     transition: border-color var(--transition), background-color var(--transition);
     text-decoration: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
   }
 
   .strip-card:hover {
@@ -109,7 +195,7 @@ const statusLabels: Record<string, string> = {
     transform: scale(1.04);
   }
 
-  /* View-all slot — same width and height as a portrait card, no card chrome */
+  /* View-all slot */
   .strip-card--view-all {
     flex: 0 0 360px;
     scroll-snap-align: start;
@@ -125,7 +211,6 @@ const statusLabels: Record<string, string> = {
     font-weight: 700;
     font-size: 0.82rem;
     letter-spacing: 0.08em;
-    /* text-transform: uppercase; */
     color: #0a0906;
     background-color: var(--color-accent);
     padding: 10px 20px;
@@ -140,7 +225,7 @@ const statusLabels: Record<string, string> = {
     transform: translateY(-2px);
   }
 
-  /* Status badge — top-right corner of the image */
+  /* Status badge */
   .strip-badge {
     position: absolute;
     top: var(--space-xs);
@@ -161,16 +246,6 @@ const statusLabels: Record<string, string> = {
     border-color: rgba(217, 48, 48, 0.4);
   }
 
-  .strip-badge--available {
-    color: #3aaa5c;
-    border-color: rgba(58, 170, 92, 0.4);
-  }
-
-  .strip-badge--in-progress {
-    color: var(--color-accent);
-    border-color: rgba(201, 168, 76, 0.4);
-  }
-
   /* Model name */
   .strip-card-title {
     padding: 0.55rem var(--space-xs) 0.65rem;
@@ -186,10 +261,10 @@ const statusLabels: Record<string, string> = {
     margin: 0;
   }
 
-  /* Arrow buttons */
+  /* Strip navigation arrows */
   .strip-arrow {
     position: absolute;
-    top: calc(240px - 1.1rem); /* vertically centered on the image (half of 480px portrait image) */
+    top: calc(240px - 1.1rem);
     z-index: 2;
     width: 2rem;
     height: 2rem;
@@ -221,67 +296,443 @@ const statusLabels: Record<string, string> = {
   .strip-prev { left: 0.25rem; }
   .strip-next { right: 0.25rem; }
 
-  /* Hide arrows on touch/mobile — native scroll handles it */
   @media (max-width: 639px), (hover: none) {
     .strip-arrow { display: none; }
   }
 
-  /* Footer link */
-  .strip-footer {
-    margin-top: var(--space-md);
-    text-align: center;
-  }
-
-  .strip-view-all {
-    display: inline-block;
-    background-color: var(--color-accent);
-    color: #0a0906;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    padding: 10px 20px;
-    border-radius: var(--radius-md);
-    white-space: nowrap;
-    text-decoration: none;
-    opacity: 0.7;
-    transition: opacity var(--transition);
-  }
-
-  .strip-view-all:hover {
-    opacity: 0.88;
-  }
-
-  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .strip-card-image img {
-      transition: none;
+    .strip-card-image img { transition: none; }
+  }
+
+  /* ---- Modal backdrop ---- */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background-color: rgba(10, 9, 6, 0.88);
+    background-image: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 168, 76, 0.53) 0%, transparent 70%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+  }
+
+  .modal-backdrop--open {
+    display: flex;
+    animation: fadeIn 180ms ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ---- Modal shell ---- */
+  .modal {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    grid-template-rows: 1fr;
+    width: 100%;
+    max-width: 1100px;
+    height: calc(100vh - var(--space-lg) * 2);
+    max-height: 780px;
+    background: var(--color-bg-raised);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    animation: slideUp 220ms ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* ---- Photos ---- */
+  .modal-photos {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    border-right: 1px solid rgba(201, 168, 76, 0.15);
+    overflow: hidden;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .modal-photo-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    padding: 6px;
+  }
+
+  .modal-photo-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: var(--radius-md);
+  }
+
+  .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 9, 6, 0.55);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), border-color var(--transition);
+  }
+
+  .modal-nav:hover {
+    background: rgba(201, 168, 76, 0.15);
+    border-color: rgba(201, 168, 76, 0.5);
+  }
+
+  .modal-nav svg { width: 18px; height: 18px; }
+  .modal-nav--prev { left: 12px; }
+  .modal-nav--next { right: 12px; }
+
+  .modal-photo-counter {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    background: rgba(10, 9, 6, 0.6);
+    padding: 2px 10px;
+    border-radius: 99px;
+  }
+
+  .modal-thumbs {
+    display: block;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: visible;
+    flex-shrink: 0;
+    padding: 10px 10px 14px;
+    background: var(--color-bg-surface);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 168, 76, 0.2) transparent;
+  }
+
+  /* ---- Info panel ---- */
+  .modal-info {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 168, 76, 0.15) transparent;
+  }
+
+  .modal-info-header {
+    padding: var(--space-md) var(--space-md) var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .modal-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+  }
+
+  .modal-title {
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    color: var(--color-text-bold);
+    line-height: 1.2;
+  }
+
+  .modal-info-body {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* Specs — cloned from template, no Astro scope hash, so use :global */
+  .modal-info-body :global(.modal-specs) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .modal-info-body :global(.spec-section) {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .modal-info-body :global(.spec-section-title) {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-bg-surface);
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .modal-info-body :global(.spec-list) {
+    background: var(--color-bg-raised);
+  }
+
+  .modal-info-body :global(.spec-row) {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: 7px 12px;
+  }
+
+  .modal-info-body :global(.spec-row:nth-child(even)) {
+    background: rgba(255, 245, 220, 0.02);
+  }
+
+  .modal-info-body :global(.spec-key) {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .modal-info-body :global(.spec-val) {
+    font-size: 0.78rem;
+    color: var(--color-text);
+    text-align: right;
+  }
+
+  .modal-info-body :global(.modal-prose) {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-md);
+  }
+
+  .modal-info-body :global(.modal-prose p + p) {
+    margin-top: 0.9em;
+  }
+
+  /* ---- Meta dot & status ---- */
+  :global(.modal-meta-dot) { opacity: 0.4; }
+
+  :global(.modal-status) {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-surface);
+    color: var(--color-text-muted);
+  }
+
+  :global(.modal-status--sold) { color: rgba(255, 245, 220, 0.5); }
+
+  /* ---- Close button ---- */
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 9, 6, 0.6);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    z-index: 10;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+  }
+
+  .modal-close:hover {
+    color: var(--color-text);
+    border-color: rgba(201, 168, 76, 0.5);
+    background: rgba(201, 168, 76, 0.1);
+  }
+
+  .modal-close svg { width: 16px; height: 16px; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .modal {
+      grid-template-columns: 1fr;
+      grid-template-rows: 55vw 1fr;
+      max-height: 92vh;
+    }
+
+    .modal-photos {
+      border-right: none;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.15);
     }
   }
 </style>
 
 <script>
+  // ---- Strip scroll ----
   const strip = document.getElementById('guitar-strip');
   const wrap = strip?.closest('.guitar-strip-wrap') as HTMLElement | null;
-  const prev = wrap?.querySelector<HTMLElement>('.strip-prev');
-  const next = wrap?.querySelector<HTMLElement>('.strip-next');
+  const stripPrev = wrap?.querySelector<HTMLElement>('.strip-prev');
+  const stripNext = wrap?.querySelector<HTMLElement>('.strip-next');
 
   function syncArrows() {
     if (!strip || !wrap) return;
     const scrollable = strip.scrollWidth > strip.clientWidth;
     wrap.classList.toggle('is-scrollable', scrollable);
-
     const atStart = strip.scrollLeft <= 1;
     const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1;
-    if (prev) prev.style.visibility = atStart ? 'hidden' : '';
-    if (next) next.style.visibility = atEnd ? 'hidden' : '';
+    if (stripPrev) stripPrev.style.visibility = atStart ? 'hidden' : '';
+    if (stripNext) stripNext.style.visibility = atEnd ? 'hidden' : '';
   }
 
   syncArrows();
   strip?.addEventListener('scroll', syncArrows, { passive: true });
   window.addEventListener('resize', syncArrows);
 
-  // 360px card + 16px gap = 376px per scroll step
-  prev?.addEventListener('click', () => strip?.scrollBy({ left: -376, behavior: 'smooth' }));
-  next?.addEventListener('click', () => strip?.scrollBy({ left: 376, behavior: 'smooth' }));
+  stripPrev?.addEventListener('click', () => strip?.scrollBy({ left: -376, behavior: 'smooth' }));
+  stripNext?.addEventListener('click', () => strip?.scrollBy({ left: 376, behavior: 'smooth' }));
+
+  // ---- Modal ----
+  // Move backdrop to <body> so it escapes any stacking context created by ancestor elements
+  const backdrop  = document.getElementById('strip-modal-backdrop')!;
+  document.body.appendChild(backdrop);
+  const imgEl     = document.getElementById('strip-modal-photo-img') as HTMLImageElement;
+  const counterEl = document.getElementById('strip-modal-counter')!;
+  const thumbsEl  = document.getElementById('strip-modal-thumbs')!;
+  const titleEl   = document.getElementById('strip-modal-title')!;
+  const metaEl    = document.getElementById('strip-modal-meta')!;
+  const infoBody  = document.getElementById('strip-modal-info-body')!;
+  const prevBtn   = document.getElementById('strip-modal-prev')!;
+  const nextBtn   = document.getElementById('strip-modal-next')!;
+  const closeBtn  = document.getElementById('strip-modal-close')!;
+
+  let images: string[] = [];
+  let current = 0;
+
+  function showPhoto(index: number) {
+    current = (index + images.length) % images.length;
+    imgEl.src = images[current];
+    counterEl.textContent = images.length > 1 ? `${current + 1} / ${images.length}` : '';
+    thumbsEl.querySelectorAll<HTMLElement>('.modal-thumb').forEach((t, i) => {
+      const active = i === current;
+      t.style.opacity = active ? '1' : '0.46';
+      t.style.outline = active ? '2px solid var(--color-accent)' : 'none';
+      t.style.outlineOffset = '2px';
+      if (active) t.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    });
+    prevBtn.style.display = images.length > 1 ? '' : 'none';
+    nextBtn.style.display = images.length > 1 ? '' : 'none';
+  }
+
+  function openModal(card: HTMLElement) {
+    const tpl = card.querySelector('template.modal-data') as HTMLTemplateElement;
+    const data = tpl.content.querySelector<HTMLElement>('[data-title]')!;
+
+    images = JSON.parse(data.dataset.images!);
+    current = 0;
+
+    titleEl.textContent = data.dataset.title!;
+    const status = data.dataset.status!;
+    const statusHtml = status === 'sold'
+      ? `<span class="modal-status modal-status--sold">Sold</span>`
+      : '';
+    metaEl.innerHTML = `<span>${data.dataset.type}</span><span class="modal-meta-dot">·</span><span>${data.dataset.year}</span>${statusHtml}`;
+
+    infoBody.innerHTML = '';
+    infoBody.appendChild(data.querySelector('.modal-specs')!.cloneNode(true));
+    infoBody.appendChild(data.querySelector('.modal-prose')!.cloneNode(true));
+
+    backdrop.setAttribute('aria-hidden', 'false');
+    backdrop.classList.add('modal-backdrop--open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('strip-modal-info')!.scrollTop = 0;
+
+    setTimeout(() => {
+      const stripWidth = thumbsEl.clientWidth || 600;
+      const thumbSize = Math.floor((stripWidth - 20 - 10 * 6) / 10);
+
+      thumbsEl.innerHTML = '';
+      images.forEach((src, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'modal-thumb';
+        btn.style.width = thumbSize + 'px';
+        btn.style.marginRight = '6px';
+        btn.style.cursor = 'pointer';
+        btn.style.padding = '0';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '4px';
+        btn.style.flexShrink = '0';
+        btn.style.verticalAlign = 'top';
+        btn.setAttribute('aria-label', `Photo ${i + 1}`);
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.borderRadius = '4px';
+        btn.appendChild(img);
+        btn.addEventListener('click', () => showPhoto(i));
+        thumbsEl.appendChild(btn);
+      });
+
+      showPhoto(0);
+    }, 0);
+  }
+
+  function closeModal() {
+    backdrop.setAttribute('aria-hidden', 'true');
+    backdrop.classList.remove('modal-backdrop--open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLElement>('.strip-card-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => openModal(trigger));
+  });
+
+  prevBtn.addEventListener('click', () => showPhoto(current - 1));
+  nextBtn.addEventListener('click', () => showPhoto(current + 1));
+  closeBtn.addEventListener('click', closeModal);
+
+  backdrop.addEventListener('click', e => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!backdrop.classList.contains('modal-backdrop--open')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowLeft')  showPhoto(current - 1);
+    if (e.key === 'ArrowRight') showPhoto(current + 1);
+  });
 </script>

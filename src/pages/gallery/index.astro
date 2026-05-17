@@ -504,7 +504,8 @@ const fieldLabels: Record<string, string> = {
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: rgba(10, 9, 6, 0.88);
+    background-color: rgba(10, 9, 6, 0.88);
+    background-image: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 168, 76, 0.53) 0%, transparent 70%);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     align-items: center;
@@ -564,6 +565,7 @@ const fieldLabels: Record<string, string> = {
     align-items: center;
     justify-content: center;
     background: var(--color-bg);
+    padding: 6px;
   }
 
   .modal-photo-img {
@@ -573,6 +575,7 @@ const fieldLabels: Record<string, string> = {
     height: auto;
     object-fit: contain;
     display: block;
+    border-radius: var(--radius-md);
   }
 
   .modal-nav {
@@ -603,9 +606,8 @@ const fieldLabels: Record<string, string> = {
 
   .modal-photo-counter {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 16px;
+    left: 16px;
     font-size: 0.7rem;
     letter-spacing: 0.1em;
     color: var(--color-text-muted);
