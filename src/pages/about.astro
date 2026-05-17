@@ -6,6 +6,26 @@ import PageLayout from '../layouts/PageLayout.astro';
   title="About — Vibrum Guitars"
   description="Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship."
 >
+  <div class="page-logo-bg" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" focusable="false">
+      <defs>
+        <style>
+          .bl-d { letter-spacing: .213em; }
+          .bl-e { letter-spacing: .217em; }
+          .bl-f { letter-spacing: .213em; }
+          .bl-g { font-family: 'TERMINAT', Terminator, serif; font-size: 27.486px; }
+          .bl-g, .bl-h { fill: currentColor; }
+          .bl-i { letter-spacing: .212em; }
+          .bl-j { letter-spacing: .211em; }
+        </style>
+      </defs>
+      <path class="bl-h" d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
+      <path class="bl-h" d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
+      <path class="bl-h" d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
+      <text class="bl-g" transform="translate(62.698 243.05)"><tspan class="bl-f" x="0" y="0">V</tspan><tspan class="bl-e" x="35.853" y="0">I</tspan><tspan class="bl-j" x="50.063" y="0">BR</tspan><tspan class="bl-i" x="124.43" y="0">U</tspan><tspan class="bl-d" x="161.962" y="0">M</tspan></text>
+    </svg>
+  </div>
+
   <div class="container section">
 
 <div class="about-grid">
@@ -22,7 +42,7 @@ import PageLayout from '../layouts/PageLayout.astro';
             Although the workshop officially began taking shape in 2022, the idea behind it goes back to 2015 — when each of us, independently and in different ways, was already deeply involved with woodworking and music. Some professionally, some as a craft, and some as a passion that never really stopped growing.
           </p>
           <p>
-            We are not just builders of instruments — we are players first. Each of us plays guitar or bass. Two of us have shared the stage in a cover band for many years. Because of that, we understand what musicians need.
+            We are not just builders of instruments — we are players first. Each of us plays guitar or bass. Two of us have shared the stage in a band for many years. Because of that, we understand what musicians need.
           </p>
           <p>
             What connects us is a constant curiosity for sound quality, especially when it comes to guitars. We are also strongly drawn to the art of woodworking itself, which will always remain an essential part of what we do.
@@ -60,7 +80,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 
       <div class="grid-row">
         <div class="grid-label">
-          <span class="label-text">The Workshop</span>
+          <span class="label-text">The Work</span>
         </div>
         <div class="grid-content prose">
           <p>
@@ -73,7 +93,10 @@ import PageLayout from '../layouts/PageLayout.astro';
             We use only carefully selected, high-quality tonewoods, chosen not only for appearance, but for how they behave acoustically and structurally over time.
           </p>
           <p>
-            We also believe that an instrument should not just exist as an object — it should become a partner to the musician who plays it.
+            We pay close attention to precise geometry at every stage of construction, ensuring optimal playability and balance. Hardware is carefully selected to match each instrument's character and purpose, rather than applied as a standard choice.
+          </p>
+          <p>
+            Our finishing process is designed to be breathable and durable, allowing the instrument to resonate freely and age naturally over time.
           </p>
         </div>
       </div>
@@ -84,15 +107,19 @@ import PageLayout from '../layouts/PageLayout.astro';
         </div>
         <div class="grid-content prose">
           <p>
-            Good instruments are not defined by price or brand. They are defined by the quality of decisions made at every stage of construction.
+            Good instruments are not defined by price or brand, but by the intention and clarity behind every decision made during their creation.
           </p>
           <p>
-            The right wood for the right build.<br />
-            The correct fret geometry for the intended playing style.<br />
-            A finish thin enough to let the wood breathe.
+            At Vibrum Guitars, each instrument is built one at a time. Every piece is individually considered and shaped according to its purpose and character.
           </p>
           <p>
-            At Vibrum, we build slowly. One instrument at a time. Every detail receives the attention it deserves because an instrument that lasts decades earns that attention.
+            The selection of materials, the structural geometry, and the hardware are all chosen specifically for each instrument, ensuring that nothing is generic or incidental. Every element has a reason for being there.
+          </p>
+          <p>
+            We believe an instrument is not just an object of construction, but something that continues to take shape through the hands of the musician.
+          </p>
+          <p>
+            We believe that careful, unhurried work produces instruments with character, stability, and longevity. Our instruments are not just built — they are carefully resolved.
           </p>
         </div>
       </div>
@@ -102,6 +129,29 @@ import PageLayout from '../layouts/PageLayout.astro';
 </PageLayout>
 
 <style>
+  .page-logo-bg {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+    color: var(--color-text);
+  }
+
+  .page-logo-bg svg {
+    width: min(90vw, 90vh);
+    height: auto;
+    display: block;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
 .about-grid {
     display: flex;
     flex-direction: column;

@@ -7,12 +7,32 @@ import PageLayout from '../layouts/PageLayout.astro';
   title="Contact — Vibrum Guitars"
   description="Get in touch with Vibrum Guitars in Belgrade. Commission inquiries, availability questions, and workshop visits by appointment."
 >
+  <div class="page-logo-bg" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" focusable="false">
+      <defs>
+        <style>
+          .bl-d { letter-spacing: .213em; }
+          .bl-e { letter-spacing: .217em; }
+          .bl-f { letter-spacing: .213em; }
+          .bl-g { font-family: 'TERMINAT', Terminator, serif; font-size: 27.486px; }
+          .bl-g, .bl-h { fill: currentColor; }
+          .bl-i { letter-spacing: .212em; }
+          .bl-j { letter-spacing: .211em; }
+        </style>
+      </defs>
+      <path class="bl-h" d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
+      <path class="bl-h" d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
+      <path class="bl-h" d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
+      <text class="bl-g" transform="translate(62.698 243.05)"><tspan class="bl-f" x="0" y="0">V</tspan><tspan class="bl-e" x="35.853" y="0">I</tspan><tspan class="bl-j" x="50.063" y="0">BR</tspan><tspan class="bl-i" x="124.43" y="0">U</tspan><tspan class="bl-d" x="161.962" y="0">M</tspan></text>
+    </svg>
+  </div>
+
   <div class="container section">
     <header class="page-header">
       <p class="eyebrow">Get in touch</p>
       <h3>We'd love to hear from you</h3>
       <p class="page-lead">
-      Whether you're thinking about building a custom guitar, have questions about any of our available or even unavailable instrument, or simply want to learn more about who we are and what we do, feel free to reach out. If you are interested in a collaboration, let us know. You're always welcome to visit our workshop in Belgrade, just get in touch first so we can set aside the time for you. 
+      Whether you’re thinking about building a custom guitar, have questions about our available or even unavailable instruments, or simply want to learn more about who we are and what we do, feel free to reach out. If you’re interested in a collaboration, let us know. You’re also always welcome to visit our workshop in Belgrade, just get in touch first so we can set aside time for you.
       </p>
     </header>
 
@@ -182,7 +202,7 @@ import PageLayout from '../layouts/PageLayout.astro';
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
   }
 
   .contact-body {
@@ -207,6 +227,29 @@ import PageLayout from '../layouts/PageLayout.astro';
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+  }
+
+  .page-logo-bg {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+    color: var(--color-text);
+  }
+
+  .page-logo-bg svg {
+    width: min(90vw, 90vh);
+    height: auto;
+    display: block;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
   }
 
   .info-label {
@@ -256,7 +299,7 @@ import PageLayout from '../layouts/PageLayout.astro';
   }
 
   .contact-cta-card {
-    background-color: var(--color-bg-raised);
+    background-color: color-mix(in srgb, var(--color-bg-raised) 30%, transparent);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     padding: var(--space-md);
@@ -314,7 +357,7 @@ import PageLayout from '../layouts/PageLayout.astro';
   }
 
   .form-input {
-    background-color: var(--color-bg-surface);
+    background-color: color-mix(in srgb, var(--color-bg-surface) 60%, transparent);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     padding: 10px 14px;
