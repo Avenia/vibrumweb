@@ -51,14 +51,6 @@ const guitars = (await getCollection('guitars'))
     </header>
 
     <div class="stories-section">
-      <div class="ghost-mark" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" aria-hidden="true" focusable="false">
-          <path d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
-          <path d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
-          <path d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
-        </svg>
-      </div>
-
       {stories.length > 0 ? (
         <div class="stories-grid">
           {stories.map(story => (
