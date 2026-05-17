@@ -62,7 +62,7 @@ html {
 }
 
 body {
-  background: linear-gradient(to right, #1c160a, #060403 30%, #060403 70%, #1c160a);
+  background: linear-gradient(110deg, #241c0d, #060403 25%, #060403 60%, #181209);
   background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);

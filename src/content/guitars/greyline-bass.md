@@ -1,7 +1,7 @@
 ---
 title: "Greyline Bass"
 type: "bass"
-status: "available"
+status: "sold"
 year: 2025
 strings: 4
 electronics: "active"
