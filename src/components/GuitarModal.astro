@@ -360,6 +360,7 @@
 
   function openModal(card: HTMLElement) {
     const tpl = card.querySelector('template.modal-data') as HTMLTemplateElement;
+    const slug = tpl.dataset.slug ?? '';
     const data = tpl.content.querySelector<HTMLElement>('[data-title]')!;
 
     images = JSON.parse(data.dataset.images!);
@@ -380,6 +381,7 @@
     backdrop.classList.add('modal-backdrop--open');
     document.body.style.overflow = 'hidden';
     document.getElementById('guitar-modal-info')!.scrollTop = 0;
+    if (slug) history.pushState(null, '', '#guitar-' + slug);
 
     setTimeout(() => {
       const stripWidth = thumbsEl.clientWidth || 600;
@@ -419,9 +421,28 @@
     backdrop.setAttribute('aria-hidden', 'true');
     backdrop.classList.remove('modal-backdrop--open');
     document.body.style.overflow = '';
+    if (location.hash.startsWith('#guitar-')) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
   }
 
   window.openGuitarModal = openModal;
+
+  window.addEventListener('popstate', () => {
+    if (backdrop.classList.contains('modal-backdrop--open')) {
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.classList.remove('modal-backdrop--open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  const initHash = location.hash;
+  if (initHash.startsWith('#guitar-')) {
+    const slug = initHash.slice(8);
+    const tpl = document.querySelector<HTMLElement>(`template.modal-data[data-slug="${slug}"]`);
+    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger');
+    if (card) openModal(card);
+  }
 
   prevBtn.addEventListener('click', () => showPhoto(current - 1));
   nextBtn.addEventListener('click', () => showPhoto(current + 1));
