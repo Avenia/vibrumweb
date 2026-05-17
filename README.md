@@ -21,6 +21,40 @@ Pushing to `main` triggers a GitHub Actions build and deploys automatically.
 
 ---
 
+## Image guidelines
+
+### Format and size
+
+All photos must be **WebP** format at **quality 82**, maximum **1800 px on the longest edge**.
+
+| Scenario | Why |
+|---|---|
+| WebP q82 | ~150–300 KB per photo vs 1–4 MB for PNG — same visual quality |
+| 1800 px max | Covers 2× retina on gallery cards and the full-width modal view |
+| No multiple sizes | Images in `public/` are served as-is; Astro cannot generate srcset for them |
+
+Lazy loading is already implemented throughout — cover images, gallery cards, slideshow, and modal thumbnails all load on demand.
+
+### Converting photos (macOS)
+
+```bash
+# One-time setup
+brew install webp
+
+# Run inside a guitar's image folder, e.g. public/images/guitars/pyrocaster/
+for f in *.png; do cwebp -q 82 "$f" -o "${f%.png}.webp" && rm "$f"; done
+
+# Do the same for public/images/slideshow/ and public/images/stories/
+```
+
+After converting, update the paths in the corresponding `.md` files (`.png` → `.webp`).
+
+### GitHub Pages storage
+
+GitHub recommends keeping repositories under 1 GB. At ~250 KB per WebP photo, 100 guitars × 35 photos ≈ 875 MB — right at the limit. If the collection grows past ~120 guitars, move image hosting to a CDN (Cloudinary free tier: 25 GB storage, zero config) and keep only markdown in this repo.
+
+---
+
 ## Adding a new guitar
 
 1. Create a new file in `src/content/guitars/your-guitar-name.md`
