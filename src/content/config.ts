@@ -1,35 +1,40 @@
 import { defineCollection, z } from 'astro:content';
 
 const specsSchema = z.object({
-  body: z.object({
-    wood: z.string().optional(),
+  materials: z.object({
+    top: z.string().optional(),
+    base: z.string().optional(),
+    neck: z.string().optional(),
+    fretboard: z.string().optional(),
+    headstock_top: z.string().optional(),
+    fretmarkers: z.string().optional(),
+    nut: z.string().optional(),
+    frets: z.string().optional(),
+    details: z.string().optional(),
     finish: z.string().optional(),
-    binding: z.string().optional(),
+  }).optional(),
+  technical: z.object({
+    body_shape: z.string().optional(),
+    scale: z.string().optional(),
+    nut_width: z.string().optional(),
+    radius: z.string().optional(),
+    neck_profile: z.string().optional(),
+    frets: z.string().optional(),
     weight: z.string().optional(),
   }).optional(),
-  neck: z.object({
-    wood: z.string().optional(),
-    profile: z.string().optional(),
-    scale: z.string().optional(),
-    frets: z.number().optional(),
-    radius: z.string().optional(),
-    nut: z.string().optional(),
-    finish: z.string().optional(),
-  }).optional(),
-  fingerboard: z.object({
-    wood: z.string().optional(),
-    inlays: z.string().optional(),
-  }).optional(),
   hardware: z.object({
-    tuners: z.string().optional(),
+    pickups: z.string().optional(),
     bridge: z.string().optional(),
     tailpiece: z.string().optional(),
-    finish: z.string().optional(),
-  }).optional(),
-  electronics: z.object({
-    pickups: z.string().optional(),
+    nut: z.string().optional(),
+    pots: z.string().optional(),
     controls: z.string().optional(),
+    switch: z.string().optional(),
+    tuners: z.string().optional(),
+    neck_plate: z.string().optional(),
+    strap_locks: z.string().optional(),
     output: z.string().optional(),
+    finish: z.string().optional(),
   }).optional(),
 }).optional();
 

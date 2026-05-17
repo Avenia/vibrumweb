@@ -35,30 +35,28 @@ images:
   - "/images/guitars/pyrocaster/photo-27.png"
 excerpt: "A semi-hollow thinline in progress — chambered mahogany with a spruce top cap and P-90s."
 specs:
-  body:
-    wood: "Mahogany (chambered), Spruce (top cap)"
-    finish: "Nitrocellulose Tobacco Burst"
-    binding: "Cream ABS"
-  neck:
-    wood: "Mahogany"
-    profile: "Soft V"
-    scale: "24.75\""
-    frets: 22
-    radius: "12\""
+  materials:
+    top: "Spruce cap"
+    base: "Mahogany (chambered)"
+    neck: "Mahogany"
+    fretboard: "Indian Rosewood"
+    fretmarkers: "Trapezoid pearl"
     nut: "Bone, 43mm"
-    finish: "Satin"
-  fingerboard:
-    wood: "Indian Rosewood"
-    inlays: "Trapezoid pearl"
+    details: "Cream ABS binding"
+    finish: "Nitrocellulose Tobacco Burst"
+  technical:
+    scale: "24.75\""
+    radius: "12\""
+    neck_profile: "Soft V"
+    frets: "22"
   hardware:
-    tuners: "Grover Rotomatic 18:1"
+    pickups: "Lollar P-90 Dogear (neck & bridge)"
     bridge: "TonePros AVT II"
     tailpiece: "TonePros TP6"
-    finish: "Nickel"
-  electronics:
-    pickups: "Lollar P-90 Dogear (neck & bridge)"
+    tuners: "Grover Rotomatic 18:1"
     controls: "Volume (neck), Volume (bridge), Master tone, 3-way toggle"
     output: "Switchcraft mono jack"
+    finish: "Nickel"
 ---
 
 The Redgate is currently in the finishing stage. Chambered mahogany body with a spruce top cap — the combination produces a slightly more open, airy response than a solid mahogany slab.

@@ -35,30 +35,26 @@ images:
   - "/images/guitars/driftwood-om/photo-27.png"
 excerpt: "A modern four-string with an active preamp and a through-neck construction for sustain and stability."
 specs:
-  body:
-    wood: "Walnut wings, Maple/Purpleheart through-neck"
-    finish: "Satin Oil"
-    binding: "None"
-    weight: "4.0 kg"
-  neck:
-    wood: "Maple / Purpleheart 3-piece through-neck"
-    profile: "Thin C"
-    scale: "34\""
-    frets: 22
-    radius: "14\""
+  materials:
+    base: "Walnut wings"
+    neck: "Maple / Purpleheart 3-piece through-neck"
+    fretboard: "Ebony"
+    fretmarkers: "Side dots only"
     nut: "Graphtech TUSQ, 38mm"
     finish: "Satin Oil"
-  fingerboard:
-    wood: "Ebony"
-    inlays: "Side dots only"
+  technical:
+    scale: "34\""
+    radius: "14\""
+    neck_profile: "Thin C"
+    frets: "22"
+    weight: "4.0 kg"
   hardware:
-    tuners: "Hipshot HB6 Ultralite"
-    bridge: "Hipshot Style A through-body"
-    finish: "Black"
-  electronics:
     pickups: "Aguilar DCB-N / DCB-B soapbars"
+    bridge: "Hipshot Style A through-body"
+    tuners: "Hipshot HB6 Ultralite"
     controls: "Master volume, balance, 2-band EQ"
     output: "Neutrik locking jack"
+    finish: "Black"
 ---
 
 Through-neck construction on a 34-inch scale. The walnut wings are light; the maple/purpleheart core provides rigidity. The result is a bass that sustains cleanly and stays in tune through temperature swings.

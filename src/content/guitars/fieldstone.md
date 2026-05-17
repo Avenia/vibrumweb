@@ -34,24 +34,23 @@ images:
   - "/images/guitars/pyrocaster/photo-27.png"
 excerpt: "A full-depth dreadnought in spruce and rosewood — built for volume, projection, and long sessions."
 specs:
-  body:
-    wood: "Sitka Spruce (top), Indian Rosewood (back & sides)"
-    finish: "Nitrocellulose"
-    binding: "Tortoise celluloid"
-  neck:
-    wood: "Mahogany"
-    profile: "D-shape"
-    scale: "25.5\""
-    frets: 20
-    radius: "14\""
+  materials:
+    top: "Sitka Spruce"
+    base: "Indian Rosewood (back & sides)"
+    neck: "Mahogany"
+    fretboard: "Indian Rosewood"
+    fretmarkers: "Mother of pearl dots"
     nut: "Bone, 43mm"
-    finish: "French Polish"
-  fingerboard:
-    wood: "Indian Rosewood"
-    inlays: "Mother of pearl dots"
+    details: "Tortoise celluloid binding"
+    finish: "Nitrocellulose"
+  technical:
+    scale: "25.5\""
+    radius: "14\""
+    neck_profile: "D-shape"
+    frets: "20"
   hardware:
-    tuners: "Waverly nickel open-back"
     bridge: "Rosewood belly bridge"
+    tuners: "Waverly nickel open-back"
     finish: "Nickel"
 ---
 

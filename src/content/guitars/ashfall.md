@@ -35,30 +35,26 @@ images:
   - "/images/guitars/pyrocaster/photo-27.png"
 excerpt: "A five-string electric built on a double-cut platform — extended range without the typical headstock weight penalty."
 specs:
-  body:
-    wood: "Korina"
-    finish: "Satin Natural"
-    binding: "None"
-    weight: "3.4 kg"
-  neck:
-    wood: "Maple"
-    profile: "C-shape"
-    scale: "27\""
-    frets: 24
-    radius: "14\""
+  materials:
+    base: "Korina"
+    neck: "Maple"
+    fretboard: "Roasted Maple"
+    fretmarkers: "Luminlay side dots"
     nut: "Bone, 45mm"
-    finish: "Satin"
-  fingerboard:
-    wood: "Roasted Maple"
-    inlays: "Luminlay side dots"
+    finish: "Satin Natural"
+  technical:
+    scale: "27\""
+    radius: "14\""
+    neck_profile: "C-shape"
+    frets: "24"
+    weight: "3.4 kg"
   hardware:
-    tuners: "Hipshot Grip-Lock 5"
-    bridge: "Hipshot Fixed 5"
-    finish: "Chrome"
-  electronics:
     pickups: "EMG 85-7 (neck), EMG 81-7 (bridge) — adapted to 5-string spacing"
+    bridge: "Hipshot Fixed 5"
+    tuners: "Hipshot Grip-Lock 5"
     controls: "Master volume, master tone, 3-way toggle"
     output: "Switchcraft mono jack"
+    finish: "Chrome"
 ---
 
 Korina is underused in extended-range builds. It's lighter than mahogany, brighter in the upper mids, and it keeps the overall weight of a five-string electric manageable without going to chambering.

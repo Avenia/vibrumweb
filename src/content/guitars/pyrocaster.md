@@ -35,29 +35,26 @@ images:
   - "/images/guitars/pyrocaster/photo-27.png"
 excerpt: "A single-cut solidbody built around vintage-correct specs with a voice all its own."
 specs:
-  body:
-    wood: "Swamp Ash"
-    finish: "Nitrocellulose"
-    binding: "Cream ABS"
-  neck:
-    wood: "Hard Maple"
-    profile: "C-shape"
-    scale: "25.5\""
-    frets: 22
-    radius: "9.5\""
+  materials:
+    base: "Swamp Ash"
+    neck: "Hard Maple"
+    fretboard: "Indian Rosewood"
+    fretmarkers: "Pearloid dots"
     nut: "Bone, 42mm"
-    finish: "Satin"
-  fingerboard:
-    wood: "Indian Rosewood"
-    inlays: "Pearloid dots"
+    details: "Cream ABS binding"
+    finish: "Nitrocellulose"
+  technical:
+    scale: "25.5\""
+    radius: "9.5\""
+    neck_profile: "C-shape"
+    frets: "22"
   hardware:
-    tuners: "Gotoh SD90 locking"
-    bridge: "Wilkinson VS100N tremolo"
-    finish: "Nickel"
-  electronics:
     pickups: "Lollar Blackface (neck), Lollar Blonde (bridge)"
+    bridge: "Wilkinson VS100N tremolo"
+    tuners: "Gotoh SD90 locking"
     controls: "Master volume, master tone, 5-way selector"
     output: "Switchcraft mono jack"
+    finish: "Nickel"
 ---
 
 The Pyrocaster started with a question: what would a vintage-voiced single-cut feel like if every component was chosen for longevity and tone rather than spec-sheet appeal?

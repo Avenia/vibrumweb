@@ -35,30 +35,26 @@ images:
   - "/images/guitars/ironveil/photo-27.png"
 excerpt: "A four-string passive bass built on a J-bass outline, with alder body and a maple neck that punches straight through the mix."
 specs:
-  body:
-    wood: "Alder"
-    finish: "Nitrocellulose Sunburst"
-    binding: "None"
-    weight: "4.1 kg"
-  neck:
-    wood: "Hard Maple"
-    profile: "C-shape"
-    scale: "34\""
-    frets: 20
-    radius: "9.5\""
+  materials:
+    base: "Alder"
+    neck: "Hard Maple"
+    fretboard: "Maple"
+    fretmarkers: "Black block inlays"
     nut: "Bone, 38mm"
-    finish: "Satin"
-  fingerboard:
-    wood: "Maple"
-    inlays: "Black block inlays"
+    finish: "Nitrocellulose Sunburst"
+  technical:
+    scale: "34\""
+    radius: "9.5\""
+    neck_profile: "C-shape"
+    frets: "20"
+    weight: "4.1 kg"
   hardware:
-    tuners: "Hipshot HB6 Ultralite"
-    bridge: "Badass II"
-    finish: "Nickel"
-  electronics:
     pickups: "Lindy Fralin Split Jazz (neck & bridge)"
+    bridge: "Badass II"
+    tuners: "Hipshot HB6 Ultralite"
     controls: "Volume (neck), Volume (bridge), Master tone"
     output: "Switchcraft mono jack"
+    finish: "Nickel"
 ---
 
 The Lowline J is straightforward on purpose. Alder body, maple neck, maple board — the classic bright-and-punchy combination that defined studio bass for decades.

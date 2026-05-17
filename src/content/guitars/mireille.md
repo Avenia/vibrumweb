@@ -34,24 +34,21 @@ images:
   - "/images/guitars/driftwood-om/photo-27.png"
 excerpt: "A cedar-top classical built to concert dimensions, with a taut voice and long sustain."
 specs:
-  body:
-    wood: "Western Red Cedar (top), European Maple (back & sides)"
-    finish: "French Polish"
-    binding: "Maple"
-  neck:
-    wood: "Spanish Cedar"
-    profile: "Classical flat"
-    scale: "650mm"
-    frets: 19
-    radius: "Flat"
+  materials:
+    top: "Western Red Cedar"
+    base: "European Maple (back & sides)"
+    neck: "Spanish Cedar"
+    fretboard: "Ebony"
     nut: "Bone, 52mm"
+    details: "Maple binding"
     finish: "French Polish"
-  fingerboard:
-    wood: "Ebony"
-    inlays: "None"
+  technical:
+    scale: "650mm"
+    neck_profile: "Classical flat"
+    frets: "19"
   hardware:
-    tuners: "Rubner gold with ebony buttons"
     bridge: "Indian Rosewood tie bridge"
+    tuners: "Rubner gold with ebony buttons"
     finish: "Gold"
 ---
 

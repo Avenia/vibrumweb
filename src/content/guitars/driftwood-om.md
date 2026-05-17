@@ -34,24 +34,23 @@ images:
   - "/images/guitars/driftwood-om/photo-27.png"
 excerpt: "An orchestra-model acoustic with a cedar top and walnut back and sides — warm, focused, and immediate."
 specs:
-  body:
-    wood: "Western Red Cedar (top), Claro Walnut (back & sides)"
-    finish: "Nitrocellulose"
-    binding: "Maple"
-  neck:
-    wood: "Mahogany"
-    profile: "Modified V"
-    scale: "25.4\""
-    frets: 20
-    radius: "16\""
+  materials:
+    top: "Western Red Cedar"
+    base: "Claro Walnut (back & sides)"
+    neck: "Mahogany"
+    fretboard: "Ebony"
+    fretmarkers: "Abalone side dots"
     nut: "Bone, 44mm"
-    finish: "French Polish"
-  fingerboard:
-    wood: "Ebony"
-    inlays: "Abalone side dots"
+    details: "Maple binding"
+    finish: "Nitrocellulose"
+  technical:
+    scale: "25.4\""
+    radius: "16\""
+    neck_profile: "Modified V"
+    frets: "20"
   hardware:
-    tuners: "Gotoh 510 gold"
     bridge: "Ebony pyramid bridge"
+    tuners: "Gotoh 510 gold"
     finish: "Gold"
 ---
 

@@ -34,24 +34,23 @@ images:
   - "/images/guitars/driftwood-om/photo-27.png"
 excerpt: "A commissioned parlour guitar in spruce and maple — compact body, clear voice, built for a travelling player."
 specs:
-  body:
-    wood: "Adirondack Spruce (top), Flamed Maple (back & sides)"
-    finish: "Nitrocellulose"
-    binding: "Ivoroid"
-  neck:
-    wood: "Mahogany"
-    profile: "C-shape"
-    scale: "24.9\""
-    frets: 19
-    radius: "16\""
+  materials:
+    top: "Adirondack Spruce"
+    base: "Flamed Maple (back & sides)"
+    neck: "Mahogany"
+    fretboard: "Ebony"
+    fretmarkers: "Diamond abalone"
     nut: "Bone, 43mm"
-    finish: "French Polish"
-  fingerboard:
-    wood: "Ebony"
-    inlays: "Diamond abalone"
+    details: "Ivoroid binding"
+    finish: "Nitrocellulose"
+  technical:
+    scale: "24.9\""
+    radius: "16\""
+    neck_profile: "C-shape"
+    frets: "19"
   hardware:
-    tuners: "Gotoh 510 nickel"
     bridge: "Ebony pyramid bridge"
+    tuners: "Gotoh 510 nickel"
     finish: "Nickel"
 ---
 

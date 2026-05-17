@@ -35,30 +35,26 @@ images:
   - "/images/guitars/ironveil/photo-27.png"
 excerpt: "A five-string active bass with extended low end and an onboard preamp tuned for studio and live use."
 specs:
-  body:
-    wood: "Swamp Ash"
-    finish: "Satin Charcoal"
-    binding: "None"
-    weight: "4.3 kg"
-  neck:
-    wood: "Maple / Walnut 5-piece laminate"
-    profile: "Asymmetric C"
-    scale: "35\""
-    frets: 24
-    radius: "12\""
+  materials:
+    base: "Swamp Ash"
+    neck: "Maple / Walnut 5-piece laminate"
+    fretboard: "Pau Ferro"
+    fretmarkers: "White dots"
     nut: "Graphtech TUSQ XL, 45mm"
-    finish: "Satin"
-  fingerboard:
-    wood: "Pau Ferro"
-    inlays: "White dots"
+    finish: "Satin Charcoal"
+  technical:
+    scale: "35\""
+    radius: "12\""
+    neck_profile: "Asymmetric C"
+    frets: "24"
+    weight: "4.3 kg"
   hardware:
-    tuners: "Hipshot HB6 Ultralite 5"
-    bridge: "Hipshot A-style 5"
-    finish: "Black"
-  electronics:
     pickups: "Bartolini MK5 soapbars (neck & bridge)"
+    bridge: "Hipshot A-style 5"
+    tuners: "Hipshot HB6 Ultralite 5"
     controls: "Master volume, balance, 3-band EQ (bass/mid/treble)"
     output: "Switchcraft mono jack"
+    finish: "Black"
 ---
 
 The Cinderblock 5 is built around a 35-inch scale to keep the B string focused and articulate. The five-piece maple/walnut neck is rigid and resonant, with an asymmetric profile that sits naturally in the hand.

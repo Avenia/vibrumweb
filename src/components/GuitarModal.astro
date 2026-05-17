@@ -195,7 +195,7 @@
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-text-muted);
     margin: 0;
   }
 
@@ -211,6 +211,7 @@
     font-size: 0.9rem;
     color: var(--color-text-muted);
     line-height: 1.75;
+    text-align: justify;
   }
 
   :global(.modal-prose p + p) {
@@ -222,7 +223,7 @@
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--color-accent);
     margin: 0;
   }
 
@@ -433,7 +434,7 @@
   document.addEventListener('keydown', e => {
     if (!backdrop.classList.contains('modal-backdrop--open')) return;
     if (e.key === 'Escape') closeModal();
-    if (e.key === 'ArrowLeft')  showPhoto(current - 1);
-    if (e.key === 'ArrowRight') showPhoto(current + 1);
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); showPhoto(current - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); showPhoto(current + 1); }
   });
 </script>
