@@ -4,159 +4,198 @@ import PageLayout from '../layouts/PageLayout.astro';
 
 <PageLayout
   title="About — Vibrum Guitars"
-  description="Vibrum is a custom guitar workshop in Belgrade, Serbia. Each instrument is built by hand with traditional craftsmanship and uncompromising attention to detail."
+  description="Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship."
 >
   <div class="container section">
-    <header class="page-header">
-      <p class="eyebrow">The workshop</p>
-      <h1>About Vibrum</h1>
-    </header>
 
-    <div class="about-body">
-      <div class="about-prose prose">
+<div class="about-grid">
 
-        <h2>The work</h2>
-        <p>
-          Vibrum is a custom guitar workshop based in Belgrade, Serbia. Every instrument is built by hand — from selecting raw tonewoods to cutting nuts and setting final action. No shortcuts, no outsourced parts, no compromise on the things that matter.
-        </p>
-        <p>
-          Each guitar is a collaboration between material and intention. Tonewoods are chosen for their acoustic properties first and appearance second. Hardware is selected for reliability and feel. Pickups for voice and dynamics. The result is an instrument built to last and to be played.
-        </p>
-
-        <h2>The philosophy</h2>
-        <p>
-          Good instruments are not defined by price or brand. They are defined by the quality of decisions made at every stage of construction. The right wood for the right build. The correct fret geometry for the intended playing style. A finish thin enough to let the wood breathe.
-        </p>
-        <p>
-          At Vibrum, we build slowly. One instrument at a time. Every detail receives the attention it deserves because an instrument that lasts decades earns that attention.
-        </p>
-
-        <h2>Commissions</h2>
-        <p>
-          We build custom instruments to specification. If you have a clear vision for your instrument — tonewoods, hardware, pickups, dimensions, aesthetics — we want to hear it. If you have a sound in your head but not a spec sheet, we can help you develop one.
-        </p>
-        <p>
-          Commission inquiries are handled through email. We discuss the build in detail before any commitment is made. Lead times vary and are communicated honestly.
-        </p>
-        <p>
-          <a href="/contact" class="inline-link">Get in touch →</a>
-        </p>
-
-        <h2>Belgrade, Serbia</h2>
-        <p>
-          The workshop is located in Belgrade. Instruments can be viewed and played by appointment. International shipping is available.
-        </p>
-
-      </div>
-
-      <aside class="about-aside">
-        <div class="aside-block">
-          <h3 class="aside-label">Based in</h3>
-          <p>Belgrade, Serbia</p>
+      <div class="grid-row">
+        <div class="grid-label">
+          <span class="label-text">The Story</span>
         </div>
-        <div class="aside-block">
-          <h3 class="aside-label">Builds</h3>
-          <p>Electric, acoustic, bass</p>
-        </div>
-        <div class="aside-block">
-          <h3 class="aside-label">Commissions</h3>
-          <p>Open — contact for details</p>
-        </div>
-        <div class="aside-block">
-          <h3 class="aside-label">Contact</h3>
+        <div class="grid-content prose">
           <p>
-            <a href="mailto:info@vibrumguitars.com" class="inline-link">info@vibrumguitars.com</a>
+            Vibrum was founded by three friends brought together by a shared obsession with guitars, wood and craftsmanship.
+          </p>
+          <p>
+            Although the workshop officially began taking shape in 2022, the idea behind it goes back to 2015 — when each of us, independently and in different ways, was already deeply involved with woodworking and music. Some professionally, some as a craft, and some as a passion that never really stopped growing.
+          </p>
+          <p>
+            We are not just builders of instruments — we are players first. Each of us plays guitar or bass. Two of us have shared the stage in a cover band for many years. Because of that, we understand what musicians need.
+          </p>
+          <p>
+            What connects us is a constant curiosity for sound quality, especially when it comes to guitars. We are also strongly drawn to the art of woodworking itself, which will always remain an essential part of what we do.
           </p>
         </div>
-      </aside>
+      </div>
+
+      <div class="grid-row team-row">
+        <div class="grid-label">
+          <span class="label-text">The Team</span>
+        </div>
+        <div class="grid-content">
+          <div class="team-grid">
+            <div class="team-member">
+              <div class="team-photo-wrap">
+                <img src="/images/about/ProfilePhoto_01.png" alt="Martin" class="team-photo" />
+              </div>
+              <p class="team-name">Martin</p>
+            </div>
+            <div class="team-member">
+              <div class="team-photo-wrap">
+                <img src="/images/about/ProfilePhoto_02.png" alt="Braca" class="team-photo team-photo--grayscale" />
+              </div>
+              <p class="team-name">Braca</p>
+            </div>
+            <div class="team-member">
+              <div class="team-photo-wrap">
+                <img src="/images/about/ProfilePhoto_03.png" alt="Ognjen" class="team-photo team-photo--grayscale" />
+              </div>
+              <p class="team-name">Ognjen</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-row">
+        <div class="grid-label">
+          <span class="label-text">The Workshop</span>
+        </div>
+        <div class="grid-content prose">
+          <p>
+            Vibrum is a small, focused workshop based in Belgrade, Serbia.
+          </p>
+          <p>
+            We build slowly and intentionally — developing our own models while staying open to custom ideas and personal visions. Every instrument is treated as a one-off piece, shaped by careful decisions rather than speed or volume.
+          </p>
+          <p>
+            We use only carefully selected, high-quality tonewoods, chosen not only for appearance, but for how they behave acoustically and structurally over time.
+          </p>
+          <p>
+            We also believe that an instrument should not just exist as an object — it should become a partner to the musician who plays it.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-row">
+        <div class="grid-label">
+          <span class="label-text">The Philosophy</span>
+        </div>
+        <div class="grid-content prose">
+          <p>
+            Good instruments are not defined by price or brand. They are defined by the quality of decisions made at every stage of construction.
+          </p>
+          <p>
+            The right wood for the right build.<br />
+            The correct fret geometry for the intended playing style.<br />
+            A finish thin enough to let the wood breathe.
+          </p>
+          <p>
+            At Vibrum, we build slowly. One instrument at a time. Every detail receives the attention it deserves because an instrument that lasts decades earns that attention.
+          </p>
+        </div>
+      </div>
+
     </div>
   </div>
 </PageLayout>
 
 <style>
-  .page-header {
-    margin-bottom: var(--space-lg);
+.about-grid {
+    display: flex;
+    flex-direction: column;
   }
 
-  .eyebrow {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: var(--space-xs);
-  }
-
-  .about-body {
+  .grid-row {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
-  }
-
-  @media (min-width: 768px) {
-    .about-body {
-      grid-template-columns: 1fr 240px;
-    }
-  }
-
-  .about-prose {
-    font-size: 1.05rem;
-    line-height: 1.85;
-    max-width: 680px;
-  }
-
-  .inline-link {
-    color: var(--color-accent);
-    border-bottom: 1px solid rgba(201, 168, 76, 0.4);
-    transition: border-color var(--transition);
-  }
-
-  .inline-link:hover {
-    border-color: var(--color-accent);
-  }
-
-  .about-aside {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 160px 1fr;
+    align-items: start;
     gap: var(--space-md);
-    padding-top: 0.25rem;
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  @media (min-width: 768px) {
-    .about-aside {
-      padding-top: 0.5rem;
-      border-left: 1px solid var(--color-border);
-      padding-left: var(--space-md);
+  .grid-row:first-child {
+    padding-top: 0;
+  }
+
+  .grid-row:last-child {
+    border-bottom: none;
+  }
+
+  @media (max-width: 640px) {
+    .grid-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
     }
   }
 
-  .aside-block {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  .grid-label {
+    padding-top: 0;
   }
 
-  .aside-label {
-    font-family: var(--font-body);
-    font-size: 0.63rem;
+  .label-text {
+    font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-accent);
   }
 
-  .aside-block p {
-    font-size: 0.9rem;
+  .grid-content {
+    font-size: 1rem;
+    line-height: 1.85;
     color: var(--color-text);
+    max-width: 600px;
+    text-align: justify;
+  }
+
+  /* Team */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  @media (max-width: 480px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+      max-width: 200px;
+    }
+  }
+
+  .team-member {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .team-photo-wrap {
+    aspect-ratio: 1 / 2;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 5px rgba(201, 168, 76, 0.2);
+  }
+
+  .team-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .team-photo--grayscale {
+    filter: grayscale(100%);
+  }
+
+.team-name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text);
+    text-align: center;
     margin: 0;
-  }
-
-  .aside-block a {
-    color: var(--color-text);
-    transition: color var(--transition);
-  }
-
-  .aside-block a:hover {
-    color: var(--color-accent);
   }
 </style>
