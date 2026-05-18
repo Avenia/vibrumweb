@@ -179,6 +179,14 @@ import PageLayout from '../layouts/PageLayout.astro';
     .grid-row {
       grid-template-columns: 1fr;
       gap: var(--space-sm);
+      padding: var(--space-sm) 0;
+    }
+
+    .grid-label,
+    .grid-content {
+      padding-inline: 1.5rem;
+      text-align: justify;
+      hyphens: auto;
     }
   }
 
@@ -211,8 +219,8 @@ import PageLayout from '../layouts/PageLayout.astro';
 
   @media (max-width: 480px) {
     .team-grid {
-      grid-template-columns: 1fr;
-      max-width: 200px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
     }
   }
 
