@@ -265,6 +265,13 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   .strip-prev { left: 0.25rem; }
   .strip-next { right: 0.25rem; }
 
+  @media (max-width: 639px) {
+    .strip-card,
+    .strip-card--view-all {
+      flex: 0 0 calc(100vw - 7rem);
+    }
+  }
+
   @media (max-width: 639px), (hover: none) {
     .strip-arrow { display: none; }
   }
