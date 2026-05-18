@@ -55,7 +55,7 @@ import PageLayout from '../layouts/PageLayout.astro';
             </div>
             <div class="form-field">
               <label for="message" class="form-label">Message</label>
-              <textarea id="message" name="message" class="form-input form-textarea" placeholder="Write your message here..." autocomplete="off" required oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+              <textarea id="message" name="message" class="form-input form-textarea" placeholder="Write your message here..." autocomplete="off" maxlength="2048" required oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
               <span class="field-error" id="message-error">Please write your message.</span>
             </div>
             <button type="submit" class="cta-btn">Send message →</button>
@@ -214,6 +214,62 @@ import PageLayout from '../layouts/PageLayout.astro';
   @media (min-width: 768px) {
     .contact-body {
       grid-template-columns: 3fr 2fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .container.section {
+      padding-top: var(--space-md);
+    }
+
+    .page-header,
+    .contact-body {
+      padding-inline: 1.5rem;
+    }
+
+    .page-header h3 {
+      font-size: 1.3rem;
+    }
+
+    .page-lead {
+      font-size: 0.9rem;
+    }
+
+    .network-section {
+      order: -1;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header .eyebrow {
+      margin-bottom: var(--space-sm);
+    }
+
+    .eyebrow {
+      margin-bottom: var(--space-xs);
+    }
+
+    .contact-body {
+      gap: var(--space-sm);
+    }
+
+    .icon-link svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .network-section {
+      gap: var(--space-xs);
+    }
+
+    .network-section .eyebrow {
+      margin-bottom: 0;
+    }
+
+    .network-section {
+      margin-bottom: 1rem;
     }
   }
 

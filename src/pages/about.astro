@@ -176,6 +176,10 @@ import PageLayout from '../layouts/PageLayout.astro';
   }
 
   @media (max-width: 640px) {
+    .container.section {
+      padding-top: var(--space-md);
+    }
+
     .grid-row {
       grid-template-columns: 1fr;
       gap: var(--space-sm);
