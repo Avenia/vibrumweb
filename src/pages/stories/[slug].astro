@@ -1,6 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
+import GuitarModal from '../../components/GuitarModal.astro';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories', ({ data }) => !data.draft);
@@ -12,6 +13,29 @@ export async function getStaticPaths() {
 
 const { story } = Astro.props;
 const { Content } = await story.render();
+
+const guitar = story.data.guitar ? await getEntry('guitars', story.data.guitar) : null;
+const guitarRendered = guitar ? await guitar.render() : null;
+const GuitarContent = guitarRendered?.Content;
+const guitarImages = guitar ? [guitar.data.coverImage, ...(guitar.data.images ?? [])] : [];
+
+const typeLabels: Record<string, string> = {
+  electric: 'Electric', acoustic: 'Acoustic', bass: 'Bass', classical: 'Classical',
+};
+const sectionLabels: Record<string, string> = {
+  materials: 'Materials', technical: 'Technical', hardware: 'Hardware',
+};
+const fieldLabels: Record<string, string> = {
+  top: 'Top', base: 'Base', neck: 'Neck', fretboard: 'Fretboard',
+  headstock_top: 'Headstock Top', fretmarkers: 'Fretmarkers',
+  nut: 'Nut', frets: 'Frets', details: 'Details', finish: 'Finish',
+  body_shape: 'Body Shape', scale: 'Scale Length', nut_width: 'Nut Width',
+  radius: 'Fingerboard Radius', neck_profile: 'Neck Profile', weight: 'Weight',
+  pickups: 'Pickups', bridge: 'Bridge', tailpiece: 'Tailpiece',
+  pots: 'Pots', controls: 'Controls', switch: 'Switch',
+  tuners: 'Tuners', neck_plate: 'Neck Plate', strap_locks: 'Strap Locks',
+  output: 'Output Jack',
+};
 
 const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   day: 'numeric',
@@ -50,12 +74,12 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
           <Content />
         </article>
 
-        {story.data.guitar && (
+        {guitar && (
           <aside class="story-guitar-link">
             <p class="story-guitar-label">Featured instrument</p>
-            <a href={`/gallery/${story.data.guitar}`} class="story-guitar-btn">
+            <button type="button" class="story-guitar-btn" id="story-guitar-trigger">
               View the guitar →
-            </a>
+            </button>
           </aside>
         )}
       </div>
@@ -63,7 +87,55 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
       <a href="/" class="back-link">← Back to Stories</a>
     </div>
   </div>
+
+  {guitar && GuitarContent && (
+    <div id="story-guitar-wrapper" hidden>
+      <template class="modal-data" data-slug={guitar.slug}>
+        <div
+          data-title={guitar.data.title}
+          data-year={guitar.data.year}
+          data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
+          data-status={guitar.data.status}
+          data-images={JSON.stringify(guitarImages)}
+        >
+          <div class="modal-specs">
+            {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
+              if (!fields) return null;
+              const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
+              if (rows.length === 0) return null;
+              return (
+                <div class="spec-section">
+                  <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
+                  <dl class="spec-list">
+                    {rows.map(([key, value]) => (
+                      <div class="spec-row">
+                        <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
+                        <dd class="spec-val">{String(value)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              );
+            })}
+          </div>
+          <div class="modal-prose prose">
+            <GuitarContent />
+          </div>
+        </div>
+      </template>
+    </div>
+  )}
+
+  <GuitarModal />
 </PageLayout>
+
+<script>
+  const trigger = document.getElementById('story-guitar-trigger');
+  const wrapper = document.getElementById('story-guitar-wrapper');
+  if (trigger && wrapper) {
+    trigger.addEventListener('click', () => window.openGuitarModal(wrapper));
+  }
+</script>
 
 <style>
   .story-hero {

@@ -8,9 +8,19 @@ import GuitarStrip from '../components/GuitarStrip.astro';
 const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-const guitars = (await getCollection('guitars'))
-  .sort((a, b) => b.data.year - a.data.year)
-  .slice(0, 6);
+const slideEntries = await getCollection('slides');
+const slideGuitarSlugs = new Set(
+  slideEntries.flatMap(s => {
+    const m = s.data.button?.url?.match(/^\/gallery#guitar-(.+)$/);
+    return m ? [m[1]] : [];
+  })
+);
+
+const allGuitars = (await getCollection('guitars')).sort((a, b) => b.data.year - a.data.year);
+const top6 = allGuitars.slice(0, 6);
+const top6Slugs = new Set(top6.map(g => g.slug));
+const slideExtras = allGuitars.filter(g => slideGuitarSlugs.has(g.slug) && !top6Slugs.has(g.slug));
+const guitars = [...top6, ...slideExtras];
 ---
 
 <PageLayout

@@ -61,7 +61,7 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
           </div>
           <p class="strip-card-title">{g.data.title}</p>
 
-          <template class="modal-data" data-slug={g.id}>
+          <template class="modal-data" data-slug={g.slug}>
             <div
               data-title={g.data.title}
               data-year={g.data.year}

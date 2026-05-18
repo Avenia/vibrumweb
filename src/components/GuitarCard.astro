@@ -1,23 +1,16 @@
 ---
 interface Props {
   title: string;
-  slug: string;
   year: number;
   status: string;
   coverImage: string;
   excerpt: string;
-  modal?: boolean;
 }
 
-const { title, slug, year, status, coverImage, excerpt, modal = false } = Astro.props;
-
-const Tag = modal ? 'button' : 'a';
-const linkProps = modal
-  ? { type: 'button' as const, class: 'guitar-card guitar-card-trigger' }
-  : { href: `/gallery/${slug}`, class: 'guitar-card' };
+const { title, year, status, coverImage, excerpt } = Astro.props;
 ---
 
-<Tag {...linkProps}>
+<button type="button" class="guitar-card guitar-card-trigger">
   <div class="guitar-card-image">
     <img src={coverImage} alt={title} loading="lazy" />
     {status === 'sold' && (

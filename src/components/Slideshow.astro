@@ -343,6 +343,18 @@ const slides = slideEntries.map(e => e.data);
   // --- Slide button ---
   const slideBtn = document.getElementById('slide-btn');
 
+  slideBtn.addEventListener('click', (e) => {
+    const url = slideBtn.getAttribute('href') ?? '';
+    const match = url.match(/^\/gallery#guitar-(.+)$/);
+    if (!match) return;
+    const slug = match[1];
+    const tpl = document.querySelector(`template.modal-data[data-slug="${slug}"]`);
+    const card = tpl?.closest('.strip-card-trigger, .guitar-card-wrapper');
+    if (!card) return;
+    e.preventDefault();
+    window.openGuitarModal(card);
+  });
+
   function showButton(btn) {
     if (btn) {
       slideBtn.textContent = btn.label;
