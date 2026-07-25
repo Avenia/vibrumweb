@@ -57,13 +57,13 @@
 }
 
 html {
+  background: #060403;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: linear-gradient(110deg, #241c0d, #060403 25%, #060403 60%, #181209);
-  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: 1rem;

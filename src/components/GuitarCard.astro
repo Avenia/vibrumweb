@@ -104,4 +104,11 @@ const { title, year, status, coverImage, excerpt } = Astro.props;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  @media (max-width: 768px) {
+    .guitar-card-excerpt { display: none; }
+    .guitar-card-meta { margin-bottom: 0; }
+    .guitar-card-image { aspect-ratio: 9 / 16; }
+    .guitar-card-title { font-size: 0.85rem; }
+  }
 </style>

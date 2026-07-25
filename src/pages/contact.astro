@@ -57,6 +57,7 @@ import PageLayout from '../layouts/PageLayout.astro';
               <label for="message" class="form-label">Message</label>
               <textarea id="message" name="message" class="form-input form-textarea" placeholder="Write your message here..." autocomplete="off" maxlength="2048" required oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
               <span class="field-error" id="message-error">Please write your message.</span>
+              <span class="char-limit-msg" id="message-limit">Message size limit reached.</span>
             </div>
             <button type="submit" class="cta-btn">Send message →</button>
           </form>
@@ -112,6 +113,12 @@ import PageLayout from '../layouts/PageLayout.astro';
 
 <script>
   const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
+  const messageInput = document.getElementById('message') as HTMLTextAreaElement;
+  const limitMsg = document.getElementById('message-limit') as HTMLElement;
+  messageInput.addEventListener('input', () => {
+    limitMsg.classList.toggle('visible', messageInput.value.length >= 2048);
+  });
 
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const confirmView = document.getElementById('confirm-view') as HTMLElement;
@@ -523,6 +530,17 @@ import PageLayout from '../layouts/PageLayout.astro';
   }
 
   .field-error.visible {
+    display: block;
+  }
+
+  .char-limit-msg {
+    display: none;
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    margin-top: 4px;
+  }
+
+  .char-limit-msg.visible {
     display: block;
   }
 
