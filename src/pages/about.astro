@@ -1,38 +1,22 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import PageLogoBg from '../components/PageLogoBg.astro';
 ---
 
 <PageLayout
   title="About — Vibrum Guitars"
   description="Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship."
 >
-  <div class="page-logo-bg" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" focusable="false">
-      <defs>
-        <style>
-          .bl-d { letter-spacing: .213em; }
-          .bl-e { letter-spacing: .217em; }
-          .bl-f { letter-spacing: .213em; }
-          .bl-g { font-family: 'TERMINAT', Terminator, serif; font-size: 27.486px; }
-          .bl-g, .bl-h { fill: currentColor; }
-          .bl-i { letter-spacing: .212em; }
-          .bl-j { letter-spacing: .211em; }
-        </style>
-      </defs>
-      <path class="bl-h" d="m157,41v111.958c0,.179-.095.344-.25.433l-96.939,55.98c-.443.256-.939-.24-.683-.683L156.067,40.75c.256-.443.933-.262.933.25Z"/>
-      <path class="bl-h" d="m163,152.958V40.999c0-.512.677-.693.933-.25l96.939,167.938c.256.443-.24.939-.683.683l-96.939-55.98c-.155-.089-.25-.254-.25-.433Z"/>
-      <path class="bl-h" d="m62.809,214.567l96.941-55.98c.155-.089.345-.089.5,0l96.94,55.98c.443.256.261.933-.25.933H63.059c-.512,0-.693-.677-.25-.933Z"/>
-      <text class="bl-g" transform="translate(62.698 243.05)"><tspan class="bl-f" x="0" y="0">V</tspan><tspan class="bl-e" x="35.853" y="0">I</tspan><tspan class="bl-j" x="50.063" y="0">BR</tspan><tspan class="bl-i" x="124.43" y="0">U</tspan><tspan class="bl-d" x="161.962" y="0">M</tspan></text>
-    </svg>
-  </div>
+  <PageLogoBg />
 
   <div class="container section">
+    <h1 class="visually-hidden">About Vibrum Guitars</h1>
 
 <div class="about-grid">
 
       <div class="grid-row story-row">
         <div class="grid-label">
-          <span class="label-text">The Story</span>
+          <h2 class="label-text">The Story</h2>
         </div>
         <div class="grid-content prose">
           <p>
@@ -52,25 +36,25 @@ import PageLayout from '../layouts/PageLayout.astro';
 
       <div class="grid-row team-row">
         <div class="grid-label">
-          <span class="label-text">The Team</span>
+          <h2 class="label-text">The Team</h2>
         </div>
         <div class="grid-content">
           <div class="team-grid">
             <div class="team-member">
               <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_01.png" alt="Martin" class="team-photo" />
+                <img src="/images/about/ProfilePhoto_01.webp" alt="Portrait of Martin" class="team-photo" width="600" height="1200" decoding="async" />
               </div>
               <p class="team-name">Martin</p>
             </div>
             <div class="team-member">
               <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_02.png" alt="Braca" class="team-photo team-photo--grayscale" />
+                <img src="/images/about/ProfilePhoto_02.webp" alt="Portrait of Bratislav" class="team-photo" width="600" height="1200" decoding="async" />
               </div>
               <p class="team-name">Bratislav</p>
             </div>
             <div class="team-member">
               <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_03.png" alt="Ognjen" class="team-photo team-photo--grayscale" />
+                <img src="/images/about/ProfilePhoto_03.webp" alt="Portrait of Ognjen" class="team-photo" width="600" height="1200" decoding="async" />
               </div>
               <p class="team-name">Ognjen</p>
             </div>
@@ -80,47 +64,57 @@ import PageLayout from '../layouts/PageLayout.astro';
 
       <div class="grid-row">
         <div class="grid-label">
-          <span class="label-text">The Work</span>
+          <h2 class="label-text">The Work</h2>
         </div>
         <div class="grid-content prose">
           <p>
             Vibrum is a small, focused workshop based in Belgrade, Serbia.
           </p>
           <p>
-            We build slowly and intentionally — developing our own models while staying open to custom ideas and personal visions. Every instrument is treated as a one-off piece, shaped by careful decisions rather than speed or volume.
+            We build slowly and intentionally — developing our own models while staying open to custom ideas and personal visions. Every instrument is treated as a one-off piece, shaped by deliberate decisions rather than speed or volume.
           </p>
           <p>
-            We use only carefully selected, high-quality tonewoods, chosen not only for appearance, but for how they behave acoustically and structurally over time.
+            We select tonewoods not only for how they look, but for how they behave acoustically and structurally over time.
           </p>
           <p>
-            We pay close attention to precise geometry at every stage of construction, ensuring optimal playability and balance. Hardware is carefully selected to match each instrument's character and purpose, rather than applied as a standard choice.
+            We hold precise geometry at every stage of construction — playability and balance rest on it. Hardware is matched to each instrument's character and purpose, rather than applied as a standard choice.
           </p>
           <p>
-            Our finishing process is designed to be breathable and durable, allowing the instrument to resonate freely and age naturally over time.
+            Our finishing process is breathable and durable, allowing the instrument to resonate freely and age naturally.
           </p>
         </div>
       </div>
 
       <div class="grid-row">
         <div class="grid-label">
-          <span class="label-text">The Philosophy</span>
+          <h2 class="label-text">The Philosophy</h2>
         </div>
         <div class="grid-content prose">
           <p>
             Good instruments are not defined by price or brand, but by the intention and clarity behind every decision made during their creation.
           </p>
           <p>
-            At Vibrum Guitars, each instrument is built one at a time. Every piece is individually considered and shaped according to its purpose and character.
+            An instrument is never really finished in the workshop. We build the structure, set the geometry, and voice it as far as our hands can take it. The rest happens later — over years, in someone else's hands, in rooms we will never hear.
           </p>
           <p>
-            The selection of materials, the structural geometry, and the hardware are all chosen specifically for each instrument, ensuring that nothing is generic or incidental. Every element has a reason for being there.
+            That is why we work the way we do. Something meant to be played for decades has to be right in the places nobody looks, long before it is beautiful in the places they do.
           </p>
           <p>
-            We believe an instrument is not just an object of construction, but something that continues to take shape through the hands of the musician.
+            We are not trying to build instruments that impress on paper. We are trying to build the one a player reaches for without thinking.
           </p>
-          <p>
-            We believe that careful, unhurried work produces instruments with character, stability, and longevity. Our instruments are not just built — they are carefully resolved.
-          </p>
+        </div>
+      </div>
+
+      <div class="grid-row">
+        <div class="grid-label">
+          <h2 class="label-text">Next</h2>
+        </div>
+        <div class="grid-content">
+          <p class="cta-lead">See what we have built, or tell us what you have in mind.</p>
+          <div class="cta-actions">
+            <a href="/gallery" class="cta-btn">Browse the gallery →</a>
+            <a href="/contact" class="cta-link">Get in touch →</a>
+          </div>
         </div>
       </div>
 
@@ -129,31 +123,12 @@ import PageLayout from '../layouts/PageLayout.astro';
 </PageLayout>
 
 <style>
-  .page-logo-bg {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.05;
-    color: var(--color-text);
-  }
-
-  .page-logo-bg svg {
-    width: min(99vw, 99vh);
-    height: auto;
-    display: block;
-    transform: translateY(6%);
-  }
-
   .container {
     position: relative;
     z-index: 1;
   }
 
-.about-grid {
+  .about-grid {
     display: flex;
     flex-direction: column;
   }
@@ -189,7 +164,9 @@ import PageLayout from '../layouts/PageLayout.astro';
     .grid-label,
     .grid-content {
       padding-inline: 1.5rem;
-      text-align: justify;
+    }
+
+    .grid-content {
       hyphens: auto;
     }
 
@@ -199,16 +176,17 @@ import PageLayout from '../layouts/PageLayout.astro';
       padding-top: 0;
     }
 
-    .story-row {
+    /* Story is the DOM first child, so `.grid-row:first-child` zeroes its top
+       padding. Team sits visually first here, so Story needs the spacing back —
+       matched on `.grid-row.story-row` to outweigh that reset. */
+    .grid-row.story-row {
       padding-top: var(--space-sm);
     }
   }
 
-  .grid-label {
-    padding-top: 0;
-  }
-
   .label-text {
+    /* Overrides the global heading font so these read as labels, not headings. */
+    font-family: var(--font-body);
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.18em;
@@ -221,7 +199,6 @@ import PageLayout from '../layouts/PageLayout.astro';
     line-height: 1.85;
     color: var(--color-text);
     max-width: 600px;
-    text-align: justify;
   }
 
   /* Team */
@@ -258,9 +235,8 @@ import PageLayout from '../layouts/PageLayout.astro';
     height: 100%;
     object-fit: cover;
     display: block;
-  }
-
-  .team-photo--grayscale {
+    /* Sources are already black and white; this keeps any future colour
+       replacement consistent with the rest of the row. */
     filter: grayscale(100%);
   }
 
@@ -270,5 +246,45 @@ import PageLayout from '../layouts/PageLayout.astro';
     color: var(--color-text);
     text-align: center;
     margin: 0;
+  }
+
+  /* Closing call to action */
+  .cta-lead {
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .cta-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: #0a0906;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    transition: opacity var(--transition);
+  }
+
+  .cta-btn:hover {
+    opacity: 0.88;
+  }
+
+  .cta-link {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    opacity: 0.75;
+    transition: opacity var(--transition);
+  }
+
+  .cta-link:hover {
+    opacity: 1;
   }
 </style>

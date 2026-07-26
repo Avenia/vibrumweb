@@ -5,3 +5,6 @@ dist
 .env
 .env.*
 !.env.example
+
+# Unoptimized source images, kept locally as backups of what ships in public/
+originals
