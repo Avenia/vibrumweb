@@ -114,7 +114,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
               <div>
                 <p class="info-label">Workshop</p>
                 <p class="info-value">Belgrade, Serbia</p>
-                <p class="info-note">Visits by appointment</p>
+                <!-- <p class="info-note">Visits by appointment</p> -->
               </div>
             </li>
           </ul>
@@ -314,11 +314,6 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
-  }
-
-  /* The eyebrow's own bottom margin would stack on top of .info-block's gap. */
-  .network-section .eyebrow {
-    margin-bottom: 0;
   }
 
   .info-list {
@@ -650,8 +645,19 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     }
 
     .network-section {
-      order: -1;
-      gap: var(--space-md);
+      display: contents;
+    }
+
+    .contact-form-col {
+      order: 2;
+    }
+
+    .network-section .info-block:first-child {
+      order: 3;
+    }
+
+    .network-section .info-block:last-child {
+      order: 1;
       margin-bottom: 1rem;
     }
 
