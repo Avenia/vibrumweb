@@ -14,7 +14,10 @@ import PageLogoBg from '../components/PageLogoBg.astro';
       <p class="eyebrow">Get in touch</p>
       <h3>We'd love to hear from you</h3>
       <p class="page-lead">
-      Whether you’re thinking about building a custom guitar, have questions about our available or even unavailable instruments, or simply want to learn more about who we are and what we do, feel free to reach out. If you’re interested in a collaboration, let us know. You’re also always welcome to visit our workshop in Belgrade, just get in touch first so we can set aside time for you.
+        Whether you’re thinking about commissioning a guitar, asking about a specific instrument, or just want to know more about what we do — reach out. If you’re interested in a collaboration, let us know.
+      </p>
+      <p class="page-lead">
+        You’re always welcome to visit the workshop in Belgrade. Just get in touch first, so we can set aside time for you.
       </p>
     </header>
 
@@ -25,6 +28,9 @@ import PageLogoBg from '../components/PageLogoBg.astro';
         <p class="eyebrow">Send message</p>
         <div class="contact-cta-card">
           <form class="contact-form" id="contact-form">
+            <!-- Honeypot: invisible to people, bots that auto-fill every field
+                 check it and Web3Forms discards the submission server-side. -->
+            <input type="checkbox" name="botcheck" id="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
             <div class="form-field">
               <label for="name" class="form-label">Your Name</label>
               <input type="text" id="name" name="name" class="form-input" placeholder="Your name" maxlength="64" autocomplete="off" required />
@@ -32,7 +38,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
             </div>
             <div class="form-field">
               <label for="email" class="form-label">Your Email</label>
-              <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" maxlength="64" autocomplete="off" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
+              <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" maxlength="254" autocomplete="off" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required />
               <span class="field-error" id="email-error">Please enter a valid email address.</span>
             </div>
             <div class="form-field">
@@ -45,6 +51,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
           </form>
 
           <div class="confirm-message" id="confirm-view" style="display:none">
+            <p class="confirm-intro">Check it over before it goes.</p>
             <p class="confirm-label">Name</p>
             <p class="confirm-value" id="confirm-name"></p>
             <p class="confirm-label">Email</p>
@@ -55,38 +62,82 @@ import PageLogoBg from '../components/PageLogoBg.astro';
               <button class="cta-btn" id="confirm-send">Confirm & send →</button>
               <button class="confirm-back" id="confirm-back">Go back</button>
             </div>
+            <p class="send-error" id="send-error" role="alert">
+              Something went wrong and your message was not sent. Please try again, or email us at
+              <a href="mailto:info@vibrumguitars.com">info@vibrumguitars.com</a>.
+            </p>
           </div>
 
-          <div class="success-message" id="success-view" style="display:none">
+          <div class="success-message" id="success-view" style="display:none" tabindex="-1">
             <p class="success-title">Message sent.</p>
             <p class="success-body">Thank you for reaching out. We'll get back to you soon.</p>
           </div>
         </div>
       </div>
 
-      <!-- Network column -->
+      <!-- Contact details column -->
       <div class="network-section">
-        <p class="eyebrow">Network</p>
-        <div class="social-links">
-          <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Instagram">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-            </svg>
-          </a>
-          <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Facebook">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-            </svg>
-          </a>
-          <a href="mailto:contact@vibrumguitars.com" class="icon-link" aria-label="Email">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </svg>
-          </a>
+
+        <div class="info-block">
+          <p class="eyebrow">Contact</p>
+          <ul class="info-list">
+            <li class="info-row">
+              <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+              <div>
+                <p class="info-label">Email</p>
+                <p class="info-value">
+                  <a href="mailto:info@vibrumguitars.com" class="info-link">info@vibrumguitars.com</a>
+                </p>
+              </div>
+            </li>
+
+            <li class="info-row">
+              <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <div>
+                <p class="info-label">Phone</p>
+                <p class="info-value">
+                  <a href="tel:+38166458888" class="info-link">+381 66 458 888</a>
+                </p>
+              </div>
+            </li>
+
+            <li class="info-row">
+              <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <div>
+                <p class="info-label">Workshop</p>
+                <p class="info-value">Belgrade, Serbia</p>
+                <p class="info-note">Visits by appointment</p>
+              </div>
+            </li>
+          </ul>
         </div>
+
+        <div class="info-block">
+          <p class="eyebrow">Follow us</p>
+          <div class="social-links">
+            <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -94,6 +145,12 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 </PageLayout>
 
 <script>
+  // Web3Forms delivers submissions to info@vibrumguitars.com. The access key is
+  // public by design (it can only route mail to our own inbox), so shipping it
+  // in the client bundle is the intended usage. Get one at https://web3forms.com
+  // by entering the destination address — the key arrives by email.
+  const WEB3FORMS_ACCESS_KEY = '294e2431-49b2-4dd1-bd0e-7c64d8208b45';
+
   const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
 
   const messageInput = document.getElementById('message') as HTMLTextAreaElement;
@@ -121,19 +178,55 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 
     (document.getElementById('confirm-name') as HTMLElement).textContent = name;
     (document.getElementById('confirm-email') as HTMLElement).textContent = email;
-    (document.getElementById('confirm-msg') as HTMLElement).innerHTML = message.replace(/\n/g, '<br>');
+    // .confirm-body preserves line breaks via `white-space: pre-wrap`.
+    (document.getElementById('confirm-msg') as HTMLElement).textContent = message;
 
     form.style.display = 'none';
     confirmView.style.display = 'flex';
   });
 
-  document.getElementById('confirm-send')!.addEventListener('click', () => {
-    confirmView.style.display = 'none';
-    successView.style.display = 'flex';
-    history.replaceState(null, '', window.location.pathname);
+  const sendBtn = document.getElementById('confirm-send') as HTMLButtonElement;
+  const backBtn = document.getElementById('confirm-back') as HTMLButtonElement;
+  const sendError = document.getElementById('send-error') as HTMLElement;
+  const sendLabel = sendBtn.textContent;
+
+  sendBtn.addEventListener('click', async () => {
+    sendBtn.disabled = true;
+    backBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    sendError.classList.remove('visible');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: 'New message from vibrumguitars.com',
+          from_name: 'Vibrum Guitars Website',
+          botcheck: (document.getElementById('botcheck') as HTMLInputElement).checked,
+          name: (document.getElementById('name') as HTMLInputElement).value,
+          email: (document.getElementById('email') as HTMLInputElement).value,
+          message: (document.getElementById('message') as HTMLTextAreaElement).value,
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+
+      confirmView.style.display = 'none';
+      successView.style.display = 'flex';
+      successView.focus();
+    } catch {
+      sendError.classList.add('visible');
+    } finally {
+      sendBtn.disabled = false;
+      backBtn.disabled = false;
+      sendBtn.textContent = sendLabel;
+    }
   });
 
-  document.getElementById('confirm-back')!.addEventListener('click', () => {
+  backBtn.addEventListener('click', () => {
+    sendError.classList.remove('visible');
     confirmView.style.display = 'none';
     form.style.display = 'flex';
   });
@@ -182,7 +275,12 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     font-size: 1.05rem;
     color: var(--color-text-muted);
     line-height: 1.7;
-    text-align: justify;
+  }
+
+  /* Consecutive leads keep the normal paragraph rhythm instead of stacking
+     the block's own top margin on top of it. */
+  .page-lead + .page-lead {
+    margin-top: 0;
   }
 
   .eyebrow {
@@ -200,68 +298,6 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     gap: var(--space-lg);
   }
 
-  @media (min-width: 768px) {
-    .contact-body {
-      grid-template-columns: 3fr 2fr;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .container.section {
-      padding-top: var(--space-md);
-    }
-
-    .page-header,
-    .contact-body {
-      padding-inline: 1.5rem;
-    }
-
-    .page-header h3 {
-      font-size: 1.3rem;
-    }
-
-    .page-lead {
-      font-size: 0.9rem;
-    }
-
-    .network-section {
-      order: -1;
-    }
-
-    .page-header {
-      margin-bottom: 1.5rem;
-    }
-
-    .page-header .eyebrow {
-      margin-bottom: var(--space-sm);
-    }
-
-    .eyebrow {
-      margin-bottom: var(--space-xs);
-    }
-
-    .contact-body {
-      gap: var(--space-sm);
-    }
-
-    .icon-link svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .network-section {
-      gap: var(--space-xs);
-    }
-
-    .network-section .eyebrow {
-      margin-bottom: 0;
-    }
-
-    .network-section {
-      margin-bottom: 1rem;
-    }
-  }
-
   .contact-form-col {
     display: flex;
     flex-direction: column;
@@ -271,7 +307,38 @@ import PageLogoBg from '../components/PageLogoBg.astro';
   .network-section {
     display: flex;
     flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .info-block {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-sm);
+  }
+
+  /* The eyebrow's own bottom margin would stack on top of .info-block's gap. */
+  .network-section .eyebrow {
+    margin-bottom: 0;
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: var(--space-sm);
+    align-items: start;
+  }
+
+  .info-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-accent);
+    margin-top: 3px; /* optically aligns the icon with the label's cap height */
   }
 
   .container {
@@ -286,7 +353,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: var(--space-sm);
+    margin-bottom: 2px;
   }
 
   .info-value {
@@ -335,17 +402,6 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     gap: var(--space-sm);
   }
 
-  .cta-title {
-    font-size: 1.3rem;
-  }
-
-  .cta-body {
-    font-size: 0.92rem;
-    color: var(--color-text-muted);
-    line-height: 1.65;
-    margin: 0;
-  }
-
   .cta-btn {
     display: inline-block;
     align-self: flex-start;
@@ -361,6 +417,11 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 
   .cta-btn:hover {
     opacity: 0.88;
+  }
+
+  .cta-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 
   .contact-form {
@@ -414,6 +475,12 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     box-sizing: border-box;
   }
 
+  :global(.confirm-intro) {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
   :global(.confirm-label) {
     font-size: 0.63rem;
     font-weight: 700;
@@ -423,16 +490,11 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     margin: var(--space-sm) 0 0;
   }
 
-  :global(.confirm-label:first-child) {
-    margin-top: 0;
-  }
-
   :global(.confirm-value) {
     font-size: 0.95rem;
     color: var(--color-text);
     margin: 0;
     font-family: 'Courier New', Courier, monospace;
-    text-align: justify;
     word-break: break-word;
     overflow-wrap: break-word;
     white-space: normal;
@@ -464,11 +526,39 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     opacity: 1;
   }
 
+  :global(.confirm-back:disabled) {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  :global(.send-error) {
+    display: none;
+    font-size: 0.85rem;
+    color: #c0392b;
+    line-height: 1.6;
+    margin: var(--space-sm) 0 0;
+  }
+
+  :global(.send-error.visible) {
+    display: block;
+  }
+
+  :global(.send-error a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
   :global(.success-message) {
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
     padding: var(--space-sm) 0;
+  }
+
+  /* Focused programmatically after sending so screen readers announce it;
+     the visual focus ring would be noise on a non-interactive container. */
+  :global(.success-message:focus) {
+    outline: none;
   }
 
   :global(.success-title) {
@@ -513,28 +603,61 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     overflow: hidden;
   }
 
-  .commission-note {
-    background-color: var(--color-bg-surface);
-    border: 1px solid var(--color-border);
-    border-left: 2px solid var(--color-accent);
-    border-radius: var(--radius-sm);
-    padding: var(--space-sm);
+  /* =========================================
+     Responsive — kept last so these overrides
+     win over the base rules above at equal
+     specificity, rather than depending on
+     where each base rule happens to sit.
+     ========================================= */
+  @media (min-width: 768px) {
+    .contact-body {
+      grid-template-columns: 3fr 2fr;
+    }
   }
 
-  .commission-title {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: 8px;
-  }
+  @media (max-width: 640px) {
+    .container.section {
+      padding-top: var(--space-md);
+    }
 
-  .commission-note p {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.65;
-    margin: 0;
+    .page-header,
+    .contact-body {
+      padding-inline: 1.5rem;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header h3 {
+      font-size: 1.3rem;
+    }
+
+    .page-header .eyebrow {
+      margin-bottom: var(--space-sm);
+    }
+
+    .page-lead {
+      font-size: 0.9rem;
+    }
+
+    .eyebrow {
+      margin-bottom: var(--space-xs);
+    }
+
+    .contact-body {
+      gap: var(--space-sm);
+    }
+
+    .network-section {
+      order: -1;
+      gap: var(--space-md);
+      margin-bottom: 1rem;
+    }
+
+    .icon-link svg {
+      width: 28px;
+      height: 28px;
+    }
   }
 </style>
