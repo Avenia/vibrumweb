@@ -457,6 +457,12 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     border-color: var(--color-accent);
   }
 
+  /* Focus is indicated by the border highlight above; the global
+     focus ring would double up on text fields. */
+  .form-input:focus-visible {
+    outline: none;
+  }
+
   .form-input::placeholder {
     color: var(--color-text-muted);
     opacity: 0.62;
