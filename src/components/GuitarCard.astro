@@ -2,20 +2,16 @@
 interface Props {
   title: string;
   year: number;
-  status: string;
   coverImage: string;
   excerpt: string;
 }
 
-const { title, year, status, coverImage, excerpt } = Astro.props;
+const { title, year, coverImage, excerpt } = Astro.props;
 ---
 
 <button type="button" class="guitar-card guitar-card-trigger">
   <div class="guitar-card-image">
     <img src={coverImage} alt={title} loading="lazy" />
-    {status === 'sold' && (
-      <span class="guitar-card-status guitar-card-status--sold">Sold</span>
-    )}
   </div>
   <div class="guitar-card-body">
     <h3 class="guitar-card-title">{title}</h3>
@@ -59,21 +55,6 @@ const { title, year, status, coverImage, excerpt } = Astro.props;
     height: 100%;
     object-fit: cover;
     transition: transform 350ms ease;
-  }
-
-  .guitar-card-status {
-    position: absolute;
-    top: var(--space-xs);
-    right: var(--space-xs);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: var(--radius-sm);
-    background-color: var(--color-bg);
-    color: rgba(255, 245, 220, 0.5);
-    border: 1px solid var(--color-border);
   }
 
   .guitar-card-body {

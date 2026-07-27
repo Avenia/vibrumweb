@@ -1,5 +1,5 @@
 ---
-title: "Mireille"
+title: "Kewa"
 type: "classical"
 status: "available"
 year: 2025
@@ -52,7 +52,7 @@ specs:
     finish: "Gold"
 ---
 
-The Mireille follows traditional Spanish construction — cedar top, maple back and sides, French polish throughout. The cedar produces an immediate, intimate voice that suits both early music and modern repertoire.
+The Kewa follows traditional Spanish construction — cedar top, maple back and sides, French polish throughout. The cedar produces an immediate, intimate voice that suits both early music and modern repertoire.
 
 The 650mm scale and 52mm nut width place it at standard concert dimensions. The ebony fingerboard is level and fast. The Rubner machines hold tuning cleanly without adding visual noise.
 

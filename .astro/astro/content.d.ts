@@ -183,16 +183,16 @@ declare module 'astro:content' {
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
-"lowline-j.md": {
-	id: "lowline-j.md";
-  slug: "lowline-j";
+"kewa.md": {
+	id: "kewa.md";
+  slug: "kewa";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
-"mireille.md": {
-	id: "mireille.md";
-  slug: "mireille";
+"lowline-j.md": {
+	id: "lowline-j.md";
+  slug: "lowline-j";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">
