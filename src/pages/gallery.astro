@@ -277,6 +277,7 @@ const fieldLabels: Record<string, string> = {
   overlay.addEventListener('click', closeDrawer);
 
   // Swipe gesture
+  const modalBackdrop = document.getElementById('guitar-modal-backdrop');
   let touchStartX = 0;
   let touchStartY = 0;
   let dragging = false;
@@ -284,6 +285,9 @@ const fieldLabels: Record<string, string> = {
 
   function onTouchStart(e: TouchEvent) {
     if (!isMobile()) return;
+    // While the guitar modal is open, its gestures (photo swipe) must not
+    // drag the filter drawer behind it — these listeners live on document.
+    if (modalBackdrop?.classList.contains('modal-backdrop--open')) return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
     startedOpen = drawer.classList.contains('is-open');
