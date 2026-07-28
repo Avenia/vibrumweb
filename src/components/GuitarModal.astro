@@ -418,6 +418,12 @@
       transform: rotate(45deg);
     }
 
+    /* While collapsing, [open] is still set (removed after the transition) —
+       fold the chevron back right away so it doesn't lag the tap. */
+    :global(details.modal-section.is-closing .modal-section-title)::before {
+      transform: rotate(-45deg);
+    }
+
     :global(details[open].modal-section .modal-section-title) {
       border-bottom: 1px solid var(--color-border);
     }
@@ -431,7 +437,14 @@
 
     :global(.modal-section-body-inner) {
       min-height: 0;
-      padding: var(--space-sm) var(--space-md) var(--space-md);
+      /* No padding here: padding on the grid item puts a ~48px floor under the
+         0fr track, so the collapse stops short and pops at the end. Space the
+         content with margin instead; overflow keeps it out of track sizing. */
+      overflow: hidden;
+    }
+
+    :global(.modal-section-body-inner > *) {
+      margin: var(--space-sm) var(--space-md) var(--space-md);
     }
 
     .modal-nav { display: none; }
@@ -564,19 +577,41 @@
       det.appendChild(body);
 
       if (isMobile) {
+        // Constant expand/collapse velocity: a fixed duration makes tall sections
+        // (Specifications) sweep visibly faster than short ones (Description).
+        const SPEED = 1.2; // px per ms — matches the original 300ms Description feel
+        const durationFor = (distance: number) => `${Math.max(120, distance / SPEED)}ms`;
+        let onClosed: (() => void) | null = null;
         sum.addEventListener('click', (e) => {
           e.preventDefault();
-          if (det.open) {
+          // Drop any pending close finalization so a tap mid-animation reverses
+          // the transition instead of wedging the section in a stale state.
+          if (onClosed) {
+            body.removeEventListener('transitionend', onClosed);
+            onClosed = null;
+          }
+          if (det.open && !det.classList.contains('is-closing')) {
+            det.classList.add('is-closing'); // chevron folds back immediately
+            body.style.transitionDuration = durationFor(body.offsetHeight);
             body.style.gridTemplateRows = '0fr';
-            body.addEventListener('transitionend', () => {
+            onClosed = () => {
+              onClosed = null;
               det.open = false;
+              det.classList.remove('is-closing');
               body.style.gridTemplateRows = '';
-            }, { once: true });
+              body.style.transitionDuration = '';
+            };
+            body.addEventListener('transitionend', onClosed, { once: true });
           } else {
-            det.open = true;
-            requestAnimationFrame(() => {
-              body.style.gridTemplateRows = '1fr';
-            });
+            det.classList.remove('is-closing');
+            if (!det.open) {
+              det.open = true;
+              // Force a layout so the collapsed (0fr) state is committed;
+              // otherwise the expand races the first paint and pops open.
+              void body.offsetHeight;
+            }
+            body.style.transitionDuration = durationFor(inner.scrollHeight - body.offsetHeight);
+            body.style.gridTemplateRows = '1fr';
           }
         });
       }
