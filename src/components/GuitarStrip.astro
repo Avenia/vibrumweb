@@ -8,20 +8,6 @@ interface Props {
 
 const { guitars } = Astro.props;
 
-const statusLabels: Record<string, string> = {
-  available: 'Available',
-  sold: 'Sold',
-  'in-progress': 'In Progress',
-  commission: 'Commission',
-};
-
-const typeLabels: Record<string, string> = {
-  electric:  'Electric',
-  acoustic:  'Acoustic',
-  bass:      'Bass',
-  classical: 'Classical',
-};
-
 const sectionLabels: Record<string, string> = {
   materials: 'Materials',
   technical: 'Technical',
@@ -53,11 +39,6 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
         <button type="button" class="strip-card strip-card-trigger">
           <div class="strip-card-image">
             <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
-            {g.data.status === 'sold' && (
-              <span class:list={['strip-badge', 'strip-badge--sold']}>
-                {statusLabels['sold']}
-              </span>
-            )}
           </div>
           <p class="strip-card-title">{g.data.title}</p>
 
@@ -65,8 +46,6 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
             <div
               data-title={g.data.title}
               data-year={g.data.year}
-              data-type={typeLabels[g.data.type] ?? g.data.type}
-              data-status={g.data.status}
               data-images={JSON.stringify(images)}
             >
               <div class="modal-specs">
@@ -195,26 +174,6 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   .strip-card--view-all:hover .strip-view-all-btn {
     opacity: 1;
     transform: translateY(-2px);
-  }
-
-  .strip-badge {
-    position: absolute;
-    top: var(--space-xs);
-    right: var(--space-xs);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: var(--radius-sm);
-    background-color: var(--color-bg);
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
-  }
-
-  .strip-badge--sold {
-    color: #d93030;
-    border-color: rgba(217, 48, 48, 0.4);
   }
 
   .strip-card-title {

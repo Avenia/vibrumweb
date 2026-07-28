@@ -5,7 +5,11 @@
 ---
 
 <div class="modal-backdrop" id="guitar-modal-backdrop" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="guitar-modal-title">
+  <div class="modal-shell" role="dialog" aria-modal="true" aria-labelledby="guitar-modal-title">
+    <button class="modal-close" id="guitar-modal-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal">
 
     <div class="modal-photos">
       <div class="modal-photo-stage">
@@ -29,6 +33,7 @@
       <div class="modal-info-body" id="guitar-modal-info-body"></div>
     </div>
 
+    </div>
   </div>
 </div>
 
@@ -59,20 +64,54 @@
   }
 
   /* ---- Modal shell ---- */
+  .modal-shell {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    height: calc(100vh - var(--space-lg) * 2);
+    max-height: 780px;
+    /* As a flex item of the backdrop, min-width:auto would let the photo's
+       intrinsic width push the dialog wider than the viewport. */
+    min-width: 0;
+    animation: slideUp 220ms ease;
+  }
+
+  .modal-close {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 10px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 9, 6, 0.55);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+  }
+
+  .modal-close:hover {
+    background: rgba(201, 168, 76, 0.15);
+    border-color: rgba(201, 168, 76, 0.5);
+  }
+
+  .modal-close svg { width: 18px; height: 18px; }
+
   .modal {
     position: relative;
     display: grid;
     grid-template-columns: 1fr 380px;
     grid-template-rows: 1fr;
     width: 100%;
-    max-width: 1100px;
-    height: calc(100vh - var(--space-lg) * 2);
-    max-height: 780px;
+    height: 100%;
     background: var(--color-bg-raised);
     border: 1px solid rgba(201, 168, 76, 0.2);
     border-radius: var(--radius-md);
     overflow: hidden;
-    animation: slideUp 220ms ease;
     touch-action: pan-x pan-y;
   }
 
@@ -107,6 +146,8 @@
   .modal-photo-img {
     height: 100%;
     width: auto;
+    max-width: 100%;
+    object-fit: contain;
     display: block;
   }
 
@@ -212,7 +253,6 @@
     font-size: 0.9rem;
     color: var(--color-text-muted);
     line-height: 1.75;
-    text-align: justify;
   }
 
   :global(.modal-prose p + p) {
@@ -305,12 +345,21 @@
       align-items: center;
     }
 
-    .modal {
-      display: flex;
-      flex-direction: column;
+    .modal-shell {
       height: 92svh;
       max-height: 92svh;
     }
+
+    .modal {
+      display: flex;
+      flex-direction: column;
+      /* The desktop backlight is the backdrop's radial glow; on mobile the dialog
+         covers nearly the whole screen, so glow the frame itself instead. */
+      box-shadow: 0 0 28px rgba(201, 168, 76, 0.35);
+    }
+
+    /* Touch users close via backdrop tap, swipe-back, or the browser back button. */
+    .modal-close { display: none; }
 
     .modal-photos {
       flex: 1 1 0;
@@ -407,11 +456,12 @@
   const infoBody  = document.getElementById('guitar-modal-info-body')!;
   const prevBtn   = document.getElementById('guitar-modal-prev')!;
   const nextBtn   = document.getElementById('guitar-modal-next')!;
-;
+  const closeBtn  = document.getElementById('guitar-modal-close')!;
 
   let images: string[] = [];
   let current = 0;
   let isSliding = false;
+  let lastTrigger: HTMLElement | null = null;
 
   function updateUI() {
     counterEl.textContent = images.length > 1 ? `${current + 1} / ${images.length}` : '';
@@ -442,7 +492,7 @@
     const stage = imgEl.parentElement as HTMLElement;
     const stageW = stage.clientWidth;
     // BASE mirrors the static CSS: centered portrait image, absolute so both can stack during slide
-    const BASE = 'position:absolute;inset:0;margin:auto;height:100%;width:auto;display:block';
+    const BASE = 'position:absolute;inset:0;margin:auto;height:100%;width:auto;max-width:100%;object-fit:contain;display:block';
     const TRANS_OUT = 'transition:transform 0.28s cubic-bezier(0.4,0,0.2,1),opacity 0.2s ease';
     const TRANS_IN  = 'transition:transform 0.28s cubic-bezier(0.4,0,0.2,1)';
 
@@ -450,6 +500,7 @@
 
     const incoming = new Image();
     incoming.src = images[next];
+    incoming.alt = imgEl.alt;
     // Offset by full stage width (px) so it starts fully off-screen regardless of image width
     incoming.setAttribute('style', `${BASE};${TRANS_IN};transform:translateX(${dir * stageW}px)`);
     stage.appendChild(incoming);
@@ -466,7 +517,7 @@
       current = next;
       // Promote `incoming` to be the persistent image element (avoids src-change flash).
       // Use inline styles — dynamically created elements lack Astro's scoped CSS attribute.
-      incoming.style.cssText = 'height:100%;width:auto;display:block';
+      incoming.style.cssText = 'height:100%;width:auto;max-width:100%;object-fit:contain;display:block';
       stage.removeChild(imgEl);
       imgEl = incoming as HTMLImageElement;
       isSliding = false;
@@ -485,8 +536,12 @@
     images = JSON.parse(data.dataset.images!);
     current = 0;
 
+    // The strip card is itself the trigger button; the gallery card wraps one.
+    lastTrigger = card.closest<HTMLElement>('button') ?? card.querySelector<HTMLElement>('button');
+
     titleEl.textContent = data.dataset.title!;
     yearEl.textContent = data.dataset.year!;
+    imgEl.alt = data.dataset.title!;
 
     infoBody.innerHTML = '';
 
@@ -536,6 +591,7 @@
     backdrop.classList.add('modal-backdrop--open');
     document.body.style.overflow = 'hidden';
     document.getElementById('guitar-modal-info')!.scrollTop = 0;
+    closeBtn.focus();
     if (slug) history.pushState(null, '', '#guitar-' + slug);
 
     setTimeout(() => {
@@ -573,10 +629,16 @@
     }, 0);
   }
 
-  function closeModal() {
+  function hideModal() {
+    // Return focus before hiding so it never sits inside an aria-hidden tree.
+    lastTrigger?.focus();
     backdrop.setAttribute('aria-hidden', 'true');
     backdrop.classList.remove('modal-backdrop--open');
     document.body.style.overflow = '';
+  }
+
+  function closeModal() {
+    hideModal();
     if (location.hash.startsWith('#guitar-')) {
       history.replaceState(null, '', location.pathname + location.search);
     }
@@ -585,11 +647,7 @@
   window.openGuitarModal = openModal;
 
   window.addEventListener('popstate', () => {
-    if (backdrop.classList.contains('modal-backdrop--open')) {
-      backdrop.setAttribute('aria-hidden', 'true');
-      backdrop.classList.remove('modal-backdrop--open');
-      document.body.style.overflow = '';
-    }
+    if (backdrop.classList.contains('modal-backdrop--open')) hideModal();
   });
 
   const initHash = location.hash;
@@ -602,6 +660,7 @@
 
   prevBtn.addEventListener('click', () => showPhoto(current - 1, -1));
   nextBtn.addEventListener('click', () => showPhoto(current + 1, 1));
+  closeBtn.addEventListener('click', closeModal);
 
   // Swipe to change photos + pinch to zoom image
   let swipeStartX = 0;

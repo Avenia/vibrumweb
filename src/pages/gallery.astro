@@ -7,13 +7,6 @@ import GuitarModal from '../components/GuitarModal.astro';
 const allGuitars = await getCollection('guitars');
 const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
 
-const typeLabels: Record<string, string> = {
-  electric:  'Electric',
-  acoustic:  'Acoustic',
-  bass:      'Bass',
-  classical: 'Classical',
-};
-
 const sectionLabels: Record<string, string> = {
   materials: 'Materials',
   technical: 'Technical',
@@ -130,8 +123,6 @@ const fieldLabels: Record<string, string> = {
                 <div
                   data-title={guitar.data.title}
                   data-year={guitar.data.year}
-                  data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
-                  data-status={guitar.data.status}
                   data-images={JSON.stringify(images)}
                 >
                   <div class="modal-specs">
