@@ -122,20 +122,33 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 
         <div class="info-block">
           <p class="eyebrow">Follow us</p>
-          <div class="social-links">
-            <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Instagram">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </a>
-            <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="Facebook">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-              </svg>
-            </a>
-          </div>
+          <ul class="info-list">
+            <li>
+              <a href="https://www.instagram.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="info-row social-row">
+                <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                <div>
+                  <p class="info-label">Instagram</p>
+                  <p class="info-value">@vibrumguitars</p>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <a href="https://www.facebook.com/vibrumguitars" target="_blank" rel="noopener noreferrer" class="info-row social-row">
+                <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+                <div>
+                  <p class="info-label">Facebook</p>
+                  <p class="info-value">/vibrumguitars</p>
+                </div>
+              </a>
+            </li>
+          </ul>
         </div>
 
       </div>
@@ -371,19 +384,13 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     color: var(--color-accent);
   }
 
-  .social-links {
-    display: flex;
-    flex-direction: row;
-    gap: var(--space-sm);
-  }
-
-  .icon-link {
-    display: inline-flex;
-    color: var(--color-text);
+  /* The whole row is the link, so the value picks up the accent on hover
+     the way .info-link does for the contact rows above. */
+  .social-row .info-value {
     transition: color var(--transition);
   }
 
-  .icon-link:hover {
+  .social-row:hover .info-value {
     color: var(--color-accent);
   }
 
@@ -665,11 +672,6 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     .network-section .info-block:last-child {
       order: 1;
       margin-bottom: 1rem;
-    }
-
-    .icon-link svg {
-      width: 28px;
-      height: 28px;
     }
   }
 </style>
