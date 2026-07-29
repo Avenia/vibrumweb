@@ -71,11 +71,13 @@ const slides = defineCollection({
   type: 'data',
   schema: z.object({
     src: z.string(),
-    text: z.string().default(''),
-    button: z.object({
-      label: z.string(),
-      url: z.string(),
-    }).optional(),
+    alt: z.string().default(''),
+    // Small mono label shown bottom-right of the hero, e.g. "Pyrocaster · 2024"
+    caption: z.string().optional(),
+    // Second caption line, e.g. "Electric · Available"
+    detail: z.string().optional(),
+    // Makes the caption a link, e.g. "/gallery#guitar-pyrocaster"
+    url: z.string().optional(),
   }),
 });
 

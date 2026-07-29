@@ -1,8 +1,6 @@
 {
   "src": "/images/slideshow/Screenshot 2026-03-30 at 22-35-20 Instagram.png",
-  "text": "Handcrafted in Belgrade\nWith passion.\nWith precision.",
-  "button": {
-    "label": "View Gallery →",
-    "url": "/gallery"
-  }
+  "caption": "Handcrafted in Belgrade",
+  "detail": "With passion · With precision",
+  "url": "/gallery"
 }

@@ -1,8 +1,6 @@
 {
   "src": "/images/slideshow/Screenshot 2026-03-30 at 22-35-44 Instagram.png",
-  "text": "Built to last a lifetime",
-  "button": {
-    "label": "View Guitar →",
-    "url": "/gallery#guitar-pyrocaster"
-  }
+  "caption": "Pyrocaster · 2024",
+  "detail": "Electric · Built to last a lifetime",
+  "url": "/gallery#guitar-pyrocaster"
 }

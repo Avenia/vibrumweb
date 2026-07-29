@@ -1,8 +1,6 @@
 {
   "src": "/images/slideshow/Screenshot 2026-03-30 at 22-35-55 Instagram.png",
-  "text": "Every detail considered",
-  "button": {
-    "label": "View Guitar →",
-    "url": "/gallery#guitar-pyrocaster"
-  }
+  "caption": "Pyrocaster · 2024",
+  "detail": "Every detail considered",
+  "url": "/gallery#guitar-pyrocaster"
 }

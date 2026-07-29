@@ -138,22 +138,23 @@ Set `draft: true` to commit without publishing.
 
 ---
 
-## Editing the hero slideshow
+## Editing the hero show
 
-The homepage slideshow is driven by JSON files in `src/content/slides/`. Each file (`01.json`, `02.json`, …) is one slide, sorted by filename.
+The homepage hero rotates through background slides driven by JSON files in `src/content/slides/`. Each file (`01.json`, `02.json`, …) is one slide, sorted by filename.
 
 ```json
 {
   "src": "/images/slideshow/your-image.png",
-  "text": "Line one\nLine two.",
-  "button": {
-    "label": "View Gallery →",
-    "url": "/gallery"
-  }
+  "alt": "Optional image alt text",
+  "caption": "Pyrocaster · 2024",
+  "detail": "Electric · Built to last a lifetime",
+  "url": "/gallery#guitar-pyrocaster"
 }
 ```
 
-`text` and `button` are optional. Add the image to `public/images/slideshow/` and create a new numbered JSON file to add a slide.
+`alt`, `caption`, `detail`, and `url` are optional. `caption`/`detail` appear bottom-right of the hero while that slide is showing; `url` turns the caption into a link. Add the image to `public/images/slideshow/` and create a new numbered JSON file to add a slide.
+
+The hero's fixed copy (headline, lead, CTAs, availability line) and the stats band live in `src/components/HeroShow.astro`. The instrument count in the stats band is computed from the guitars collection.
 
 ---
 
@@ -175,11 +176,11 @@ src/
     GuitarCard.astro    ← gallery grid card
     GuitarModal.astro   ← guitar detail overlay
     GuitarStrip.astro   ← horizontal guitar strip on home
-    Slideshow.astro     ← hero slideshow
+    HeroShow.astro      ← hero show (rotating slides + stats band)
     SpecTable.astro     ← guitar specs table
-    StoryCard.astro
+    WorkshopStoryCard.astro  ← story card on home
   pages/
-    index.astro         ← home (story feed + slideshow)
+    index.astro         ← home (hero, guitars, stories, newsletter)
     gallery/
       index.astro       ← gallery (all guitars)
       [slug].astro      ← guitar detail page

@@ -29,6 +29,7 @@
   --font-display: 'TERMINAT', serif;
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body:    'Roboto', -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
 
   /* Spacing */
   --space-xs:  0.5rem;

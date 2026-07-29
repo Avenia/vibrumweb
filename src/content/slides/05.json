@@ -1,8 +1,6 @@
 {
   "src": "/images/slideshow/Screenshot 2026-03-30 at 22-36-21 Instagram.png",
-  "text": "One guitar at a time",
-  "button": {
-    "label": "Explore Builds →",
-    "url": "/gallery"
-  }
+  "caption": "One guitar at a time",
+  "detail": "Vibrum workshop",
+  "url": "/gallery"
 }

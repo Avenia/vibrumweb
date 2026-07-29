@@ -1,0 +1,612 @@
+---
+import { getCollection } from 'astro:content';
+
+const slideEntries = (await getCollection('slides')).sort((a, b) => a.id.localeCompare(b.id));
+const slides = slideEntries.map(e => e.data);
+const guitarsBuilt = (await getCollection('guitars')).length;
+
+const stats = [
+  { value: String(guitarsBuilt), label: 'Instruments built' },
+  { value: '4–6', label: 'Builds per year' },
+  { value: '340h', label: 'Average bench time' },
+  { value: '3', label: 'Pairs of hands' },
+];
+---
+
+<section class="hero" id="hero" aria-label="Vibrum — handcrafted guitars">
+  <div class="hero-media" aria-hidden="true">
+    {slides.map((slide, i) => (
+      <div class={`hero-slide${i === 0 ? ' active' : ''}`} data-index={i}>
+        <img
+          src={slide.src}
+          alt={slide.alt}
+          loading={i === 0 ? 'eager' : 'lazy'}
+          fetchpriority={i === 0 ? 'high' : undefined}
+        />
+      </div>
+    ))}
+  </div>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="hero-inner container">
+    <div class="hero-content">
+      <p class="hero-eyebrow"><span class="hero-rule" aria-hidden="true"></span>Belgrade, Serbia · Est. 2022</p>
+      <h1 class="hero-title">
+        <span class="hero-line">Every guitar starts</span>
+        <span class="hero-line">as a conversation,</span>
+        <span class="hero-line hero-line-accent">not a blueprint.</span>
+      </h1>
+      <p class="hero-lead">
+        We build a handful of instruments a year in a small Belgrade workshop —
+        one at a time, by hand, for the player who already knows what they want to hear.
+      </p>
+      <div class="hero-ctas">
+        <a href="/gallery" class="hero-cta hero-cta--primary">See the guitars →</a>
+        <a href="/contact" class="hero-cta hero-cta--ghost">Start a commission</a>
+      </div>
+      <p class="hero-status"><span class="hero-status-dot" aria-hidden="true"></span>Two build slots open for 2027</p>
+    </div>
+
+    {slides.map((slide, i) => {
+      const Tag = slide.url ? 'a' : 'div';
+      return (
+        <Tag
+          href={slide.url}
+          class={`hero-caption${i === 0 ? ' active' : ''}`}
+          data-index={i}
+          tabindex={slide.url ? (i === 0 ? 0 : -1) : undefined}
+          aria-hidden={i === 0 ? 'false' : 'true'}
+        >
+          {slide.caption && <span class="hero-caption-title">{slide.caption}</span>}
+          {slide.detail && <span class="hero-caption-detail">{slide.detail}</span>}
+        </Tag>
+      );
+    })}
+  </div>
+
+  {slides.length > 1 && (
+    <div class="hero-dots">
+      {slides.map((_, i) => (
+        <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`Go to slide ${i + 1}`}></button>
+      ))}
+    </div>
+  )}
+</section>
+
+<div class="hero-stats">
+  <div class="hero-stats-inner container">
+    {stats.map(stat => (
+      <div class="hero-stat">
+        <p class="hero-stat-value">{stat.value}</p>
+        <p class="hero-stat-label">{stat.label}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: clamp(540px, calc(100svh - var(--nav-height)), 820px);
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+
+  /* ---- Rotating background ---- */
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .hero-slide.active {
+    opacity: 1;
+  }
+
+  /* Ken Burns — always applied, paused when not active so the transform is
+     held at the `from` state and never snaps to scale(1) during fade-out. */
+  .hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 58% 45%;
+    transform-origin: 60% 50%;
+    animation-name: hero-kb-zoom-in;
+    animation-duration: 8s;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-fill-mode: both;
+    animation-play-state: paused;
+  }
+
+  .hero-slide:nth-child(2n) img {
+    animation-name: hero-kb-zoom-out;
+    transform-origin: 40% 60%;
+  }
+
+  .hero-slide:nth-child(3n) img {
+    animation-name: hero-kb-pan-right;
+    transform-origin: 30% 50%;
+  }
+
+  .hero-slide:nth-child(4n) img {
+    animation-name: hero-kb-pan-left;
+    transform-origin: 70% 50%;
+  }
+
+  .hero-slide.active img {
+    animation-play-state: running;
+  }
+
+  @keyframes hero-kb-zoom-in {
+    from { transform: scale(1.08) translateX(0); }
+    to   { transform: scale(1.14) translateX(-1.5%); }
+  }
+
+  @keyframes hero-kb-zoom-out {
+    from { transform: scale(1.12) translateX(0); }
+    to   { transform: scale(1.06) translateX(1%); }
+  }
+
+  @keyframes hero-kb-pan-right {
+    from { transform: scale(1.1) translateX(-1%); }
+    to   { transform: scale(1.1) translateX(1%); }
+  }
+
+  @keyframes hero-kb-pan-left {
+    from { transform: scale(1.1) translateX(1%); }
+    to   { transform: scale(1.1) translateX(-1%); }
+  }
+
+  /* ---- Editorial shade — heavy on the left where the copy sits ---- */
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(to top, rgba(10, 9, 6, 0.62), transparent 24%),
+      linear-gradient(100deg,
+        rgba(10, 9, 6, 0.94) 0%,
+        rgba(10, 9, 6, 0.88) 46%,
+        rgba(10, 9, 6, 0.58) 70%,
+        rgba(10, 9, 6, 0.20) 88%,
+        rgba(10, 9, 6, 0.50) 100%);
+  }
+
+  /* ---- Copy ---- */
+  .hero-inner {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-content {
+    max-width: 760px;
+    padding-bottom: var(--space-md);
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 24px;
+  }
+
+  .hero-rule {
+    width: 34px;
+    height: 1px;
+    background: var(--color-accent);
+    transform-origin: left;
+    animation: hero-rule 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(2.35rem, 6vw, 5.1rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: #EDE7D4;
+    margin: 0 0 26px;
+  }
+
+  .hero-line {
+    display: block;
+    animation: hero-step 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero-line:nth-child(2) { animation-delay: 120ms; }
+  .hero-line:nth-child(3) { animation-delay: 240ms; }
+
+  .hero-line-accent {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .hero-lead {
+    font-size: clamp(1rem, 1.5vw, 1.18rem);
+    line-height: 1.65;
+    color: rgba(255, 245, 220, 0.62);
+    max-width: 560px;
+    margin: 0 0 36px;
+    animation: hero-step 1000ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    animation: hero-step 1000ms cubic-bezier(0.16, 1, 0.3, 1) 460ms both;
+  }
+
+  .hero-cta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 15px 26px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: opacity var(--transition), border-color var(--transition), color var(--transition);
+  }
+
+  .hero-cta--primary {
+    background: var(--color-accent);
+    color: #0a0906;
+  }
+
+  .hero-cta--primary:hover {
+    opacity: 0.88;
+    color: #0a0906;
+  }
+
+  .hero-cta--ghost {
+    color: #EDE7D4;
+    border: 1px solid rgba(255, 245, 220, 0.28);
+  }
+
+  .hero-cta--ghost:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .hero-status {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: rgba(255, 245, 220, 0.42);
+    margin: 32px 0 0;
+    animation: hero-step 1000ms cubic-bezier(0.16, 1, 0.3, 1) 560ms both;
+  }
+
+  .hero-status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    margin-right: 9px;
+    animation: hero-tick 2.4s ease-in-out infinite;
+  }
+
+  /* ---- Per-slide caption, bottom right ---- */
+  .hero-caption {
+    position: absolute;
+    right: var(--space-md);
+    bottom: 2.2rem;
+    z-index: 4;
+    max-width: 55%;
+    text-align: right;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-caption.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hero-caption-title {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 245, 220, 0.68);
+    transition: color var(--transition);
+  }
+
+  .hero-caption-detail {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    color: rgba(255, 245, 220, 0.36);
+    margin-top: 4px;
+  }
+
+  a.hero-caption:hover .hero-caption-title {
+    color: var(--color-accent);
+  }
+
+  /* ---- Dots ---- */
+  .hero-dots {
+    position: absolute;
+    bottom: 1.15rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.6rem;
+    z-index: 5;
+  }
+
+  .hero-dot {
+    width: 6px;
+    height: 6px;
+    opacity: 0.7;
+    border-radius: 3px;
+    border: none;
+    background: rgba(255, 245, 220, 0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition), transform 0.3s ease;
+  }
+
+  .hero-dot.active {
+    background: var(--color-accent);
+    transform: scale(1.35);
+  }
+
+  /* ---- Entrance animations ---- */
+  @keyframes hero-rule {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @keyframes hero-step {
+    0%, 42%   { opacity: 0; }
+    50%, 100% { opacity: 1; }
+  }
+
+  @keyframes hero-tick {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1; }
+  }
+
+  /* ---- Stats band ---- */
+  .hero-stats {
+    background: var(--color-bg-raised);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .hero-stat {
+    padding: 28px 32px 30px 0;
+  }
+
+  .hero-stat:not(:first-child) {
+    padding-left: 32px;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .hero-stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #EDE7D4;
+    margin: 0;
+  }
+
+  .hero-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 6px 0 0;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 767px) {
+    .hero-stats-inner {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-stat {
+      padding: 18px 16px 20px 0;
+    }
+
+    .hero-stat:not(:first-child) {
+      padding-left: 0;
+      border-left: none;
+    }
+
+    .hero-stat:nth-child(even) {
+      padding-left: 16px;
+      border-left: 1px solid var(--color-border);
+    }
+
+    .hero-stat:nth-child(n + 3) {
+      border-top: 1px solid var(--color-border);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .hero-shade {
+      background:
+        linear-gradient(to top, rgba(10, 9, 6, 0.72), transparent 30%),
+        linear-gradient(100deg,
+          rgba(10, 9, 6, 0.92) 0%,
+          rgba(10, 9, 6, 0.80) 55%,
+          rgba(10, 9, 6, 0.55) 80%,
+          rgba(10, 9, 6, 0.45) 100%);
+    }
+
+    .hero-content {
+      padding-bottom: var(--space-lg);
+    }
+
+    .hero-eyebrow {
+      margin-bottom: 18px;
+    }
+
+    /* Sized so each headline line fits without a ragged mid-span wrap. */
+    .hero-title {
+      font-size: clamp(1.85rem, 8.4vw, 2.35rem);
+      margin-bottom: 18px;
+    }
+
+    .hero-lead {
+      margin-bottom: 26px;
+    }
+
+    .hero-status {
+      margin-top: 24px;
+    }
+
+    /* Clear the dots row so caption and dots never collide. */
+    .hero-caption {
+      right: var(--space-sm);
+      bottom: 2.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide {
+      transition-duration: 0.01s;
+    }
+
+    .hero-slide img,
+    .hero-rule,
+    .hero-line,
+    .hero-lead,
+    .hero-ctas,
+    .hero-status,
+    .hero-status-dot {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const hero = document.getElementById('hero');
+  if (hero) {
+    const slideEls = Array.from(hero.querySelectorAll<HTMLElement>('.hero-slide'));
+    const captionEls = Array.from(hero.querySelectorAll<HTMLElement>('.hero-caption'));
+    const dotEls = Array.from(hero.querySelectorAll<HTMLElement>('.hero-dot'));
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const ADVANCE_MS = 6000;
+    let current = 0;
+    let isHovered = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    function schedule() {
+      if (timer) clearTimeout(timer);
+      if (!isHovered && !reducedMotion && slideEls.length > 1) {
+        timer = setTimeout(() => goTo(current + 1), ADVANCE_MS);
+      }
+    }
+
+    function setCaptionState(el: HTMLElement | undefined, active: boolean) {
+      if (!el) return;
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-hidden', String(!active));
+      if (el instanceof HTMLAnchorElement) el.tabIndex = active ? 0 : -1;
+    }
+
+    function goTo(index: number) {
+      if (slideEls.length < 2) return;
+      if (timer) clearTimeout(timer);
+      slideEls[current].classList.remove('active');
+      dotEls[current]?.classList.remove('active');
+      setCaptionState(captionEls[current], false);
+      current = (index + slideEls.length) % slideEls.length;
+      // Reset KB animation so it always starts from frame 0 on the incoming slide.
+      const img = slideEls[current].querySelector('img');
+      if (img) {
+        img.style.animationName = 'none';
+        void img.offsetWidth; // force reflow to flush the reset
+        img.style.animationName = '';
+      }
+      slideEls[current].classList.add('active');
+      dotEls[current]?.classList.add('active');
+      setCaptionState(captionEls[current], true);
+      schedule();
+    }
+
+    dotEls.forEach(dot => dot.addEventListener('click', () => goTo(Number(dot.dataset.index))));
+
+    hero.addEventListener('mouseenter', () => {
+      isHovered = true;
+      if (timer) clearTimeout(timer);
+    });
+    hero.addEventListener('mouseleave', () => {
+      isHovered = false;
+      schedule();
+    });
+
+    // --- Touch & mouse swipe. Drags that start on a link or button are left alone. ---
+    let dragStartX = 0;
+    let dragging = false;
+
+    hero.addEventListener('touchstart', e => {
+      if ((e.target as HTMLElement).closest('a, button')) return;
+      dragStartX = e.touches[0].clientX;
+      dragging = true;
+    }, { passive: true });
+    hero.addEventListener('touchend', e => {
+      if (!dragging) return;
+      dragging = false;
+      const diff = dragStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+    }, { passive: true });
+
+    hero.addEventListener('mousedown', e => {
+      if ((e.target as HTMLElement).closest('a, button')) return;
+      dragStartX = e.clientX;
+      dragging = true;
+    });
+    hero.addEventListener('mousemove', e => {
+      if (dragging) e.preventDefault();
+    });
+    hero.addEventListener('mouseup', e => {
+      if (!dragging) return;
+      dragging = false;
+      const diff = dragStartX - e.clientX;
+      if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+    });
+    hero.addEventListener('mouseleave', () => {
+      dragging = false;
+    });
+
+    schedule();
+  }
+</script>
