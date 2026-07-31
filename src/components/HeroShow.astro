@@ -3,14 +3,6 @@ import { getCollection } from 'astro:content';
 
 const slideEntries = (await getCollection('slides')).sort((a, b) => a.id.localeCompare(b.id));
 const slides = slideEntries.map(e => e.data);
-const guitarsBuilt = (await getCollection('guitars')).length;
-
-const stats = [
-  { value: String(guitarsBuilt), label: 'Instruments built' },
-  { value: '4–6', label: 'Builds per year' },
-  { value: '340h', label: 'Average bench time' },
-  { value: '3', label: 'Pairs of hands' },
-];
 ---
 
 <section class="hero" id="hero" aria-label="Vibrum — handcrafted guitars">
@@ -30,21 +22,19 @@ const stats = [
 
   <div class="hero-inner container">
     <div class="hero-content">
-      <p class="hero-eyebrow"><span class="hero-rule" aria-hidden="true"></span>Belgrade, Serbia · Est. 2022</p>
       <h1 class="hero-title">
         <span class="hero-line">Every guitar starts</span>
-        <span class="hero-line">as a conversation,</span>
-        <span class="hero-line hero-line-accent">not a blueprint.</span>
+        <span class="hero-line">as a conversation.</span>
+        <span class="hero-line hero-line-accent">It's not a blueprint.</span>
       </h1>
       <p class="hero-lead">
         We build a handful of instruments a year in a small Belgrade workshop —
         one at a time, by hand, for the player who already knows what they want to hear.
       </p>
       <div class="hero-ctas">
-        <a href="/gallery" class="hero-cta hero-cta--primary">See the guitars →</a>
-        <a href="/contact" class="hero-cta hero-cta--ghost">Start a commission</a>
+        <a href="/gallery" class="hero-cta hero-cta--primary">Explore guitars</a>
+        <a href="/contact" class="hero-cta hero-cta--ghost">Get in touch</a>
       </div>
-      <p class="hero-status"><span class="hero-status-dot" aria-hidden="true"></span>Two build slots open for 2027</p>
     </div>
 
     {slides.map((slide, i) => {
@@ -65,24 +55,19 @@ const stats = [
   </div>
 
   {slides.length > 1 && (
-    <div class="hero-dots">
-      {slides.map((_, i) => (
-        <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`Go to slide ${i + 1}`}></button>
-      ))}
-    </div>
+    <>
+      <button class="hero-arrow hero-prev" aria-label="Previous slide">&#8592;</button>
+      <button class="hero-arrow hero-next" aria-label="Next slide">&#8594;</button>
+      <div class="hero-dots">
+        {slides.map((_, i) => (
+          <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`Go to slide ${i + 1}`}></button>
+        ))}
+      </div>
+    </>
   )}
 </section>
 
-<div class="hero-stats">
-  <div class="hero-stats-inner container">
-    {stats.map(stat => (
-      <div class="hero-stat">
-        <p class="hero-stat-value">{stat.value}</p>
-        <p class="hero-stat-label">{stat.label}</p>
-      </div>
-    ))}
-  </div>
-</div>
+
 
 <style>
   .hero {
@@ -195,26 +180,6 @@ const stats = [
     padding-bottom: var(--space-md);
   }
 
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin: 0 0 24px;
-  }
-
-  .hero-rule {
-    width: 34px;
-    height: 1px;
-    background: var(--color-accent);
-    transform-origin: left;
-    animation: hero-rule 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
   .hero-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
@@ -289,26 +254,6 @@ const stats = [
     color: var(--color-accent);
   }
 
-  .hero-status {
-    display: flex;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    color: rgba(255, 245, 220, 0.42);
-    margin: 32px 0 0;
-    animation: hero-step 1000ms cubic-bezier(0.16, 1, 0.3, 1) 560ms both;
-  }
-
-  .hero-status-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--color-accent);
-    border-radius: 50%;
-    margin-right: 9px;
-    animation: hero-tick 2.4s ease-in-out infinite;
-  }
-
   /* ---- Per-slide caption, bottom right ---- */
   .hero-caption {
     position: absolute;
@@ -350,6 +295,49 @@ const stats = [
     color: var(--color-accent);
   }
 
+  /* ---- Arrows — revealed on hover (and keyboard focus) ---- */
+  .hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 6;
+    background: rgba(10, 9, 6, 0.35);
+    border: 2px solid var(--color-border);
+    color: var(--color-text-bold);
+    width: clamp(2rem, 4vw, 2.5rem);
+    height: clamp(2rem, 4vw, 2.5rem);
+    border-radius: 50%;
+    font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background var(--transition), border-color var(--transition), opacity var(--transition), transform var(--transition);
+  }
+
+  .hero:hover .hero-arrow,
+  .hero-arrow:focus-visible {
+    opacity: 0.85;
+  }
+
+  .hero-arrow:hover {
+    background: rgba(201, 168, 76, 0.18);
+    border-color: var(--color-accent);
+  }
+
+  .hero-prev { left: var(--space-sm); }
+  .hero-next { right: var(--space-sm); }
+
+  .hero-prev:hover { transform: translateY(-50%) translateX(-2px); }
+  .hero-next:hover { transform: translateY(-50%) translateX(2px); }
+
+  @media (max-width: 639px), (hover: none) {
+    .hero-arrow { display: none; }
+  }
+
   /* ---- Dots ---- */
   .hero-dots {
     position: absolute;
@@ -379,85 +367,12 @@ const stats = [
   }
 
   /* ---- Entrance animations ---- */
-  @keyframes hero-rule {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-
   @keyframes hero-step {
     0%, 42%   { opacity: 0; }
     50%, 100% { opacity: 1; }
   }
 
-  @keyframes hero-tick {
-    0%, 100% { opacity: 0.25; }
-    50%      { opacity: 1; }
-  }
-
-  /* ---- Stats band ---- */
-  .hero-stats {
-    background: var(--color-bg-raised);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .hero-stats-inner {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .hero-stat {
-    padding: 28px 32px 30px 0;
-  }
-
-  .hero-stat:not(:first-child) {
-    padding-left: 32px;
-    border-left: 1px solid var(--color-border);
-  }
-
-  .hero-stat-value {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: clamp(1.7rem, 2.6vw, 2.4rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: #EDE7D4;
-    margin: 0;
-  }
-
-  .hero-stat-label {
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    margin: 6px 0 0;
-  }
-
   /* ---- Responsive ---- */
-  @media (max-width: 767px) {
-    .hero-stats-inner {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .hero-stat {
-      padding: 18px 16px 20px 0;
-    }
-
-    .hero-stat:not(:first-child) {
-      padding-left: 0;
-      border-left: none;
-    }
-
-    .hero-stat:nth-child(even) {
-      padding-left: 16px;
-      border-left: 1px solid var(--color-border);
-    }
-
-    .hero-stat:nth-child(n + 3) {
-      border-top: 1px solid var(--color-border);
-    }
-  }
-
   @media (max-width: 639px) {
     .hero-shade {
       background:
@@ -473,10 +388,6 @@ const stats = [
       padding-bottom: var(--space-lg);
     }
 
-    .hero-eyebrow {
-      margin-bottom: 18px;
-    }
-
     /* Sized so each headline line fits without a ragged mid-span wrap. */
     .hero-title {
       font-size: clamp(1.85rem, 8.4vw, 2.35rem);
@@ -485,10 +396,6 @@ const stats = [
 
     .hero-lead {
       margin-bottom: 26px;
-    }
-
-    .hero-status {
-      margin-top: 24px;
     }
 
     /* Clear the dots row so caption and dots never collide. */
@@ -504,12 +411,9 @@ const stats = [
     }
 
     .hero-slide img,
-    .hero-rule,
     .hero-line,
     .hero-lead,
-    .hero-ctas,
-    .hero-status,
-    .hero-status-dot {
+    .hero-ctas {
       animation: none;
     }
   }
@@ -563,6 +467,8 @@ const stats = [
     }
 
     dotEls.forEach(dot => dot.addEventListener('click', () => goTo(Number(dot.dataset.index))));
+    hero.querySelector('.hero-prev')?.addEventListener('click', () => goTo(current - 1));
+    hero.querySelector('.hero-next')?.addEventListener('click', () => goTo(current + 1));
 
     hero.addEventListener('mouseenter', () => {
       isHovered = true;
