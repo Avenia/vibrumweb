@@ -40,7 +40,10 @@ const year = new Date().getFullYear();
       transparent
     ) 1;
     padding: var(--space-md) 0;
-    margin-top: var(--space-xl);
+    /* Pages end in full-bleed bands that sit flush against the footer rule,
+       the same way the hero sits flush under the nav. Pages with plain
+       content endings get their spacing from their own section padding. */
+    margin-top: 0;
   }
 
   .footer-inner {

@@ -27,9 +27,13 @@ const fieldLabels: Record<string, string> = {
 ---
 
 <PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
-  <div class="gallery-layout container">
-    <h1 class="visually-hidden">Vibrum Guitars Gallery</h1>
+  <div class="container gallery-head">
+    <div class="section-header">
+      <h1 class="section-heading">The Vibrum instruments</h1>
+    </div>
+  </div>
 
+  <div class="gallery-layout container">
     <!-- Sidebar filters / mobile drawer -->
     <aside class="filters" id="filters">
 
@@ -105,7 +109,7 @@ const fieldLabels: Record<string, string> = {
           const images = [guitar.data.coverImage, ...guitar.data.images];
           return (
             <div
-              class="guitar-card-wrapper"
+              class="guitar-card-wrapper card-reveal"
               data-status={guitar.data.status}
               data-type={guitar.data.type}
               data-strings={guitar.data.strings ?? ''}
@@ -159,6 +163,26 @@ const fieldLabels: Record<string, string> = {
     </div>
 
   </div>
+
+  <!-- Commission CTA — full-bleed closer band -->
+  <section class="commission-band">
+    <img
+      class="commission-img"
+      src="/images/guitars/pyrocaster/photo-19.png"
+      alt=""
+      loading="lazy"
+    />
+    <div class="commission-shade" aria-hidden="true"></div>
+    <div class="commission-inner container">
+      <p class="eyebrow">Commissions</p>
+      <h2 class="commission-title">Don't see yours? It hasn't been built yet.</h2>
+      <p class="commission-lead">
+        A handful of instruments leave the bench each year, each one built around a player.
+        Tell us what you want to hear.
+      </p>
+      <a class="commission-link" href="/contact">Start the conversation →</a>
+    </div>
+  </section>
 
   <!-- Mobile filter tab (fixed, outside the drawer to avoid overflow clipping) -->
   <button class="filter-tab" id="filter-tab" aria-label="Open filters" aria-expanded="false">
@@ -358,16 +382,63 @@ const fieldLabels: Record<string, string> = {
       window.openGuitarModal(wrapper);
     });
   });
+
+  // ---- Scroll-triggered card reveals ----
+  const revealCards = document.querySelectorAll<HTMLElement>('.card-reveal');
+
+  revealCards.forEach((card, i) => {
+    card.style.setProperty('--reveal-delay', `${(i % 4) * 90}ms`);
+  });
+
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          // One-shot: filtered cards re-appear instantly instead of re-animating.
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  revealCards.forEach(card => revealObserver.observe(card));
 </script>
 
 <style>
+  /* ---- Page header — same label + hairline pattern as the homepage ---- */
+  .gallery-head {
+    padding-top: var(--space-lg);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    border-bottom: 1px solid rgba(255, 245, 220, 0.14);
+    padding-bottom: 16px;
+  }
+
+  .section-heading {
+    /* Explicit family so the h1 doesn't pick up the global heading serif. */
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0;
+  }
+
   /* ---- Layout ---- */
   .gallery-layout {
     display: grid;
     grid-template-columns: 1fr 200px;
     gap: 0;
     align-items: start;
-    padding-top: var(--space-lg);
+    padding-top: var(--space-md);
     padding-bottom: var(--space-lg);
   }
 
@@ -473,6 +544,121 @@ const fieldLabels: Record<string, string> = {
   }
 
   .no-results[hidden] { display: none; }
+
+  /* ---- Scroll-triggered card reveals (same motion as the homepage grid) ---- */
+  .card-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .card-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ---- Commission band — full-bleed closer, bench-feature treatment ---- */
+  .commission-band {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 420px;
+    overflow: hidden;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .commission-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 32%;
+  }
+
+  /* Source photo has a light studio backdrop, so the veil stays heavy
+     across the whole band — texture hints through, copy stays readable. */
+  .commission-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(10, 9, 6, 0.95) 0%,
+      rgba(10, 9, 6, 0.85) 55%,
+      rgba(10, 9, 6, 0.74) 100%
+    );
+  }
+
+  @media (max-width: 639px) {
+    .commission-shade {
+      background: linear-gradient(
+        to right,
+        rgba(10, 9, 6, 0.94) 0%,
+        rgba(10, 9, 6, 0.85) 100%
+      );
+    }
+  }
+
+  .commission-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-block: var(--space-lg);
+  }
+
+  .commission-band .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 18px;
+  }
+
+  .commission-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+    line-height: 1.15;
+    color: #EDE7D4;
+    margin: 0 0 16px;
+    max-width: 640px;
+  }
+
+  .commission-lead {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: rgba(255, 245, 220, 0.62);
+    max-width: 520px;
+    margin: 0 0 28px;
+  }
+
+  .commission-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #EDE7D4;
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 6px;
+    transition: color var(--transition);
+  }
+
+  .commission-link:hover {
+    color: var(--color-accent);
+  }
 
   /* ---- Filter tab (hidden on desktop) ---- */
   .filter-tab { display: none; }

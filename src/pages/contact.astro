@@ -9,18 +9,30 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 >
   <PageLogoBg />
 
-  <div class="container section">
-    <header class="page-header">
-      <p class="eyebrow">Get in touch</p>
-      <h3>We'd love to hear from you</h3>
-      <p class="page-lead">
-        Whether you’re thinking about commissioning a guitar, asking about a specific instrument, or just want to know more about what we do — reach out. If you’re interested in a collaboration, let us know.
-      </p>
-      <p class="page-lead">
-        You’re always welcome to visit the workshop in Belgrade. Just get in touch first, so we can set aside time for you.
-      </p>
-    </header>
+  <!-- Page header over a full-bleed image band, same treatment as the homepage banners -->
+  <section class="contact-hero">
+    <img
+      class="contact-hero-img"
+      src="/images/guitars/pyrocaster/photo-5.png"
+      alt=""
+      loading="eager"
+    />
+    <div class="contact-hero-shade" aria-hidden="true"></div>
+    <div class="contact-hero-inner container">
+      <header class="page-header">
+        <p class="eyebrow">Get in touch</p>
+        <h1 class="contact-title">We'd love to hear from you</h1>
+        <p class="page-lead">
+          Whether you’re thinking about commissioning a guitar, asking about a specific instrument, or just want to know more about what we do — reach out. If you’re interested in a collaboration, let us know.
+        </p>
+        <p class="page-lead">
+          You’re always welcome to visit the workshop in Belgrade. Just get in touch first, so we can set aside time for you.
+        </p>
+      </header>
+    </div>
+  </section>
 
+  <div class="container section">
     <div class="contact-body">
 
       <!-- Form column -->
@@ -278,10 +290,71 @@ import PageLogoBg from '../components/PageLogoBg.astro';
 </script>
 
 <style>
-  .page-header {
-    margin-bottom: var(--space-lg);
+  /* ---- Hero band ---- */
+  .contact-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--color-bg);
   }
 
+  .contact-hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+
+  /* Source photo has a light studio backdrop — keep the veil heavy
+     end to end so the band stays dark and the copy readable. */
+  .contact-hero-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(10, 9, 6, 0.95) 0%,
+      rgba(10, 9, 6, 0.85) 55%,
+      rgba(10, 9, 6, 0.74) 100%
+    );
+  }
+
+  @media (max-width: 639px) {
+    .contact-hero-shade {
+      background: linear-gradient(
+        to right,
+        rgba(10, 9, 6, 0.93) 0%,
+        rgba(10, 9, 6, 0.78) 100%
+      );
+    }
+  }
+
+  .contact-hero-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-block: var(--space-lg);
+  }
+
+  .page-header {
+    max-width: 720px;
+  }
+
+  .contact-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    line-height: 1.15;
+    color: #EDE7D4;
+    margin: 0;
+  }
+
+  /* Tighter than the body eyebrows — matches the homepage banner rhythm. */
+  .page-header .eyebrow {
+    margin-bottom: 18px;
+  }
 
   .page-lead {
     margin-top: var(--space-sm);

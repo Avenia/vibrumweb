@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GuitarModal from '../../components/GuitarModal.astro';
+import BenchLetter from '../../components/BenchLetter.astro';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories', ({ data }) => !data.draft);
@@ -42,6 +43,12 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   month: 'long',
   year: 'numeric',
 });
+
+// Card-style mono meta: "03.09.2025 · BUILD DIARY"
+const metaDate = story.data.date
+  .toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  .replace(/\//g, '.');
+const metaLine = [metaDate, ...story.data.tags].join(' · ');
 ---
 
 <PageLayout
@@ -51,24 +58,22 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   ogType="article"
 >
   <div class="story-detail">
-    <!-- Hero -->
-    <div class="story-hero">
-      <img src={story.data.coverImage} alt={story.data.title} class="story-hero-img" />
-    </div>
+    <!-- Hero — full-bleed band, same treatment as the homepage banners -->
+    <section class="story-hero">
+      <img src={story.data.coverImage} alt="" class="story-hero-img" />
+      <div class="story-hero-shade" aria-hidden="true"></div>
+      <div class="story-hero-inner container">
+        <p class="story-meta">
+          <time datetime={story.data.date.toISOString()} title={formattedDate}>{metaDate}</time>
+          {story.data.tags.map(tag => (
+            <span> · {tag}</span>
+          ))}
+        </p>
+        <h1 class="story-title">{story.data.title}</h1>
+      </div>
+    </section>
 
     <div class="container">
-      <header class="story-header">
-        {story.data.tags.length > 0 && (
-          <div class="story-tags">
-            {story.data.tags.map(tag => (
-              <span class="story-tag">{tag}</span>
-            ))}
-          </div>
-        )}
-        <h1 class="story-title">{story.data.title}</h1>
-        <time datetime={story.data.date.toISOString()} class="story-date">{formattedDate}</time>
-      </header>
-
       <div class="story-content-wrap">
         <article class="story-prose prose">
           <Content />
@@ -84,7 +89,7 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
         )}
       </div>
 
-      <a href="/" class="back-link">← Back to Stories</a>
+      <a href="/" class="back-link">&#8592; All stories</a>
     </div>
   </div>
 
@@ -127,6 +132,8 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   )}
 
   <GuitarModal />
+
+  <BenchLetter />
 </PageLayout>
 
 <script>
@@ -139,50 +146,63 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
 
 <style>
   .story-hero {
-    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 420px;
     max-height: 60vh;
     overflow: hidden;
     background-color: var(--color-bg-raised);
   }
 
   .story-hero-img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-height: 60vh;
+    height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: center 40%;
   }
 
-  .story-header {
-    padding: var(--space-md) 0 var(--space-sm);
-    max-width: 760px;
+  /* Cover photos are light studio shots — heavy on the left where the
+     title sits, deeper at the bottom so the copy always reads. */
+  .story-hero-shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(10, 9, 6, 0.92), transparent 55%),
+      linear-gradient(
+        to right,
+        rgba(10, 9, 6, 0.9) 0%,
+        rgba(10, 9, 6, 0.68) 55%,
+        rgba(10, 9, 6, 0.5) 100%
+      );
   }
 
-  .story-tags {
-    display: flex;
-    gap: 6px;
-    margin-bottom: var(--space-sm);
+  .story-hero-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-block: var(--space-lg);
   }
 
-  .story-tag {
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+  .story-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-accent);
-    padding: 2px 7px;
-    border: 1px solid rgba(201, 168, 76, 0.35);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-accent-dim);
+    margin: 0 0 14px;
   }
 
   .story-title {
-    margin-bottom: var(--space-xs);
-  }
-
-  .story-date {
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.05em;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+    line-height: 1.15;
+    color: #EDE7D4;
+    margin: 0;
+    max-width: 760px;
   }
 
   .story-content-wrap {
@@ -235,11 +255,15 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   }
 
   .back-link {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.82rem;
-    color: var(--color-text-muted);
-    padding-bottom: var(--space-lg);
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #EDE7D4;
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 6px;
+    margin-bottom: var(--space-lg);
     transition: color var(--transition);
   }
 

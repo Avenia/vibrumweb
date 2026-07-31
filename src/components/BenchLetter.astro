@@ -1,0 +1,330 @@
+---
+/**
+ * "Stay close to the bench" — full-bleed newsletter band.
+ * Photo + copy + Web3Forms signup. Used as the page closer on
+ * the home and about pages.
+ */
+---
+
+<section class="bench-letter">
+  <img
+    class="bench-letter-bg"
+    src="/images/guitars/pyrocaster/photo-12.png"
+    alt=""
+    loading="lazy"
+  />
+  <div class="bench-letter-shade" aria-hidden="true"></div>
+  <div class="bench-letter-inner container">
+    <div class="bench-letter-copy">
+      <p class="eyebrow">Stay close to the bench</p>
+      <h2 class="bench-letter-title">A letter when a guitar finishes.</h2>
+      <p class="bench-letter-lead">
+        Build notes, wood finds, and the rare open slot. A few times a year, never more.
+      </p>
+
+      <form class="bench-letter-form" id="newsletter-form" novalidate>
+        <!-- Honeypot: invisible to people, bots that auto-fill every field
+             check it and Web3Forms discards the submission server-side. -->
+        <input type="checkbox" name="botcheck" id="nl-botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
+        <label class="visually-hidden" for="nl-email">Email address</label>
+        <div class="bench-letter-row">
+          <input
+            type="email"
+            id="nl-email"
+            name="email"
+            class="bench-letter-input"
+            placeholder="you@email.com"
+            maxlength="254"
+            autocomplete="email"
+            required
+          />
+          <button type="submit" class="bench-letter-btn" id="nl-submit">Subscribe</button>
+        </div>
+        <p class="nl-field-error" id="nl-error" role="alert">Please enter a valid email address.</p>
+        <p class="nl-send-error" id="nl-send-error" role="alert">
+          Something went wrong and you were not subscribed. Please try again, or email us at
+          <a href="mailto:info@vibrumguitars.com">info@vibrumguitars.com</a>.
+        </p>
+      </form>
+
+      <div class="bench-letter-success" id="nl-success" hidden tabindex="-1">
+        <p class="nl-success-title">You're on the list.</p>
+        <p class="nl-success-body">A letter will come when the next guitar finishes.</p>
+      </div>
+    </div>
+
+    <div class="bench-letter-photo">
+      <img src="/images/about/ProfilePhoto_01.webp" alt="At the bench in the Vibrum workshop" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .bench-letter {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-bg-raised);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bench-letter-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+  }
+
+  /* Same heavy edge-melting veil as the other full-bleed bands —
+     the source photo is a light studio shot. */
+  .bench-letter-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 9, 6, 0.96) 0%,
+      rgba(10, 9, 6, 0.9) 35%,
+      rgba(10, 9, 6, 0.9) 65%,
+      rgba(10, 9, 6, 0.96) 100%
+    );
+  }
+
+  .bench-letter-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-lg);
+    align-items: stretch;
+  }
+
+  .bench-letter-copy {
+    padding-block: var(--space-xl);
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 18px;
+  }
+
+  .bench-letter-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    line-height: 1.15;
+    color: #EDE7D4;
+    margin: 0 0 14px;
+  }
+
+  .bench-letter-lead {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: rgba(255, 245, 220, 0.55);
+    max-width: 440px;
+    margin: 0 0 30px;
+  }
+
+  .bench-letter-row {
+    display: flex;
+    max-width: 480px;
+  }
+
+  .bench-letter-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 1px solid rgba(255, 245, 220, 0.22);
+    border-right: none;
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    color: #EDE7D4;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+
+  .bench-letter-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  /* Focus is indicated by the border highlight above; the global
+     focus ring would double up on text fields. */
+  .bench-letter-input:focus-visible {
+    outline: none;
+  }
+
+  .bench-letter-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.62;
+  }
+
+  .bench-letter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #0a0906;
+    background: var(--color-accent);
+    border: none;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 14px 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity var(--transition);
+  }
+
+  .bench-letter-btn:hover {
+    opacity: 0.88;
+  }
+
+  .bench-letter-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .nl-field-error,
+  .nl-send-error {
+    display: none;
+    font-size: 0.78rem;
+    color: #c0392b;
+    line-height: 1.6;
+    margin: 10px 0 0;
+    max-width: 480px;
+  }
+
+  .nl-field-error.visible,
+  .nl-send-error.visible {
+    display: block;
+  }
+
+  .nl-send-error a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .bench-letter-success {
+    max-width: 480px;
+  }
+
+  /* Focused programmatically after subscribing so screen readers announce it;
+     the visual focus ring would be noise on a non-interactive container. */
+  .bench-letter-success:focus {
+    outline: none;
+  }
+
+  .nl-success-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--color-text-bold);
+    margin: 0 0 6px;
+  }
+
+  .nl-success-body {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .bench-letter-photo {
+    position: relative;
+    min-height: 340px;
+    overflow: hidden;
+  }
+
+  .bench-letter-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.35);
+  }
+
+  @media (max-width: 767px) {
+    .bench-letter-inner {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .bench-letter-copy {
+      padding-block: var(--space-lg) var(--space-md);
+    }
+
+    .bench-letter-photo {
+      min-height: 0;
+      aspect-ratio: 16 / 10;
+      margin-bottom: var(--space-lg);
+      border-radius: var(--radius-sm);
+    }
+  }
+</style>
+
+<script>
+  // --- Newsletter signup (Web3Forms, same backend as the contact form) ---
+  const WEB3FORMS_ACCESS_KEY = '294e2431-49b2-4dd1-bd0e-7c64d8208b45';
+  const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
+  const nlForm = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  if (nlForm) {
+    const emailInput = document.getElementById('nl-email') as HTMLInputElement;
+    const submitBtn = document.getElementById('nl-submit') as HTMLButtonElement;
+    const fieldError = document.getElementById('nl-error') as HTMLElement;
+    const sendError = document.getElementById('nl-send-error') as HTMLElement;
+    const successView = document.getElementById('nl-success') as HTMLElement;
+    const submitLabel = submitBtn.textContent;
+
+    emailInput.addEventListener('input', () => {
+      fieldError.classList.remove('visible');
+    });
+
+    nlForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      if (!emailRegex.test(email)) {
+        fieldError.classList.add('visible');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+      sendError.classList.remove('visible');
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_ACCESS_KEY,
+            subject: 'New newsletter signup on vibrumguitars.com',
+            from_name: 'Vibrum Guitars Website',
+            botcheck: (document.getElementById('nl-botcheck') as HTMLInputElement).checked,
+            email,
+            message: `Newsletter signup: ${email}`,
+          }),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+
+        nlForm.hidden = true;
+        successView.hidden = false;
+        successView.focus();
+      } catch {
+        sendError.classList.add('visible');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitLabel;
+      }
+    });
+  }
+</script>

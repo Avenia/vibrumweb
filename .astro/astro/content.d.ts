@@ -234,6 +234,20 @@ declare module 'astro:content' {
   collection: "stories";
   data: InferEntrySchema<"stories">
 } & { render(): Render[".md"] };
+"2025-03-ironveil-build copy 2.md": {
+	id: "2025-03-ironveil-build copy 2.md";
+  slug: "2025-03-ironveil-build-copy-2";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
+"2025-03-ironveil-build copy.md": {
+	id: "2025-03-ironveil-build copy.md";
+  slug: "2025-03-ironveil-build-copy";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
 "2025-03-ironveil-build.md": {
 	id: "2025-03-ironveil-build.md";
   slug: "2025-03-ironveil-build";

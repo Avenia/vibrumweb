@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
+import BenchLetter from '../components/BenchLetter.astro';
 ---
 
 <PageLayout
@@ -85,41 +86,10 @@ import PageLogoBg from '../components/PageLogoBg.astro';
         </div>
       </div>
 
-      <div class="grid-row">
-        <div class="grid-label">
-          <h2 class="label-text">The Philosophy</h2>
-        </div>
-        <div class="grid-content prose">
-          <p>
-            Good instruments are not defined by price or brand, but by the intention and clarity behind every decision made during their creation.
-          </p>
-          <p>
-            An instrument is never really finished in the workshop. We build the structure, set the geometry, and voice it as far as our hands can take it. The rest happens later — over years, in someone else's hands, in rooms we will never hear.
-          </p>
-          <p>
-            That is why we work the way we do. Something meant to be played for decades has to be right in the places nobody looks, long before it is beautiful in the places they do.
-          </p>
-          <p>
-            We are not trying to build instruments that impress on paper. We are trying to build the one a player reaches for without thinking.
-          </p>
-        </div>
-      </div>
-
-      <div class="grid-row">
-        <div class="grid-label">
-          <h2 class="label-text">Next</h2>
-        </div>
-        <div class="grid-content">
-          <p class="cta-lead">See what we have built, or tell us what you have in mind.</p>
-          <div class="cta-actions">
-            <a href="/gallery" class="cta-btn">Browse the gallery</a>
-            <a href="/contact" class="cta-btn">Get in touch</a>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
+
+  <BenchLetter />
 </PageLayout>
 
 <style>
@@ -248,39 +218,4 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     margin: 0;
   }
 
-  /* Closing call to action */
-  .cta-lead {
-    color: var(--color-text);
-    margin-bottom: var(--space-sm);
-  }
-
-  /* Two equal outlined buttons, side by side at every width. */
-  .cta-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-    max-width: 380px;
-  }
-
-  .cta-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 42px;
-    padding: 10px 14px;
-    background-color: transparent;
-    border: 1px solid var(--color-accent);
-    border-radius: var(--radius-sm);
-    color: var(--color-accent);
-    font-weight: 600;
-    font-size: clamp(0.7rem, 2.4vw, 0.78rem);
-    letter-spacing: 0.05em;
-    transition: background-color var(--transition), color var(--transition);
-  }
-
-  .cta-btn:hover {
-    background-color: var(--color-accent);
-    color: #0a0906;
-  }
 </style>

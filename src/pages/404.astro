@@ -1,0 +1,105 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageLogoBg from '../components/PageLogoBg.astro';
+---
+
+<PageLayout
+  title="Page not found — Vibrum Guitars"
+  description="This page doesn't exist. Head back to the Vibrum workshop."
+>
+  <PageLogoBg />
+
+  <section class="nf">
+    <div class="nf-inner container">
+      <!-- <p class="nf-eyebrow">404 — Page not found</p> -->
+      <p class="nf-lead">
+        The page doesn't exist.
+      </p>
+      <div class="nf-ctas">
+        <a href="/" class="nf-cta nf-cta--primary">Back to home</a>
+        <a href="/gallery" class="nf-cta nf-cta--ghost">Browse the guitars</a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .nf {
+    display: flex;
+    align-items: center;
+    /* Fill the viewport between nav and footer so the page never looks bare. */
+    min-height: calc(100svh - var(--nav-height) - 180px);
+    padding-block: var(--space-xl);
+  }
+
+  .nf-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+  }
+
+  .nf-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 18px;
+  }
+
+  .nf-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.12;
+    color: #EDE7D4;
+    margin: 0 0 16px;
+  }
+
+  .nf-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 245, 220, 0.62);
+    max-width: 520px;
+    margin: 0 0 34px;
+  }
+
+  .nf-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .nf-cta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: opacity var(--transition), border-color var(--transition), color var(--transition);
+  }
+
+  .nf-cta--primary {
+    background: var(--color-accent);
+    color: #0a0906;
+  }
+
+  .nf-cta--primary:hover {
+    opacity: 0.88;
+    color: #0a0906;
+  }
+
+  .nf-cta--ghost {
+    color: #EDE7D4;
+    border: 1px solid rgba(255, 245, 220, 0.28);
+  }
+
+  .nf-cta--ghost:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>
