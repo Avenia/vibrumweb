@@ -13,7 +13,8 @@ const stories = (await getCollection('stories', ({ data }) => !data.draft))
 const featured = stories[0];
 const workshopStories = stories.slice(1);
 
-const WORKSHOP_PAGE_SIZE = 6;
+const WORKSHOP_PAGE_SIZE = 6;        // desktop
+const WORKSHOP_PAGE_SIZE_MOBILE = 4; // ≤639px — applied client-side in the script below
 
 const guitars = (await getCollection('guitars'))
   .sort((a, b) => b.data.year - a.data.year)
@@ -43,6 +44,25 @@ const guitars = (await getCollection('guitars'))
     </section>
   )}
 
+  {guitars.length > 0 && (
+    <section class="guitar-band">
+      <img
+        class="guitar-band-img"
+        src="/images/guitars/pyrocaster/photo-19.png"
+        alt=""
+        loading="lazy"
+      />
+      <div class="guitar-band-shade" aria-hidden="true"></div>
+      <div class="guitar-band-inner container section">
+        <div class="section-header">
+          <h2 class="section-heading">Recent guitars</h2>
+        </div>
+
+        <GuitarStrip guitars={guitars} />
+      </div>
+    </section>
+  )}
+
   {(workshopStories.length > 0 || stories.length === 0) && (
     <section class="workshop-band">
       <img
@@ -55,57 +75,48 @@ const guitars = (await getCollection('guitars'))
       <div class="container section workshop-section workshop-band-inner">
         <div class="section-header">
           <h2 class="section-heading">More from the workshop</h2>
-          {workshopStories.length > WORKSHOP_PAGE_SIZE && (
-            <div class="workshop-nav">
-              <button class="workshop-arrow" id="ws-prev" aria-label="Previous stories" disabled>&#8592;</button>
-              <span class="workshop-page" id="ws-page" aria-live="polite">
-                1 / {Math.ceil(workshopStories.length / WORKSHOP_PAGE_SIZE)}
-              </span>
-              <button class="workshop-arrow" id="ws-next" aria-label="More stories">&#8594;</button>
-            </div>
-          )}
         </div>
 
         {workshopStories.length > 0 ? (
-          <div class="workshop-grid" id="workshop-grid" data-page-size={WORKSHOP_PAGE_SIZE}>
-            {workshopStories.map((story, i) => (
-              <div class="story-reveal" data-ws-index={i} hidden={i >= WORKSHOP_PAGE_SIZE}>
-                <WorkshopStoryCard
-                  title={story.data.title}
-                  slug={story.slug}
-                  date={story.data.date}
-                  coverImage={story.data.coverImage}
-                  excerpt={story.data.excerpt}
-                  tags={story.data.tags}
-                />
+          <>
+            <div
+              class="workshop-grid"
+              id="workshop-grid"
+              data-page-size={WORKSHOP_PAGE_SIZE}
+              data-page-size-mobile={WORKSHOP_PAGE_SIZE_MOBILE}
+            >
+              {workshopStories.map((story, i) => (
+                <div class="story-reveal" data-ws-index={i} hidden={i >= WORKSHOP_PAGE_SIZE}>
+                  <WorkshopStoryCard
+                    title={story.data.title}
+                    slug={story.slug}
+                    date={story.data.date}
+                    coverImage={story.data.coverImage}
+                    excerpt={story.data.excerpt}
+                    tags={story.data.tags}
+                  />
+                </div>
+              ))}
+            </div>
+            {workshopStories.length > WORKSHOP_PAGE_SIZE_MOBILE && (
+              <div class="workshop-dots" role="group" aria-label="Story pages"></div>
+            )}
+            {workshopStories.length > WORKSHOP_PAGE_SIZE_MOBILE && (
+              <div class="workshop-nav workshop-nav--bottom">
+                <button class="workshop-arrow ws-prev" aria-label="Previous stories" disabled>&#8592;</button>
+                <span class="workshop-page ws-page" aria-live="polite">
+                  1 / {Math.ceil(workshopStories.length / WORKSHOP_PAGE_SIZE)}
+                </span>
+                <button class="workshop-arrow ws-next" aria-label="More stories">&#8594;</button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         ) : (
           <div class="empty-state">
             <p>Stories coming soon. Check back after the first build.</p>
             <a href="/gallery" class="empty-cta">Browse the gallery →</a>
           </div>
         )}
-      </div>
-    </section>
-  )}
-
-  {guitars.length > 0 && (
-    <section class="guitar-band">
-      <img
-        class="guitar-band-img"
-        src="/images/guitars/pyrocaster/photo-19.png"
-        alt=""
-        loading="lazy"
-      />
-      <div class="guitar-band-shade" aria-hidden="true"></div>
-      <div class="guitar-band-inner container">
-        <div class="section-header">
-          <h2 class="section-heading">Recent guitars</h2>
-        </div>
-
-        <GuitarStrip guitars={guitars} />
       </div>
     </section>
   )}
@@ -270,7 +281,8 @@ const guitars = (await getCollection('guitars'))
   }
 
   @media (max-width: 639px) {
-    .workshop-section .section-header {
+    .workshop-section .section-header,
+    .guitar-band-inner .section-header {
       margin-bottom: var(--space-md);
     }
   }
@@ -361,6 +373,65 @@ const guitars = (await getCollection('guitars'))
     gap: 12px;
   }
 
+  /* JS hides the pager when everything fits on one page; the display
+     rules below would otherwise override the hidden attribute. */
+  .workshop-nav[hidden] {
+    display: none !important;
+  }
+
+  /* Page dots under the grid (desktop) — same recipe as the hero dots. */
+  .workshop-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: var(--space-md);
+  }
+
+  .workshop-dots[hidden] {
+    display: none !important;
+  }
+
+  /* Dots are created by the script below, so they don't carry Astro's
+     scope attribute — style them via :global() under the scoped wrap. */
+  .workshop-dots :global(.workshop-dot) {
+    width: 6px;
+    height: 6px;
+    opacity: 0.7;
+    border-radius: 3px;
+    border: none;
+    background: rgba(255, 245, 220, 0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition), transform 0.3s ease;
+  }
+
+  .workshop-dots :global(.workshop-dot.active) {
+    background: var(--color-accent);
+    transform: scale(1.35);
+  }
+
+  @media (max-width: 639px) {
+    /* Mobile pages with the arrows + count row below the grid instead. */
+    .workshop-dots {
+      display: none;
+    }
+  }
+
+  /* The arrows + count row is mobile-only, sitting below the stories
+     so you page forward right where you finished reading. Desktop
+     pages with the dots instead. */
+  .workshop-nav--bottom {
+    display: none;
+  }
+
+  @media (max-width: 639px) {
+    .workshop-nav--bottom {
+      display: flex;
+      justify-content: center;
+      margin-top: var(--space-md);
+    }
+  }
+
   .workshop-page {
     font-family: var(--font-mono);
     font-size: 0.68rem;
@@ -432,8 +503,9 @@ const guitars = (await getCollection('guitars'))
   }
 
   .guitar-band-inner {
+    /* Block padding comes from .section, same as the workshop band,
+       so both section labels sit identically inside their bands. */
     z-index: 1;
-    padding-block: var(--space-md);
   }
 
 </style>
@@ -483,31 +555,167 @@ const guitars = (await getCollection('guitars'))
   cards.forEach(card => observer.observe(card));
 
   // --- Workshop story pagination (6 per page) ---
+  // Two nav instances (header row on desktop, below the grid on mobile)
+  // stay in sync; both drive the same page state.
   const wsGrid = document.getElementById('workshop-grid');
-  const wsPrev = document.getElementById('ws-prev') as HTMLButtonElement | null;
-  const wsNext = document.getElementById('ws-next') as HTMLButtonElement | null;
-  const wsPage = document.getElementById('ws-page');
+  const wsPrevBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.ws-prev'));
+  const wsNextBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.ws-next'));
+  const wsPageEls = Array.from(document.querySelectorAll<HTMLElement>('.ws-page'));
 
-  if (wsGrid && wsPrev && wsNext && wsPage) {
+  if (wsGrid && wsPrevBtns.length && wsNextBtns.length) {
     const items = Array.from(wsGrid.querySelectorAll<HTMLElement>('[data-ws-index]'));
-    const pageSize = Number(wsGrid.dataset.pageSize) || 6;
-    const pageCount = Math.ceil(items.length / pageSize);
+    const navEls = Array.from(document.querySelectorAll<HTMLElement>('.workshop-nav'));
+    const dotsWrap = document.querySelector<HTMLElement>('.workshop-dots');
+    const mobileQuery = window.matchMedia('(max-width: 639px)');
+
+    const desktopPageSize = Number(wsGrid.dataset.pageSize) || 6;
+    const mobilePageSize = Number(wsGrid.dataset.pageSizeMobile) || 4;
+
+    let pageSize = mobileQuery.matches ? mobilePageSize : desktopPageSize;
+    let pageCount = Math.ceil(items.length / pageSize);
     let page = 0;
+    // Height of a full desktop page, refreshed on every full-page render.
+    let fullPageHeight = 0;
 
     function renderPage() {
+      const start = page * pageSize;
+      const end = start + pageSize;
       items.forEach((item, i) => {
-        const visible = i >= page * pageSize && i < (page + 1) * pageSize;
+        const visible = i >= start && i < end;
         item.hidden = !visible;
         // Newly shown cards should be readable immediately, not wait for a
         // scroll event to re-trigger the reveal observer.
         if (visible) item.classList.add('is-visible');
       });
-      wsPrev!.disabled = page === 0;
-      wsNext!.disabled = page === pageCount - 1;
-      wsPage!.textContent = `${page + 1} / ${pageCount}`;
+      // Desktop: a partial last page would shrink the section and make
+      // the dots and the band jump around. Pin the grid to the height
+      // of a full page (measured live, so images/fonts/resizes are
+      // accounted for) and let the last page have empty space instead.
+      // Mobile stacks cards in one column and just stays shorter.
+      const partial = items.length - start < pageSize;
+      if (mobileQuery.matches) {
+        wsGrid!.style.minHeight = '';
+      } else if (partial) {
+        if (fullPageHeight > 0) wsGrid!.style.minHeight = `${fullPageHeight}px`;
+      } else {
+        wsGrid!.style.minHeight = '';
+        fullPageHeight = wsGrid!.offsetHeight;
+      }
+      wsPrevBtns.forEach(b => { b.disabled = page === 0; });
+      wsNextBtns.forEach(b => { b.disabled = page === pageCount - 1; });
+      wsPageEls.forEach(el => { el.textContent = `${page + 1} / ${pageCount}`; });
+      // A single page needs no pager (e.g. 5 stories on desktop).
+      navEls.forEach(el => { el.hidden = pageCount <= 1; });
+      if (dotsWrap) {
+        dotsWrap.hidden = pageCount <= 1;
+        dotsWrap.querySelectorAll<HTMLElement>('.workshop-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === page);
+          if (i === page) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
     }
 
-    wsPrev.addEventListener('click', () => { if (page > 0) { page--; renderPage(); } });
-    wsNext.addEventListener('click', () => { if (page < pageCount - 1) { page++; renderPage(); } });
+    // One dot per page; rebuilt when the breakpoint flips page size.
+    function buildDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      for (let i = 0; i < pageCount; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'workshop-dot';
+        dot.setAttribute('aria-label', `Go to stories page ${i + 1}`);
+        dot.addEventListener('click', () => goToPage(i, true));
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    // The server renders the desktop page size; re-render on load so
+    // mobile starts with its own, and again when the breakpoint flips
+    // (rotation, resize) — keeping the first visible story in view.
+    mobileQuery.addEventListener('change', () => {
+      const firstIndex = page * pageSize;
+      pageSize = mobileQuery.matches ? mobilePageSize : desktopPageSize;
+      pageCount = Math.ceil(items.length / pageSize);
+      page = Math.min(Math.floor(firstIndex / pageSize), pageCount - 1);
+      buildDots();
+      renderPage();
+    });
+
+    buildDots();
+    renderPage();
+
+    // The full-page height measurement shifts when the web fonts swap
+    // in or the columns change width — re-render (and so re-measure)
+    // when that happens. On a full page this refreshes the stored
+    // height; on a partial page it re-applies the pin.
+    document.fonts?.ready.then(() => renderPage());
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderPage, 150);
+    });
+
+    // Scroll so "More from the workshop" is the first thing in view and
+    // resolve once the scroll settles, so the caller can swap the page
+    // content only after the reader is back at the top of the section.
+    function scrollToSectionTop(): Promise<void> {
+      return new Promise((resolve) => {
+        const header = wsGrid!.closest('.workshop-band')?.querySelector('.section-header') ?? wsGrid!;
+        const navHeight = parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--nav-height')
+        ) || 70;
+        const top = Math.max(0, header.getBoundingClientRect().top + window.scrollY - navHeight - 16);
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          window.scrollTo({ top });
+          resolve();
+          return;
+        }
+
+        window.scrollTo({ top, behavior: 'smooth' });
+
+        // No reliable cross-browser scrollend yet, so poll: done when we
+        // reach the target or the position stops moving (~100ms idle).
+        const deadline = performance.now() + 2000;
+        let last = -1;
+        let idleFrames = 0;
+        function tick() {
+          const y = window.scrollY;
+          if (Math.abs(y - top) < 2 || performance.now() > deadline) return resolve();
+          if (y === last) {
+            if (++idleFrames > 6) return resolve();
+          } else {
+            idleFrames = 0;
+            last = y;
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    let paging = false;
+
+    // scrollFirst: ride up to the section header, then swap — the old
+    // page stays put while the view travels. Used by the mobile bottom
+    // nav and the dots under the grid, both of which sit below the
+    // stories. The desktop header arrows are already in view, so they
+    // swap in place instead.
+    function goToPage(next: number, scrollFirst: boolean) {
+      if (paging || next < 0 || next > pageCount - 1 || next === page) return;
+      page = next;
+      if (scrollFirst) {
+        paging = true;
+        scrollToSectionTop().then(() => {
+          renderPage();
+          paging = false;
+        });
+      } else {
+        renderPage();
+      }
+    }
+
+    wsPrevBtns.forEach(b => b.addEventListener('click', () => goToPage(page - 1, mobileQuery.matches)));
+    wsNextBtns.forEach(b => b.addEventListener('click', () => goToPage(page + 1, mobileQuery.matches)));
   }
 </script>

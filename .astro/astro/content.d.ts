@@ -220,6 +220,13 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "stories": {
+"2024-12-pyrocaster-build copy.md": {
+	id: "2024-12-pyrocaster-build copy.md";
+  slug: "2024-12-pyrocaster-build-copy";
+  body: string;
+  collection: "stories";
+  data: InferEntrySchema<"stories">
+} & { render(): Render[".md"] };
 "2024-12-pyrocaster-build.md": {
 	id: "2024-12-pyrocaster-build.md";
   slug: "2024-12-pyrocaster-build";

@@ -27,13 +27,9 @@ const fieldLabels: Record<string, string> = {
 ---
 
 <PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
-  <div class="container gallery-head">
-    <div class="section-header">
-      <h1 class="section-heading">The Vibrum instruments</h1>
-    </div>
-  </div>
-
   <div class="gallery-layout container">
+    <h1 class="visually-hidden">The Vibrum instruments</h1>
+
     <!-- Sidebar filters / mobile drawer -->
     <aside class="filters" id="filters">
 
@@ -407,38 +403,13 @@ const fieldLabels: Record<string, string> = {
 </script>
 
 <style>
-  /* ---- Page header — same label + hairline pattern as the homepage ---- */
-  .gallery-head {
-    padding-top: var(--space-lg);
-  }
-
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-sm);
-    border-bottom: 1px solid rgba(255, 245, 220, 0.14);
-    padding-bottom: 16px;
-  }
-
-  .section-heading {
-    /* Explicit family so the h1 doesn't pick up the global heading serif. */
-    font-family: var(--font-body);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin: 0;
-  }
-
   /* ---- Layout ---- */
   .gallery-layout {
     display: grid;
     grid-template-columns: 1fr 200px;
     gap: 0;
     align-items: start;
-    padding-top: var(--space-md);
+    padding-top: var(--space-lg);
     padding-bottom: var(--space-lg);
   }
 

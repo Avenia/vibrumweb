@@ -61,6 +61,9 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
     <!-- Fonts -->
+    <!-- Preload the logo font so it's ready before first paint —
+         without this the nav logo flashes the serif fallback. -->
+    <link rel="preload" href="/fonts/TERMINAT.TTF" as="font" type="font/ttf" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

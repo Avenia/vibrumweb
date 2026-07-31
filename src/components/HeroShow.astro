@@ -147,6 +147,8 @@ const slides = slideEntries.map(e => e.data);
   }
 
   /* ---- Editorial shade — heavy on the left where the copy sits ---- */
+  /* Monotonic left-to-right: darkest under the copy, brightest at the
+     right edge. The bottom layer keeps the corner caption readable. */
   .hero-shade {
     position: absolute;
     inset: 0;
@@ -155,10 +157,9 @@ const slides = slideEntries.map(e => e.data);
       linear-gradient(to top, rgba(10, 9, 6, 0.62), transparent 24%),
       linear-gradient(100deg,
         rgba(10, 9, 6, 0.94) 0%,
-        rgba(10, 9, 6, 0.88) 46%,
-        rgba(10, 9, 6, 0.58) 70%,
-        rgba(10, 9, 6, 0.20) 88%,
-        rgba(10, 9, 6, 0.50) 100%);
+        rgba(10, 9, 6, 0.85) 42%,
+        rgba(10, 9, 6, 0.45) 70%,
+        rgba(10, 9, 6, 0.12) 100%);
   }
 
   /* ---- Copy ---- */
@@ -362,9 +363,11 @@ const slides = slideEntries.map(e => e.data);
     50%, 100% { opacity: 1; }
   }
 
+  /* Negative vertical insets: the title's tight line-height (1.02) puts
+     descenders (y, g) outside the line box, and a 0 inset would slice them. */
   @keyframes hero-wipe {
-    from { clip-path: inset(0 100% 0 0); }
-    to   { clip-path: inset(0 -2% 0 0); }
+    from { clip-path: inset(-20% 100% -20% 0); }
+    to   { clip-path: inset(-20% -2% -20% 0); }
   }
 
   @keyframes hero-fade {

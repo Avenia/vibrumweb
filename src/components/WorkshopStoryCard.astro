@@ -27,16 +27,39 @@ const kicker = tags[0]?.replace(/-/g, ' ').toUpperCase();
 </a>
 
 <style>
+  /* Outlined card, same recipe as the pre-redesign StoryCard and the
+     guitar strip cards: hairline border, raised bg, gold on hover. */
   .workshop-card {
     display: block;
+    /* Semi-transparent take on --color-bg-raised so the band photo
+       glows through the text area. */
+    background-color: rgba(17, 14, 10, 0.45);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    padding-bottom: 18px;
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .workshop-card:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+    /* --color-bg-surface at matching transparency */
+    background-color: rgba(26, 21, 16, 0.55);
   }
 
   .workshop-card-media {
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    border-radius: var(--radius-sm);
     background: var(--color-bg-surface);
     margin-bottom: 16px;
+  }
+
+  /* Text block gets side padding now that the card owns the frame
+     and the image runs flush to its edges. */
+  .workshop-card-meta,
+  .workshop-card-title,
+  .workshop-card-excerpt {
+    padding-inline: 16px;
   }
 
   .workshop-card-media img {

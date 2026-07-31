@@ -37,10 +37,12 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
       const images = [g.data.coverImage, ...(g.data.images ?? [])];
       return (
         <button type="button" class="strip-card strip-card-trigger">
-          <div class="strip-card-image">
-            <img src={g.data.coverImage} alt={g.data.title} loading="lazy" />
+          <img class="strip-card-img" src={g.data.coverImage} alt={g.data.title} loading="lazy" />
+          <div class="strip-card-veil" aria-hidden="true"></div>
+          <div class="strip-card-caption">
+            <span class="strip-card-year">{g.data.year}</span>
+            <span class="strip-card-title">{g.data.title}</span>
           </div>
-          <p class="strip-card-title">{g.data.title}</p>
 
           <template class="modal-data" data-slug={g.slug}>
             <div
@@ -77,7 +79,8 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
       );
     })}
     <a href="/gallery" class="strip-card--view-all" aria-label="View all guitars">
-      <span class="strip-view-all-btn">View All Guitars &#8594;</span>
+      <span class="strip-view-all-arrow" aria-hidden="true">&#8594;</span>
+      <span class="strip-view-all-label">View All<br />Guitars</span>
     </a>
   </div>
   <button class="strip-arrow strip-next" aria-label="Next guitars">&#8594;</button>
@@ -114,12 +117,17 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
        inside the 1200px container at desktop width. */
     flex: 0 0 260px;
     scroll-snap-align: start;
+    position: relative;
+    aspect-ratio: 3 / 4;
     display: block;
     background-color: var(--color-bg-raised);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
-    transition: border-color var(--transition), background-color var(--transition);
+    transition:
+      border-color var(--transition),
+      transform 350ms ease,
+      box-shadow 350ms ease;
     text-decoration: none;
     padding: 0;
     cursor: pointer;
@@ -128,25 +136,66 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
 
   .strip-card:hover {
     border-color: rgba(201, 168, 76, 0.35);
-    background-color: var(--color-bg-surface);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
   }
 
-  .strip-card-image {
-    position: relative;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    background-color: var(--color-bg-surface);
-  }
-
-  .strip-card-image img {
+  .strip-card-img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 350ms ease;
   }
 
-  .strip-card:hover .strip-card-image img {
-    transform: scale(1.04);
+  .strip-card:hover .strip-card-img {
+    transform: scale(1.05);
+  }
+
+  /* Bottom veil so the caption reads on any photo —
+     same recipe as the band shades on the homepage. */
+  .strip-card-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(10, 9, 6, 0.88) 0%,
+      rgba(10, 9, 6, 0.42) 28%,
+      transparent 55%
+    );
+    transition: opacity var(--transition);
+  }
+
+  .strip-card-caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 14px 14px;
+  }
+
+  .strip-card-year {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+  }
+
+  .strip-card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    color: #EDE7D4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
   }
 
   .strip-card--view-all {
@@ -154,48 +203,53 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
     scroll-snap-align: start;
     aspect-ratio: 3 / 4;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     text-decoration: none;
-  }
-
-  .strip-view-all-btn {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    color: #0a0906;
-    background-color: var(--color-accent);
-    padding: 10px 20px;
+    border: 1px dashed rgba(201, 168, 76, 0.35);
     border-radius: var(--radius-md);
-    white-space: nowrap;
-    opacity: 0.8;
-    transition: opacity var(--transition), transform 350ms ease;
+    background-color: var(--color-accent-dim);
+    transition:
+      border-color var(--transition),
+      background-color var(--transition),
+      transform 350ms ease;
   }
 
-  .strip-card--view-all:hover .strip-view-all-btn {
-    opacity: 1;
-    transform: translateY(-2px);
+  .strip-card--view-all:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-hover);
+    transform: translateY(-3px);
   }
 
-  .strip-card-title {
-    padding: 0.55rem var(--space-xs) 0.65rem;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    font-size: 0.85rem;
-    color: var(--color-text-bold);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .strip-view-all-arrow {
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--color-accent);
+    transition: transform 350ms ease;
+  }
+
+  .strip-card--view-all:hover .strip-view-all-arrow {
+    transform: translateX(4px);
+  }
+
+  .strip-view-all-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     text-align: center;
-    margin: 0;
+    line-height: 1.6;
+    color: #EDE7D4;
   }
 
   .strip-arrow {
     position: absolute;
-    /* Vertically centered on the 3/4 card image: 260px * 4/3 / 2 ≈ 173px. */
-    top: calc(173px - 1rem);
+    /* Cards are pure 3/4 images now, so dead center of the strip works. */
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 2;
     width: 2rem;
     height: 2rem;
@@ -236,10 +290,31 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
 
   @media (max-width: 639px), (hover: none) {
     .strip-arrow { display: none; }
+
+    /* Tame touch flings: momentum can't skip past snap points, so one
+       swipe settles on the next card instead of flying down the strip. */
+    .strip-card,
+    .strip-card--view-all {
+      scroll-snap-stop: always;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .strip-card-image img { transition: none; }
+    .strip-card,
+    .strip-card-img,
+    .strip-card--view-all,
+    .strip-view-all-arrow {
+      transition: none;
+    }
+
+    .strip-card:hover,
+    .strip-card--view-all:hover {
+      transform: none;
+    }
+
+    .strip-card:hover .strip-card-img {
+      transform: none;
+    }
   }
 </style>
 
