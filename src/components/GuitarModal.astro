@@ -648,7 +648,11 @@
         btn.style.verticalAlign = 'top';
         btn.setAttribute('aria-label', `Photo ${i + 1}`);
         const img = document.createElement('img');
-        img.src = src;
+        // Thumbs render at ~64px (desktop) / ~29px (mobile), so serve the 200px
+        // variant from the folder's thumbs/ subdir instead of the 1800px original.
+        // Guitars without thumbs/ fall back to the full file — one 404, then it works.
+        img.src = src.replace(/\/([^/]+)$/, '/thumbs/$1');
+        img.onerror = () => { img.onerror = null; img.src = src; };
         img.alt = '';
         img.loading = 'lazy';
         img.style.width = '100%';
