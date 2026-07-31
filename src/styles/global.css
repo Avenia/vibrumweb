@@ -172,7 +172,10 @@ strong {
 }
 
 .section {
-  padding: var(--space-lg) 0;
+  /* Block-axis only: the shorthand `padding: var(--space-lg) 0` was zeroing
+     the horizontal padding that .container.section elements need to line up
+     with the nav and the full-bleed banners' inner containers. */
+  padding-block: var(--space-lg);
 }
 
 /* Available to screen readers and search engines, invisible on screen. */

@@ -25,14 +25,6 @@ const guitars = (await getCollection('guitars'))
 
   <HeroShow />
 
-  <div class="container section">
-    <div class="section-header">
-      <h2 class="section-heading">Recent guitars</h2>
-    </div>
-
-    {guitars.length > 0 && <GuitarStrip guitars={guitars} />}
-  </div>
-
   {featured && (
     <section class="bench-feature">
       <img class="bench-feature-img" src={featured.data.coverImage} alt="" loading="lazy" />
@@ -76,6 +68,25 @@ const guitars = (await getCollection('guitars'))
         </div>
       )}
     </div>
+  )}
+
+  {guitars.length > 0 && (
+    <section class="guitar-band">
+      <img
+        class="guitar-band-img"
+        src="/images/guitars/pyrocaster/photo-19.png"
+        alt=""
+        loading="lazy"
+      />
+      <div class="guitar-band-shade" aria-hidden="true"></div>
+      <div class="guitar-band-inner container">
+        <div class="section-header">
+          <h2 class="section-heading">Recent guitars</h2>
+        </div>
+
+        <GuitarStrip guitars={guitars} />
+      </div>
+    </section>
   )}
 
   <section class="bench-letter">
@@ -282,13 +293,7 @@ const guitars = (await getCollection('guitars'))
   }
 
   @media (max-width: 639px) {
-    .workshop-grid {
-      padding-inline: var(--space-sm);
-    }
-
-    /* Match the grid's inset; the guitars header stays flush with the strip. */
     .workshop-section .section-header {
-      margin-inline: var(--space-sm);
       margin-bottom: var(--space-md);
     }
   }
@@ -333,6 +338,46 @@ const guitars = (await getCollection('guitars'))
 
   .empty-cta:hover {
     opacity: 0.7;
+  }
+
+  /* =========================================
+     Recent guitars — full-bleed strip band
+     ========================================= */
+  .guitar-band {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--color-border);
+    /* Bottom hairline comes from .bench-letter's border-top right below,
+       so the two bands share a single rule instead of doubling up. */
+    background: var(--color-bg);
+  }
+
+  .guitar-band-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* Heavy veil, deepening toward the edges so the band melts
+     into the page background above and the letter band below. */
+  .guitar-band-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 9, 6, 0.97) 0%,
+      rgba(10, 9, 6, 0.88) 32%,
+      rgba(10, 9, 6, 0.88) 68%,
+      rgba(10, 9, 6, 0.97) 100%
+    );
+  }
+
+  .guitar-band-inner {
+    z-index: 1;
+    padding-block: var(--space-md);
   }
 
   /* =========================================

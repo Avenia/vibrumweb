@@ -110,7 +110,9 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   }
 
   .strip-card {
-    flex: 0 0 360px;
+    /* 260px shows four full cards plus a slice of the fifth
+       inside the 1200px container at desktop width. */
+    flex: 0 0 260px;
     scroll-snap-align: start;
     display: block;
     background-color: var(--color-bg-raised);
@@ -148,7 +150,7 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   }
 
   .strip-card--view-all {
-    flex: 0 0 360px;
+    flex: 0 0 260px;
     scroll-snap-align: start;
     aspect-ratio: 3 / 4;
     display: flex;
@@ -192,7 +194,8 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
 
   .strip-arrow {
     position: absolute;
-    top: calc(240px - 1.1rem);
+    /* Vertically centered on the 3/4 card image: 260px * 4/3 / 2 ≈ 173px. */
+    top: calc(173px - 1rem);
     z-index: 2;
     width: 2rem;
     height: 2rem;
@@ -261,8 +264,8 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   strip?.addEventListener('scroll', syncArrows, { passive: true });
   window.addEventListener('resize', syncArrows);
 
-  stripPrev?.addEventListener('click', () => strip?.scrollBy({ left: -376, behavior: 'smooth' }));
-  stripNext?.addEventListener('click', () => strip?.scrollBy({ left: 376, behavior: 'smooth' }));
+  stripPrev?.addEventListener('click', () => strip?.scrollBy({ left: -276, behavior: 'smooth' }));
+  stripNext?.addEventListener('click', () => strip?.scrollBy({ left: 276, behavior: 'smooth' }));
 
   // ---- Modal triggers ----
   document.querySelectorAll<HTMLElement>('.strip-card-trigger').forEach(trigger => {
