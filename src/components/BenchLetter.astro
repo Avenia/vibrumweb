@@ -40,6 +40,9 @@
           />
           <button type="submit" class="bench-letter-btn" id="nl-submit">Subscribe</button>
         </div>
+        <p class="nl-consent">
+          By subscribing you agree to the <a href="/privacy">privacy policy</a>.
+        </p>
         <p class="nl-field-error" id="nl-error" role="alert">Please enter a valid email address.</p>
         <p class="nl-send-error" id="nl-send-error" role="alert">
           Something went wrong and you were not subscribed. Please try again, or email us at
@@ -189,6 +192,25 @@
   .bench-letter-btn:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+
+  .nl-consent {
+    font-size: 0.74rem;
+    color: rgba(255, 245, 220, 0.4);
+    line-height: 1.6;
+    margin: 10px 0 0;
+    max-width: 480px;
+  }
+
+  .nl-consent a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--transition);
+  }
+
+  .nl-consent a:hover {
+    color: var(--color-accent);
   }
 
   .nl-field-error,

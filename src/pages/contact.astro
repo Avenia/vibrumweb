@@ -60,6 +60,9 @@ import PageLogoBg from '../components/PageLogoBg.astro';
               <span class="char-limit-msg" id="message-limit">Message size limit reached.</span>
             </div>
             <button type="submit" class="cta-btn">Send message →</button>
+            <p class="form-consent">
+              By sending, you agree to the <a href="/privacy">privacy policy</a>
+            </p>
           </form>
 
           <div class="confirm-message" id="confirm-view" style="display:none">
@@ -654,6 +657,27 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     color: var(--color-text-muted);
     line-height: 1.65;
     margin: 0;
+  }
+
+  /* Mirrors .nl-consent in BenchLetter.astro — the two consent lines
+     should read identically across the site. */
+  .form-consent {
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    color: rgba(255, 245, 220, 0.4);
+    line-height: 1.6;
+    margin: 10px 0 0;
+  }
+
+  .form-consent a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--transition);
+  }
+
+  .form-consent a:hover {
+    color: var(--color-accent);
   }
 
   .field-error {

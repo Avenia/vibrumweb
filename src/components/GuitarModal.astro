@@ -454,7 +454,7 @@
 <script>
   declare global {
     interface Window {
-      openGuitarModal: (card: HTMLElement) => void;
+      openGuitarModal: (card: HTMLElement, startIndex?: number) => void;
     }
   }
 
@@ -475,6 +475,19 @@
   let current = 0;
   let isSliding = false;
   let lastTrigger: HTMLElement | null = null;
+  let openSlug = '';
+  let pushedHash = false;
+
+  // Deep-linkable photos: "#guitar-<slug>" is photo 1, "#guitar-<slug>-p3" photo 3.
+  function photoHash() {
+    return '#guitar-' + openSlug + (current > 0 ? `-p${current + 1}` : '');
+  }
+
+  function syncHash() {
+    if (openSlug && location.hash.startsWith('#guitar-')) {
+      history.replaceState(null, '', photoHash());
+    }
+  }
 
   function updateUI() {
     counterEl.textContent = images.length > 1 ? `${current + 1} / ${images.length}` : '';
@@ -496,6 +509,7 @@
       current = next;
       imgEl.src = images[current];
       updateUI();
+      syncHash();
       return;
     }
 
@@ -535,19 +549,21 @@
       imgEl = incoming as HTMLImageElement;
       isSliding = false;
       updateUI();
+      syncHash();
     }
 
     incoming.addEventListener('transitionend', finish, { once: true });
     setTimeout(finish, 400);
   }
 
-  function openModal(card: HTMLElement) {
+  function openModal(card: HTMLElement, startIndex = 0) {
     const tpl = card.querySelector('template.modal-data') as HTMLTemplateElement;
     const slug = tpl.dataset.slug ?? '';
     const data = tpl.content.querySelector<HTMLElement>('[data-title]')!;
 
     images = JSON.parse(data.dataset.images!);
-    current = 0;
+    current = Math.min(Math.max(startIndex, 0), images.length - 1);
+    openSlug = slug;
 
     // The strip card is itself the trigger button; the gallery card wraps one.
     lastTrigger = card.closest<HTMLElement>('button') ?? card.querySelector<HTMLElement>('button');
@@ -627,7 +643,15 @@
     document.body.style.overflow = 'hidden';
     document.getElementById('guitar-modal-info')!.scrollTop = 0;
     closeBtn.focus();
-    if (slug) history.pushState(null, '', '#guitar-' + slug);
+    if (slug) {
+      // Deep-link loads already carry the hash — don't push a duplicate entry.
+      if (location.hash === photoHash()) {
+        pushedHash = false;
+      } else {
+        history.pushState(null, '', photoHash());
+        pushedHash = true;
+      }
+    }
 
     setTimeout(() => {
       const stripWidth = thumbsEl.clientWidth || 600;
@@ -664,7 +688,7 @@
         thumbsEl.appendChild(btn);
       });
 
-      showPhoto(0);
+      showPhoto(current);
     }, 0);
   }
 
@@ -674,9 +698,17 @@
     backdrop.setAttribute('aria-hidden', 'true');
     backdrop.classList.remove('modal-backdrop--open');
     document.body.style.overflow = '';
+    openSlug = '';
   }
 
   function closeModal() {
+    if (pushedHash) {
+      // We added the hash entry on open — pop it so Back leaves the page,
+      // not returns to the modal's stale entry. popstate hides the modal.
+      pushedHash = false;
+      history.back();
+      return;
+    }
     hideModal();
     if (location.hash.startsWith('#guitar-')) {
       history.replaceState(null, '', location.pathname + location.search);
@@ -686,15 +718,25 @@
   window.openGuitarModal = openModal;
 
   window.addEventListener('popstate', () => {
+    pushedHash = false;
     if (backdrop.classList.contains('modal-backdrop--open')) hideModal();
   });
 
   const initHash = location.hash;
   if (initHash.startsWith('#guitar-')) {
-    const slug = initHash.slice(8);
-    const tpl = document.querySelector<HTMLElement>(`template.modal-data[data-slug="${slug}"]`);
-    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger');
-    if (card) openModal(card);
+    // "#guitar-<slug>" or "#guitar-<slug>-pN" (photo N, 1-based). A slug could
+    // itself end in "-pN", so try the whole string as a slug before splitting.
+    const raw = initHash.slice(8);
+    const findTpl = (slug: string) =>
+      document.querySelector<HTMLElement>(`template.modal-data[data-slug="${CSS.escape(slug)}"]`);
+    let tpl = findTpl(raw);
+    let startIndex = 0;
+    if (!tpl) {
+      const m = raw.match(/^(.+)-p(\d+)$/);
+      if (m && (tpl = findTpl(m[1]))) startIndex = parseInt(m[2], 10) - 1;
+    }
+    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger, #story-guitar-wrapper');
+    if (card) openModal(card, startIndex);
   }
 
   prevBtn.addEventListener('click', () => showPhoto(current - 1, -1));

@@ -3,7 +3,7 @@ title: "Ironveil: A Dark Build"
 date: 2025-03-14
 coverImage: /images/guitars/ironveil/photo-1.png
 guitar: ironveil
-tags: ["build diary", "electric", "ironveil"]
+category: build-diary
 excerpt: "The brief was simple: something heavy, something dark, something that does not apologise for what it is. The Ironveil started from that sentence."
 draft: false
 ---

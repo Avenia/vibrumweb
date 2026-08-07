@@ -3,7 +3,7 @@ title: "Driftwood OM: Starting With a Question"
 date: 2025-07-19
 coverImage: /images/guitars/driftwood-om/photo-1.png
 guitar: driftwood-om
-tags: ["acoustic", "driftwood-om", "design"]
+category: build-diary
 excerpt: "Every acoustic I have considered building starts from the same question: what is the player actually hearing? The Driftwood OM started differently — it started from the wood."
 draft: false
 ---

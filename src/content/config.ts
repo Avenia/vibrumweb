@@ -61,7 +61,8 @@ const stories = defineCollection({
     date: z.date(),
     coverImage: z.string(),
     guitar: z.string().optional(),
-    tags: z.array(z.string()).default([]),
+    // Story category: workshop build log, guitars out in the world, or announcements
+    category: z.enum(['build-diary', 'in-the-wild', 'news']).default('build-diary'),
     excerpt: z.string(),
     draft: z.boolean().default(false),
   }),

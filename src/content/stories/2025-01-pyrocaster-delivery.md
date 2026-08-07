@@ -3,7 +3,7 @@ title: "The Pyrocaster Finds Its Player"
 date: 2025-01-08
 coverImage: /images/guitars/pyrocaster/photo-5.png
 guitar: pyrocaster
-tags: ["delivery", "electric", "pyrocaster"]
+category: in-the-wild
 excerpt: "There is a particular quiet in the workshop after a guitar leaves. The Pyrocaster went to its new home last week — here is what that felt like."
 draft: false
 ---

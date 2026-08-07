@@ -1,6 +1,19 @@
 ---
 import '../styles/global.css';
 
+// Self-hosted fonts (was Google Fonts CDN — remote loading leaks visitor
+// IPs to Google pre-consent, which the Munich LG ruling treats as a GDPR
+// violation; self-hosting sidesteps the whole consent question).
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/montserrat/500.css';
+import '@fontsource/montserrat/600.css';
+import '@fontsource/playfair-display/400.css';
+import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource/playfair-display/500.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/700.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -64,12 +77,6 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <!-- Preload the logo font so it's ready before first paint —
          without this the nav logo flashes the serif fallback. -->
     <link rel="preload" href="/fonts/TERMINAT.TTF" as="font" type="font/ttf" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Roboto:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
 
     <slot name="head" />
   </head>

@@ -3,7 +3,7 @@ title: "Ironveil: Done"
 date: 2025-06-02
 coverImage: /images/guitars/ironveil/photo-14.png
 guitar: ironveil
-tags: ["completion", "electric", "ironveil"]
+category: build-diary
 excerpt: "Three months, one brief, no apologies. The Ironveil is finished."
 draft: false
 ---

@@ -64,7 +64,7 @@ const guitars = (await getCollection('guitars'))
   )}
 
   {(workshopStories.length > 0 || stories.length === 0) && (
-    <section class="workshop-band">
+    <section class="workshop-band" id="stories">
       <img
         class="workshop-band-img"
         src="/images/guitars/driftwood-om/photo-15.png"
@@ -93,7 +93,7 @@ const guitars = (await getCollection('guitars'))
                     date={story.data.date}
                     coverImage={story.data.coverImage}
                     excerpt={story.data.excerpt}
-                    tags={story.data.tags}
+                    category={story.data.category}
                   />
                 </div>
               ))}
@@ -336,6 +336,8 @@ const guitars = (await getCollection('guitars'))
   .workshop-band {
     position: relative;
     overflow: hidden;
+    /* Anchor target for /#stories — clear the fixed nav */
+    scroll-margin-top: var(--nav-height);
     border-top: 1px solid var(--color-border);
     background: var(--color-bg);
   }

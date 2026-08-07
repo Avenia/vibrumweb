@@ -162,6 +162,34 @@ strong {
   margin: var(--space-md) 0;
 }
 
+/* Story photos — markdown images. On phones they sit full-width in the text
+   flow; on desktop the story page hides them and shows the same photos in the
+   right-hand column instead. */
+.prose img.story-float {
+  width: 100%;
+  height: auto;
+  margin: var(--space-md) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.prose img.story-float--clickable {
+  cursor: pointer;
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.prose img.story-float--clickable:hover {
+  border-color: rgba(201, 168, 76, 0.45);
+  transform: scale(1.015);
+}
+
+@media (min-width: 768px) {
+  .story-detail .prose img.story-float {
+    display: none;
+  }
+}
+
 /* =========================================
    Layout Utilities
    ========================================= */

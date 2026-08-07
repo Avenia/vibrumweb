@@ -3,7 +3,7 @@ title: "Driftwood OM: First Sound"
 date: 2025-11-18
 coverImage: /images/guitars/driftwood-om/photo-21.png
 guitar: driftwood-om
-tags: ["completion", "acoustic", "driftwood-om"]
+category: build-diary
 excerpt: "The first note on a new acoustic guitar is not a performance. It is a question. The Driftwood OM answered well."
 draft: false
 ---

@@ -1,0 +1,140 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageLogoBg from '../components/PageLogoBg.astro';
+---
+
+<PageLayout
+  title="Privacy — Vibrum Guitars"
+  description="How Vibrum Guitars handles the details you share through the contact and newsletter forms."
+>
+  <!-- Kept out of search results on purpose — the page exists for people
+       who click the link under a form, not as a landing page. -->
+  <meta slot="head" name="robots" content="noindex, follow" />
+
+  <PageLogoBg />
+
+  <section class="privacy">
+    <div class="privacy-inner container">
+      <header class="privacy-header">
+        <p class="eyebrow">Privacy</p>
+        <h1 class="privacy-title">What we do with your details</h1>
+        <p class="privacy-lead">
+          The short version: this site sets no cookies, runs no analytics, and
+          collects nothing beyond what you type into its two forms.
+        </p>
+      </header>
+
+      <div class="privacy-body">
+        <h2 class="privacy-h2">What we collect</h2>
+        <p>
+          The contact form asks for your name, email address, and message. The
+          newsletter form asks for your email address. That's everything —
+          there is no tracking of any kind on this site.
+        </p>
+
+        <h2 class="privacy-h2">How we use it</h2>
+        <p>
+          Contact messages are used to reply to you, and for nothing else.
+          A newsletter address is used to send the workshop letter — a few
+          times a year, never more. We never sell or share your details, and
+          nobody gets added to the letter without asking for it.
+        </p>
+
+        <h2 class="privacy-h2">Who handles it along the way</h2>
+        <p>
+          Form submissions are delivered to our inbox by
+          <a href="https://web3forms.com" target="_blank" rel="noopener noreferrer">Web3Forms</a>,
+          a form delivery service. They store submissions on their
+          infrastructure for a short period before automatic deletion, and
+          transfers outside the EEA are covered by the EU Standard Contractual
+          Clauses under their data processing agreement. After delivery, your
+          message lives in our email — nowhere else.
+        </p>
+
+        <h2 class="privacy-h2">Your choices</h2>
+        <p>
+          Every letter includes a way out — or just reply with "unsubscribe"
+          and you're off the list. To ask what we hold about you, or to have
+          it deleted, write to
+          <a href="mailto:info@vibrumguitars.com">info@vibrumguitars.com</a>.
+        </p>
+
+        <p class="privacy-updated">Last updated: August 2026</p>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .privacy {
+    padding-block: var(--space-xl);
+  }
+
+  .privacy-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 18px;
+  }
+
+  .privacy-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.12;
+    color: #EDE7D4;
+    margin: 0 0 16px;
+  }
+
+  .privacy-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 245, 220, 0.62);
+    margin: 0 0 12px;
+  }
+
+  .privacy-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .privacy-h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: #EDE7D4;
+    margin: 34px 0 10px;
+  }
+
+  .privacy-body p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(255, 245, 220, 0.55);
+    margin: 0 0 14px;
+  }
+
+  .privacy-body a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .privacy-body a:hover {
+    opacity: 0.85;
+  }
+
+  .privacy-updated {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(255, 245, 220, 0.35);
+    margin-top: var(--space-lg);
+  }
+</style>
