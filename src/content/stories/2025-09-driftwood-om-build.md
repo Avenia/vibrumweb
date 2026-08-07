@@ -36,7 +36,7 @@ I cut the binding channels by hand with a router plane, not a Dremel tool. It ta
 
 The dovetail neck joint is fitted but not glued. At this stage the neck needs to come on and off multiple times for alignment checks — I will glue it after finishing.
 
-![Dovetail neck joint, dry-fitted](/images/guitars/driftwood-om/photo-7.png "left")
+![Dovetail neck joint, dry-fitted](/images/guitars/driftwood-om/photo-7.png)
 
 The dovetail neck joint is fitted but not glued. At this stage the neck needs to come on and off multiple times for alignment checks — I will glue it after finishing.
 

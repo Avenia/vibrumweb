@@ -49,6 +49,8 @@ function isActive(href: string): boolean {
       </li>
     ))}
   </ul>
+
+  <p class="mobile-menu-copyright">&copy; 2026 Vibrum Guitars</p>
 </div>
 
 <style>
@@ -206,6 +208,17 @@ function isActive(href: string): boolean {
 
   .mobile-menu-link--active::after {
     width: 100%;
+  }
+
+  .mobile-menu-copyright {
+    position: absolute;
+    bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 640px) {

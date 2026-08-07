@@ -60,8 +60,6 @@ Astro validates every frontmatter field against the schemas in [src/content/conf
 
 Broken image paths do *not* fail the build. They render as empty boxes. Check pages in `npm run dev` after adding photos.
 
-> **Known build noise:** `npm run build` currently exits non-zero on `@astrojs/sitemap` — `Cannot read properties of undefined (reading 'reduce')` thrown at `astro:build:done`, *after* every page has already been written. That failure is unrelated to content. What matters is the output above it: if the page list printed and no `Content collection` / `frontmatter` error appeared, your content is valid.
-
 ---
 
 ## 1. Prepare the photos first
@@ -127,7 +125,7 @@ mkdir -p thumbs
 for f in photo-*.webp; do magick "$f" -resize '200x200>' -quality 75 "thumbs/$f"; done
 ```
 
-Same filenames, same aspect ratio, no crop — [GuitarModal.astro:650-655](src/components/GuitarModal.astro#L650-L655) derives the thumb path from the full path, so **`.md` files never mention `thumbs/`**. A folder with no `thumbs/` still works: the strip 404s once per photo and falls back to the full file. Slow, not broken.
+Same filenames, same aspect ratio, no crop — [GuitarModal.astro:676-678](src/components/GuitarModal.astro#L676-L678) derives the thumb path from the full path, so **`.md` files never mention `thumbs/`**. A folder with no `thumbs/` still works: the strip 404s once per photo and falls back to the full file. Slow, not broken.
 
 Only guitar folders need this. Slideshow, story, and about photos are never shown as thumbnails.
 
@@ -140,11 +138,11 @@ Every slot uses `object-fit: cover`, so the image is cropped to the slot's aspec
 | Hero slide | full-bleed, 540–820 px tall | `58% 45%` | [HeroShow.astro:99-100](src/components/HeroShow.astro#L99-L100) |
 | Gallery card | **9 / 16** (tall portrait) | centre | [GuitarCard.astro:48](src/components/GuitarCard.astro#L48) |
 | Home guitar strip card | **3 / 4** (portrait) | centre | [GuitarStrip.astro:121](src/components/GuitarStrip.astro#L121) |
-| Story card | **16 / 10** (landscape) | centre | [WorkshopStoryCard.astro:51](src/components/WorkshopStoryCard.astro#L51) |
-| Newsletter band photo | **16 / 10** | centre | [BenchLetter.astro:265](src/components/BenchLetter.astro#L265) |
+| Story card | **16 / 10** (landscape) | centre | [WorkshopStoryCard.astro:53](src/components/WorkshopStoryCard.astro#L53) |
+| Newsletter band photo | **16 / 10** | centre | [BenchLetter.astro:287](src/components/BenchLetter.astro#L287) |
 | About team portrait | **1 / 2** (very tall) | centre | [about.astro:196](src/pages/about.astro#L196) |
 | Modal photo viewer | none — `object-fit: contain` | — | [GuitarModal.astro:150](src/components/GuitarModal.astro#L150) |
-| Modal thumbnail strip | none — uncropped, 10 across | — | [GuitarModal.astro:634](src/components/GuitarModal.astro#L634) |
+| Modal thumbnail strip | none — uncropped, 10 across | — | [GuitarModal.astro:657-688](src/components/GuitarModal.astro#L657-L688) |
 
 Practical consequence: a guitar's `coverImage` is shown at 9/16 and 3/4, so it must be a **vertical, full-instrument shot with the guitar centred**. A landscape cover image gets its neck and headstock cut off. The other `images` are only ever shown uncropped in the modal, so any orientation is fine there.
 
@@ -301,7 +299,7 @@ npm run dev        # localhost:4321/gallery
 Look at: card crop (headstock still attached?), modal photo order, specs table for blank rows, excerpt length on the card.
 
 ```bash
-npm run build      # schema errors surface here; ignore the @astrojs/sitemap crash at the end
+npm run build      # schema errors surface here
 ```
 
 **Step 8 — commit both the content and the photos**
@@ -370,9 +368,9 @@ what the wood does, how it plays.
 
 **Required fields:** `title`, `type`, `year`, `coverImage`, `excerpt`. Everything else is optional. Every `specs` field is optional and empty sections are skipped — only fill in what is true. Never invent specs to fill the table.
 
-**Filters** in the gallery sidebar read `status`, `type`, `strings`, `electronics` ([gallery.astro:109-112](src/pages/gallery.astro#L109-L112)). Omit `strings` or `electronics` and the guitar simply won't match those filters. Note `type: "classical"` is valid in the schema but has **no filter checkbox** — add one in [gallery.astro:51-62](src/pages/gallery.astro#L51-L62) if a classical guitar is ever added.
+**Filters** in the gallery sidebar read `status`, `type`, `strings`, `electronics` ([gallery.astro:38-91](src/pages/gallery.astro#L38-L91)). Omit `strings` or `electronics` and the guitar simply won't match those filters. Note `type: "classical"` is valid in the schema but has **no filter checkbox** — add one in [gallery.astro:48-62](src/pages/gallery.astro#L48-L62) if a classical guitar is ever added.
 
-**Deep links.** There are no per-guitar pages — guitars open in a modal on the gallery page. Link to one with `/gallery#guitar-<slug>`, e.g. `/gallery#guitar-pyrocaster`. The modal opens on load from that hash ([GuitarModal.astro:688-694](src/components/GuitarModal.astro#L688-L694)). Use this in slide `url` fields and in story text.
+**Deep links.** There are no per-guitar pages — guitars open in a modal on the gallery page. Link to one with `/gallery#guitar-<slug>`, e.g. `/gallery#guitar-pyrocaster`. Append `-pN` to open a specific photo: `/gallery#guitar-pyrocaster-p3` opens photo 3 (1-based). The modal opens on load from that hash and keeps the hash in sync while browsing photos, so the URL in the address bar is always shareable ([GuitarModal.astro:724-739](src/components/GuitarModal.astro#L724-L739)). Use this in slide `url` fields and in story text.
 
 **Escaping.** Inch marks must be escaped inside double-quoted YAML: `scale: "25.5\""`. Apostrophes in `excerpt` and `title` are fine inside double quotes.
 
@@ -390,25 +388,37 @@ title: "Driftwood OM: First Sound"
 date: 2025-11-18           # required — YYYY-MM-DD, unquoted, parsed as a date
 coverImage: "/images/stories/driftwood-om-first-sound/hero.webp"
 guitar: "driftwood-om"     # optional — must match a guitar filename exactly
-tags: ["completion", "acoustic", "driftwood-om"]
+category: build-diary      # optional — build-diary | in-the-wild | news; defaults to build-diary
 excerpt: "Short teaser shown on the home page card and used as the meta description."
 draft: false
 ---
 
 Story content in markdown here. `##` headings render as section headings.
+
+![The braced spruce top before closing](/images/stories/driftwood-om-first-sound/bracing.webp)
+
+Markdown images become the story's photos — see below.
 ```
 
 4. Push to `main`.
 
 **Where stories surface:**
 
-- The **newest** story (by `date`) becomes the full-bleed "From the bench" feature band on the home page, using its `coverImage` as the background ([index.astro:33-44](src/pages/index.astro#L33-L44)).
+- The **newest** story (by `date`) becomes the full-bleed "From the bench" feature band on the home page, using its `coverImage` as the background ([index.astro:32-44](src/pages/index.astro#L32-L44)).
 - All others fill the paginated "More from the workshop" grid — 6 per page desktop, 4 mobile.
 - Each gets its own page at `/stories/<slug>`.
 
-**`guitar:`** must match a guitar's filename without `.md`. If it matches, the story page appends that guitar's full specs and photo gallery below the story. The schema uses a plain string, not an Astro `reference()`, so a **misspelled slug does not fail the build** — the guitar section is silently omitted. Open the story page and confirm the specs block is there.
+**Photos in the story body.** Drop plain markdown images between paragraphs: `![alt text](/images/stories/your-story/photo.webp)`. Lazy loading is added automatically. How they render:
 
-**`tags`** are display-only (shown as `18.11.2025 · COMPLETION · ACOUSTIC`) — no filtering by tag exists. Convention in use: one stage tag (`build diary`, `completion`, `delivery`, `design`), one type tag (`electric`, `acoustic`, `bass`), one guitar slug.
+- **Phones** — full-width, in the text flow, exactly where you placed them.
+- **Desktop (≥ 768 px)** — pulled out of the text into the right-hand photo column next to the article, in document order.
+- **Click** — if the story has a `guitar:`, any photo opens the guitar modal on that photo (story photos are appended to the guitar's own photo list). Without a `guitar:`, a built-in lightbox opens with prev/next arrows.
+
+Place each image after the paragraph it belongs to, not mid-sentence. No `thumbs/` needed for story folders.
+
+**`guitar:`** must match a guitar's filename without `.md`. If it matches, the story page gets a "Featured instrument" panel with a **View all photos** button that opens the full guitar modal — specs, description, and every photo — and the story's own photos become clickable into that same modal. The schema uses a plain string, not an Astro `reference()`, so a **misspelled slug does not fail the build** — the panel is silently omitted. Open the story page and confirm the button is there.
+
+**`category`** is display-only — no filtering exists. It renders uppercased with hyphens as spaces, as the mono kicker line on cards and the story hero: `SEPTEMBER 2025 · BUILD DIARY`. Three values: `build-diary` (workshop build logs), `in-the-wild` (finished guitars out with players), `news` (announcements).
 
 **`coverImage`** is used three ways: story card at 16/10, feature band background if it is the newest story, and the Open Graph share image. Pick a landscape frame that reads at all three.
 
@@ -516,6 +526,7 @@ src/
       [slug].astro      ← story detail page
     about.astro
     contact.astro
+    privacy.astro       ← privacy notice (noindex; linked from the contact + newsletter consent lines)
     404.astro
   styles/
     global.css
@@ -527,7 +538,8 @@ public/
     slideshow/          ← hero slide images
     og-logo.png         ← Open Graph share image
     bimi-logo.svg       ← BIMI logo for email clients
-  fonts/                ← TERMINAT.TTF (logo wordmark)
+  fonts/                ← TERMINAT.TTF (logo wordmark) — text fonts are self-hosted
+                          via @fontsource packages, bundled at build (BaseLayout.astro)
   favicon/              ← all sizes + site.webmanifest
   CNAME                 ← custom domain for GitHub Pages
 ```
