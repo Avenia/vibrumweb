@@ -1,16 +1,28 @@
 import { defineCollection, z } from 'astro:content';
 
+// Field order here is also the render order: zod rebuilds each object in schema
+// key order, so SpecTable prints the rows in the sequence declared below.
 const specsSchema = z.object({
   materials: z.object({
     top: z.string().optional(),
+    // Acoustics: soundboard and bracing are usually quoted as one line
+    top_and_bracing: z.string().optional(),
     base: z.string().optional(),
+    back_and_sides: z.string().optional(),
     neck: z.string().optional(),
     fretboard: z.string().optional(),
     headstock_top: z.string().optional(),
+    bridge: z.string().optional(),
+    // Acoustic bridge pins
+    pins: z.string().optional(),
     fretmarkers: z.string().optional(),
-    nut: z.string().optional(),
     frets: z.string().optional(),
     details: z.string().optional(),
+    nut: z.string().optional(),
+    saddle: z.string().optional(),
+    // When nut and saddle are cut from the same stock
+    nut_and_saddle: z.string().optional(),
+    binding: z.string().optional(),
     finish: z.string().optional(),
   }).optional(),
   technical: z.object({
@@ -42,8 +54,8 @@ const guitars = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    type: z.enum(['electric', 'acoustic', 'bass', 'classical']),
-    status: z.enum(['available', 'sold']).default('available'),
+    type: z.enum(['electric', 'acoustic', 'bass', 'jazz']),
+    status: z.enum(['available', 'unavailable']).default('available'),
     year: z.number(),
     strings: z.number().optional(),
     electronics: z.enum(['active', 'passive']).optional(),

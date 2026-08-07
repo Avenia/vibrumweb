@@ -1,7 +1,7 @@
 ---
 title: "Example Guitar 2"
 type: "electric"
-status: "sold"
+status: "unavailable"
 year: 2023
 strings: 7
 electronics: "active"

@@ -4,29 +4,13 @@ import PageLayout from '../layouts/PageLayout.astro';
 import GuitarCard from '../components/GuitarCard.astro';
 import GuitarModal from '../components/GuitarModal.astro';
 import { background } from '../lib/backgrounds';
+import { sectionLabels, fieldLabels } from '../lib/specLabels';
 
 const commissionsBg = background('gallery-commissions');
 
 const allGuitars = await getCollection('guitars');
 const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
 
-const sectionLabels: Record<string, string> = {
-  materials: 'Materials',
-  technical: 'Technical',
-  hardware: 'Hardware',
-};
-
-const fieldLabels: Record<string, string> = {
-  top: 'Top', base: 'Base', neck: 'Neck', fretboard: 'Fretboard',
-  headstock_top: 'Headstock Top', fretmarkers: 'Fretmarkers',
-  nut: 'Nut', frets: 'Frets', details: 'Details', finish: 'Finish',
-  body_shape: 'Body Shape', scale: 'Scale Length', nut_width: 'Nut Width',
-  radius: 'Fingerboard Radius', neck_profile: 'Neck Profile', weight: 'Weight',
-  pickups: 'Pickups', bridge: 'Bridge', tailpiece: 'Tailpiece',
-  pots: 'Pots', controls: 'Controls', switch: 'Switch',
-  tuners: 'Tuners', neck_plate: 'Neck Plate', strap_locks: 'Strap Locks',
-  output: 'Output Jack',
-};
 ---
 
 <PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">

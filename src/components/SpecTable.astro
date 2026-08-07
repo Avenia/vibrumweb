@@ -1,4 +1,6 @@
 ---
+import { sectionLabels, fieldLabels } from '../lib/specLabels';
+
 type SpecValue = string | number | undefined;
 type SpecSection = Record<string, SpecValue>;
 
@@ -8,32 +10,6 @@ interface Props {
 
 const { specs } = Astro.props;
 
-const sectionLabels: Record<string, string> = {
-  body:        'Body',
-  neck:        'Neck',
-  fingerboard: 'Fingerboard',
-  hardware:    'Hardware',
-  electronics: 'Electronics',
-};
-
-const fieldLabels: Record<string, string> = {
-  wood:        'Wood',
-  finish:      'Finish',
-  binding:     'Binding',
-  weight:      'Weight',
-  profile:     'Profile',
-  scale:       'Scale length',
-  frets:       'Frets',
-  radius:      'Radius',
-  nut:         'Nut',
-  inlays:      'Inlays',
-  tuners:      'Tuners',
-  bridge:      'Bridge',
-  tailpiece:   'Tailpiece',
-  pickups:     'Pickups',
-  controls:    'Controls',
-  output:      'Output',
-};
 ---
 
 {specs && (

@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GuitarModal from '../../components/GuitarModal.astro';
+import { sectionLabels, fieldLabels } from '../../lib/specLabels';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories', ({ data }) => !data.draft);
@@ -32,21 +33,6 @@ const modalImages = [
 const typeLabels: Record<string, string> = {
   electric: 'Electric', acoustic: 'Acoustic', bass: 'Bass', classical: 'Classical',
 };
-const sectionLabels: Record<string, string> = {
-  materials: 'Materials', technical: 'Technical', hardware: 'Hardware',
-};
-const fieldLabels: Record<string, string> = {
-  top: 'Top', base: 'Base', neck: 'Neck', fretboard: 'Fretboard',
-  headstock_top: 'Headstock Top', fretmarkers: 'Fretmarkers',
-  nut: 'Nut', frets: 'Frets', details: 'Details', finish: 'Finish',
-  body_shape: 'Body Shape', scale: 'Scale Length', nut_width: 'Nut Width',
-  radius: 'Fingerboard Radius', neck_profile: 'Neck Profile', weight: 'Weight',
-  pickups: 'Pickups', bridge: 'Bridge', tailpiece: 'Tailpiece',
-  pots: 'Pots', controls: 'Controls', switch: 'Switch',
-  tuners: 'Tuners', neck_plate: 'Neck Plate', strap_locks: 'Strap Locks',
-  output: 'Output Jack',
-};
-
 const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
