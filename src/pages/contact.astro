@@ -1,6 +1,9 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
+import { background } from '../lib/backgrounds';
+
+const heroBg = background('contact');
 ---
 
 <PageLayout
@@ -13,7 +16,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
   <section class="contact-hero">
     <img
       class="contact-hero-img"
-      src="/images/guitars/example-guitar-1/photo-5.png"
+      src={heroBg}
       alt=""
       loading="eager"
     />

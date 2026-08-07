@@ -18,11 +18,15 @@ The blank was worked down by hand. Nitrocellulose is the only finish I'll use on
 
 The routing was done in stages. The control cavity is shielded with copper foil — a small thing, but it matters. Hum in the electronics is a choice, not an inevitability.
 
+![The body taking shape on the bench](/images/guitars/example-guitar-1/photo-19.png)
+
 ## Neck
 
 Hard maple for the neck, Indian rosewood for the fingerboard. Both chosen from a batch I've been working through slowly — I don't buy wood without looking at it.
 
 The profile is a comfortable C. Not aggressive, not baseball-bat thick. It sits in the hand without demanding attention, which is exactly right. The frets were leveled, crowned, and polished by hand. A fret job is the difference between an instrument and a tool.
+
+![Neck and fingerboard detail](/images/guitars/example-guitar-1/photo-15.png)
 
 ## Hardware
 
@@ -30,9 +34,13 @@ Nickel throughout. Gotoh SD90 tuners — they lock without looking like they do,
 
 Bone nut, cut from scratch. No synthetic substitutes.
 
+![Hardware close-up](/images/guitars/example-guitar-1/photo-12.png)
+
 ## Pickups
 
 Lollar Blackface in the neck, Lollar Blonde in the bridge. Jason Lollar winds these to vintage specs — they're clear, dynamic, and they respond to the player. They clean up when you roll back the volume. They sing when you push them. That's all I ask.
+
+![Pickups and electronics](/images/guitars/example-guitar-1/photo-5.png)
 
 ## The Result
 

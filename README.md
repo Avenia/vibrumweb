@@ -54,7 +54,7 @@ Four kinds of content, all edited as plain files — no CMS, no admin login:
 | Hero slides | `src/content/slides/NN.json` | `public/images/slideshow/` |
 | Guitars | `src/content/guitars/slug.md` | `public/images/guitars/slug/` |
 | Stories | `src/content/stories/YYYY-MM-slug.md` | `public/images/stories/slug/` |
-| Section backgrounds | hardcoded in `.astro` files — see [Section background photos](#5-section-background-photos) | any folder above |
+| Section backgrounds | drop the photo in its folder — see [Section background photos](#5-section-background-photos) | `public/images/backgrounds/<section>/` |
 
 Astro validates every frontmatter field against the schemas in [src/content/config.ts](src/content/config.ts). A typo in a field name, a wrong type, or a missing required field **fails the build** — run `npm run build` before pushing and read the errors.
 
@@ -404,7 +404,7 @@ Markdown images become the story's photos — see below.
 
 **Where stories surface:**
 
-- The **newest** story (by `date`) becomes the full-bleed "From the bench" feature band on the home page, using its `coverImage` as the background ([index.astro:32-44](src/pages/index.astro#L32-L44)).
+- The **newest** story (by `date`) becomes the full-bleed "From the bench" feature band on the home page — its title, excerpt, and link. The band's background photo is *not* the story's `coverImage`; it comes from `public/images/backgrounds/home-bench/` (see [Section background photos](#5-section-background-photos)).
 - All others fill the paginated "More from the workshop" grid — 6 per page desktop, 4 mobile.
 - Each gets its own page at `/stories/<slug>`.
 
@@ -420,7 +420,7 @@ Place each image after the paragraph it belongs to, not mid-sentence. No `thumbs
 
 **`category`** is display-only — no filtering exists. It renders uppercased with hyphens as spaces, as the mono kicker line on cards and the story hero: `SEPTEMBER 2025 · BUILD DIARY`. Three values: `build-diary` (workshop build logs), `in-the-wild` (finished guitars out with players), `news` (announcements).
 
-**`coverImage`** is used three ways: story card at 16/10, feature band background if it is the newest story, and the Open Graph share image. Pick a landscape frame that reads at all three.
+**`coverImage`** is used two ways: story card at 16/10, and the Open Graph share image for the story's page. Pick a landscape frame that reads at both.
 
 **`draft: true`** commits the file without publishing it — excluded from the home page, the story list, and `getStaticPaths`, so no page is generated.
 
@@ -428,24 +428,33 @@ Place each image after the paragraph it belongs to, not mid-sentence. No `thumbs
 
 ## 5. Section background photos
 
-These are **hardcoded in the templates**, not content files. Each sits under a dark shade overlay with light text on top, so pick frames that are already dark, or at least busy-free where the text lands.
+Every section background is a **drop-in folder** under `public/images/backgrounds/` — one folder per section, one photo inside. The build ([src/lib/backgrounds.ts](src/lib/backgrounds.ts)) picks the first image file in the folder (alphabetical order), so swapping a background is a file operation, no code edit:
 
-| Section | Current photo | Crop centre | Edit at |
+```bash
+# Example: new photo for the contact page header
+cp new-shot.webp public/images/backgrounds/contact/
+rm public/images/backgrounds/contact/old-shot.webp
+```
+
+Any filename works (lowercase, no spaces — same rules as everywhere). Keep **one image per folder**: with several, the alphabetically first wins and the rest are dead weight shipped to the site. An **empty or missing folder fails the build** with a message naming the folder.
+
+| Folder in `public/images/backgrounds/` | Where it shows | Crop centre | `object-position` lives in |
 |---|---|---|---|
-| Home — recent guitars band | `pyrocaster/photo-19` | `center 40%` | [index.astro:51](src/pages/index.astro#L51) |
-| Home — workshop stories band | `driftwood-om/photo-15` | `center 62%` | [index.astro:70](src/pages/index.astro#L70) |
-| Home — "From the bench" feature | newest story's `coverImage` | `center 40%` | content, not template |
-| Gallery — commission CTA | `pyrocaster/photo-19` | `center 32%` | [gallery.astro:167](src/pages/gallery.astro#L167) |
-| Contact — page header | `pyrocaster/photo-5` | `center 40%` | [contact.astro:16](src/pages/contact.astro#L16) |
-| Newsletter band background | `pyrocaster/photo-12` | `center 55%` | [BenchLetter.astro:12](src/components/BenchLetter.astro#L12) |
-| Newsletter inset photo | `about/ProfilePhoto_01.webp` | centre | [BenchLetter.astro:57](src/components/BenchLetter.astro#L57) |
-| Open Graph share image | `/images/og-logo.png` | — | [BaseLayout.astro:14](src/layouts/BaseLayout.astro#L14) |
+| `home-bench/` | Home — "From the bench" feature band | `center 40%` | [index.astro](src/pages/index.astro) |
+| `home-guitars/` | Home — "Recent guitars" band | `center 40%` | [index.astro](src/pages/index.astro) |
+| `home-workshop/` | Home — "More from the workshop" band | `center 62%` | [index.astro](src/pages/index.astro) |
+| `stay-in-tune/` | "Stay in tune" newsletter band — background. Same photo on **home, about, and contact pages** (shared component) | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
+| `stay-in-tune-photo/` | "Stay in tune" band — the inset photo next to the copy (16/10 crop) | centre | [BenchLetter.astro](src/components/BenchLetter.astro) |
+| `gallery-commissions/` | Gallery — "Commissions" CTA band | `center 32%` | [gallery.astro](src/pages/gallery.astro) |
+| `contact/` | Contact — "Get in touch" page header | `center 40%` | [contact.astro](src/pages/contact.astro) |
 
-The newsletter band appears on the home, about, and story pages, so its photo is seen more than any other single background — worth a good workshop shot.
+Not folder-driven: the Open Graph share image stays `/images/og-logo.png` ([BaseLayout.astro:27](src/layouts/BaseLayout.astro#L27)).
 
-Best backgrounds are **wide workshop/detail shots**, not full-instrument portraits: wood grain, tools on the bench, hands working, a body under a lamp. Full guitars get awkwardly cropped by the band heights.
+The current files are `example-*` placeholders — replace them with real photos.
 
-To swap one: change the `src`, then check that section in `npm run dev` and adjust `object-position` in the same file's `<style>` block if the subject sits wrong.
+Each background sits under a dark shade overlay with light text on top, so pick frames that are already dark, or at least busy-free where the text lands. Best backgrounds are **wide workshop/detail shots**, not full-instrument portraits: wood grain, tools on the bench, hands working, a body under a lamp. Full guitars get awkwardly cropped by the band heights. The `stay-in-tune` band appears on more pages than any other background — worth a good workshop shot. The `stay-in-tune-photo` inset is the one non-background slot here: it's a framed photo next to the newsletter copy, cropped 16/10, so a person at the bench works well.
+
+Convert to WebP q82 / 1800 px like everything else (section 1). After swapping, check the section in `npm run dev` — if the subject sits wrong, adjust `object-position` in the `<style>` block of the file listed above.
 
 ---
 
@@ -517,7 +526,7 @@ src/
     GuitarModal.astro        ← guitar detail overlay + #guitar-<slug> deep links
     SpecTable.astro          ← guitar specs table
     WorkshopStoryCard.astro  ← story card (16/10)
-    BenchLetter.astro        ← newsletter band (home, about, story pages)
+    BenchLetter.astro        ← newsletter band (home, about, contact pages)
     PageLogoBg.astro         ← faint inline-SVG logo watermark
   pages/
     index.astro         ← home (hero, feature story, guitars, stories, newsletter)
@@ -532,6 +541,15 @@ src/
     global.css
 public/
   images/
+    backgrounds/        ← section background photos, one folder per section,
+                          ONE image per folder (any name) — see section 5
+      home-bench/           home "From the bench" band
+      home-guitars/         home "Recent guitars" band
+      home-workshop/        home "More from the workshop" band
+      stay-in-tune/         newsletter band background (home + about + contact)
+      stay-in-tune-photo/   newsletter band inset photo
+      gallery-commissions/  gallery "Commissions" CTA band
+      contact/              contact page header
     guitars/            ← one subfolder per guitar, photo-1…photo-N
     stories/            ← story images (create as needed)
     about/              ← team portraits

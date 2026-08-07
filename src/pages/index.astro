@@ -6,6 +6,13 @@ import GuitarStrip from '../components/GuitarStrip.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
 import WorkshopStoryCard from '../components/WorkshopStoryCard.astro';
 import BenchLetter from '../components/BenchLetter.astro';
+import { background } from '../lib/backgrounds';
+
+// Section background photos — swap by replacing the file in the folder,
+// see README "Section background photos".
+const benchBg = background('home-bench');
+const guitarsBg = background('home-guitars');
+const workshopBg = background('home-workshop');
 
 const stories = (await getCollection('stories', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -31,7 +38,7 @@ const guitars = (await getCollection('guitars'))
 
   {featured && (
     <section class="bench-feature">
-      <img class="bench-feature-img" src={featured.data.coverImage} alt="" loading="lazy" />
+      <img class="bench-feature-img" src={benchBg} alt="" loading="lazy" />
       <div class="bench-feature-shade" aria-hidden="true"></div>
       <div class="bench-feature-inner container">
         <p class="eyebrow">From the bench</p>
@@ -48,7 +55,7 @@ const guitars = (await getCollection('guitars'))
     <section class="guitar-band">
       <img
         class="guitar-band-img"
-        src="/images/guitars/example-guitar-1/photo-19.png"
+        src={guitarsBg}
         alt=""
         loading="lazy"
       />
@@ -67,7 +74,7 @@ const guitars = (await getCollection('guitars'))
     <section class="workshop-band" id="stories">
       <img
         class="workshop-band-img"
-        src="/images/guitars/example-guitar-1/photo-15.png"
+        src={workshopBg}
         alt=""
         loading="lazy"
       />

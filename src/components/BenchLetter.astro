@@ -2,14 +2,19 @@
 /**
  * "Stay in tune" — full-bleed newsletter band.
  * Photo + copy + Web3Forms signup. Used as the page closer on
- * the home and about pages.
+ * the home, about, and contact pages.
  */
+import { background } from '../lib/backgrounds';
+
+// Same photos on every page that renders this band.
+const bandBg = background('stay-in-tune');
+const insetPhoto = background('stay-in-tune-photo');
 ---
 
 <section class="bench-letter">
   <img
     class="bench-letter-bg"
-    src="/images/guitars/example-guitar-1/photo-12.png"
+    src={bandBg}
     alt=""
     loading="lazy"
   />
@@ -57,7 +62,7 @@
     </div>
 
     <div class="bench-letter-photo">
-      <img src="/images/about/ProfilePhoto_01.webp" alt="At the bench in the Vibrum workshop" loading="lazy" />
+      <img src={insetPhoto} alt="At the bench in the Vibrum workshop" loading="lazy" />
     </div>
   </div>
 </section>

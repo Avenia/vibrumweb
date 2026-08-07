@@ -3,6 +3,9 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import GuitarCard from '../components/GuitarCard.astro';
 import GuitarModal from '../components/GuitarModal.astro';
+import { background } from '../lib/backgrounds';
+
+const commissionsBg = background('gallery-commissions');
 
 const allGuitars = await getCollection('guitars');
 const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
@@ -165,7 +168,7 @@ const fieldLabels: Record<string, string> = {
   <section class="commission-band">
     <img
       class="commission-img"
-      src="/images/guitars/example-guitar-1/photo-19.png"
+      src={commissionsBg}
       alt=""
       loading="lazy"
     />
