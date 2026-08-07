@@ -79,7 +79,6 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
       );
     })}
     <a href="/gallery" class="strip-card--view-all" aria-label="View all guitars">
-      <span class="strip-view-all-arrow" aria-hidden="true">&#8594;</span>
       <span class="strip-view-all-label">View All<br />Guitars</span>
     </a>
   </div>
@@ -223,17 +222,6 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
     transform: translateY(-3px);
   }
 
-  .strip-view-all-arrow {
-    font-size: 1.4rem;
-    line-height: 1;
-    color: var(--color-accent);
-    transition: transform 350ms ease;
-  }
-
-  .strip-card--view-all:hover .strip-view-all-arrow {
-    transform: translateX(4px);
-  }
-
   .strip-view-all-label {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -302,8 +290,7 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
   @media (prefers-reduced-motion: reduce) {
     .strip-card,
     .strip-card-img,
-    .strip-card--view-all,
-    .strip-view-all-arrow {
+    .strip-card--view-all {
       transition: none;
     }
 
