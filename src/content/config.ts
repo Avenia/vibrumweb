@@ -73,11 +73,11 @@ const slides = defineCollection({
   schema: z.object({
     src: z.string(),
     alt: z.string().default(''),
-    // Small mono label shown bottom-right of the hero, e.g. "Pyrocaster · 2024"
+    // Small mono label shown bottom-right of the hero, e.g. "Example Guitar 1 · 2024"
     caption: z.string().optional(),
     // Second caption line, e.g. "Electric · Available"
     detail: z.string().optional(),
-    // Makes the caption a link, e.g. "/gallery#guitar-pyrocaster"
+    // Makes the caption a link, e.g. "/gallery"
     url: z.string().optional(),
   }),
 });

@@ -141,151 +141,32 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"guitars": {
-"ashfall.md": {
-	id: "ashfall.md";
-  slug: "ashfall";
+"example-guitar-1.md": {
+	id: "example-guitar-1.md";
+  slug: "example-guitar-1";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
-"cinderblock-5.md": {
-	id: "cinderblock-5.md";
-  slug: "cinderblock-5";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"driftwood-om.md": {
-	id: "driftwood-om.md";
-  slug: "driftwood-om";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"fieldstone.md": {
-	id: "fieldstone.md";
-  slug: "fieldstone";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"greyline-bass.md": {
-	id: "greyline-bass.md";
-  slug: "greyline-bass";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"ironveil.md": {
-	id: "ironveil.md";
-  slug: "ironveil";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"kewa.md": {
-	id: "kewa.md";
-  slug: "kewa";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"lowline-j.md": {
-	id: "lowline-j.md";
-  slug: "lowline-j";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"pyrocaster.md": {
-	id: "pyrocaster.md";
-  slug: "pyrocaster";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"redgate.md": {
-	id: "redgate.md";
-  slug: "redgate";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"saltmarsh.md": {
-	id: "saltmarsh.md";
-  slug: "saltmarsh";
+"example-guitar-2.md": {
+	id: "example-guitar-2.md";
+  slug: "example-guitar-2";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
 };
 "stories": {
-"2024-12-pyrocaster-build copy.md": {
-	id: "2024-12-pyrocaster-build copy.md";
-  slug: "2024-12-pyrocaster-build-copy";
+"example-story-1.md": {
+	id: "example-story-1.md";
+  slug: "example-story-1";
   body: string;
   collection: "stories";
   data: InferEntrySchema<"stories">
 } & { render(): Render[".md"] };
-"2024-12-pyrocaster-build.md": {
-	id: "2024-12-pyrocaster-build.md";
-  slug: "2024-12-pyrocaster-build";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-01-pyrocaster-delivery.md": {
-	id: "2025-01-pyrocaster-delivery.md";
-  slug: "2025-01-pyrocaster-delivery";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-03-ironveil-build copy 2.md": {
-	id: "2025-03-ironveil-build copy 2.md";
-  slug: "2025-03-ironveil-build-copy-2";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-03-ironveil-build copy.md": {
-	id: "2025-03-ironveil-build copy.md";
-  slug: "2025-03-ironveil-build-copy";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-03-ironveil-build.md": {
-	id: "2025-03-ironveil-build.md";
-  slug: "2025-03-ironveil-build";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-06-ironveil-complete.md": {
-	id: "2025-06-ironveil-complete.md";
-  slug: "2025-06-ironveil-complete";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-07-driftwood-om-concept.md": {
-	id: "2025-07-driftwood-om-concept.md";
-  slug: "2025-07-driftwood-om-concept";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-09-driftwood-om-build.md": {
-	id: "2025-09-driftwood-om-build.md";
-  slug: "2025-09-driftwood-om-build";
-  body: string;
-  collection: "stories";
-  data: InferEntrySchema<"stories">
-} & { render(): Render[".md"] };
-"2025-11-driftwood-om-complete.md": {
-	id: "2025-11-driftwood-om-complete.md";
-  slug: "2025-11-driftwood-om-complete";
+"example-story-2.md": {
+	id: "example-story-2.md";
+  slug: "example-story-2";
   body: string;
   collection: "stories";
   data: InferEntrySchema<"stories">
@@ -296,38 +177,13 @@ declare module 'astro:content' {
 
 	type DataEntryMap = {
 		"slides": {
-"01": {
-	id: "01";
+"example-slide-1": {
+	id: "example-slide-1";
   collection: "slides";
   data: InferEntrySchema<"slides">
 };
-"02": {
-	id: "02";
-  collection: "slides";
-  data: InferEntrySchema<"slides">
-};
-"03": {
-	id: "03";
-  collection: "slides";
-  data: InferEntrySchema<"slides">
-};
-"04": {
-	id: "04";
-  collection: "slides";
-  data: InferEntrySchema<"slides">
-};
-"05": {
-	id: "05";
-  collection: "slides";
-  data: InferEntrySchema<"slides">
-};
-"06": {
-	id: "06";
-  collection: "slides";
-  data: InferEntrySchema<"slides">
-};
-"07": {
-	id: "07";
+"example-slide-2": {
+	id: "example-slide-2";
   collection: "slides";
   data: InferEntrySchema<"slides">
 };

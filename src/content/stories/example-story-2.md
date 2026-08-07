@@ -1,14 +1,14 @@
 ---
-title: "Ironveil: A Dark Build"
+title: "Example Story 2: A Dark Build"
 date: 2025-03-14
-coverImage: /images/guitars/ironveil/photo-1.png
-guitar: ironveil
+coverImage: /images/guitars/example-guitar-2/photo-1.png
+guitar: example-guitar-2
 category: build-diary
-excerpt: "The brief was simple: something heavy, something dark, something that does not apologise for what it is. The Ironveil started from that sentence."
+excerpt: "The brief was simple: something heavy, something dark, something that does not apologise for what it is. The Example Guitar 2 started from that sentence."
 draft: false
 ---
 
-Most of the guitars I build sit somewhere in the vintage-adjacent spectrum — light bodies, bright finishes, single-coils with some air in them. The Ironveil is not that guitar.
+Most of the guitars I build sit somewhere in the vintage-adjacent spectrum — light bodies, bright finishes, single-coils with some air in them. The Example Guitar 2 is not that guitar.
 
 The client came in with a reference folder and one sentence: *something that sounds like the room getting smaller.* We spent an hour talking through what that actually meant before I touched any wood.
 

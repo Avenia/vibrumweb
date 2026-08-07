@@ -1,14 +1,14 @@
 ---
-title: "Building the Pyrocaster: From Blank to Build"
+title: "Example Story 1: From Blank to Build"
 date: 2024-12-15
-coverImage: "/images/guitars/pyrocaster/photo-1.png"
-guitar: "pyrocaster"
+coverImage: "/images/guitars/example-guitar-1/photo-1.png"
+guitar: "example-guitar-1"
 category: build-diary
-excerpt: "The Pyrocaster began as a question about what a vintage-voiced electric could become when nothing was rushed. This is its story."
+excerpt: "The Example Guitar 1 began as a question about what a vintage-voiced electric could become when nothing was rushed. This is its story."
 draft: false
 ---
 
-Some instruments announce themselves immediately. The Pyrocaster was quieter about it.
+Some instruments announce themselves immediately. The Example Guitar 1 was quieter about it.
 
 The idea started with a piece of swamp ash — a lighter blank, open grain, exactly the kind of resonant, transparent-sounding body wood that vintage Fender-style builds live or die by. I set it aside for a few weeks before I touched it. I wanted to think about what it should become.
 
@@ -36,6 +36,6 @@ Lollar Blackface in the neck, Lollar Blonde in the bridge. Jason Lollar winds th
 
 ## The Result
 
-The Pyrocaster ended up sounding the way it looks: direct, clear, and a little warmer than you'd expect. It's an instrument that rewards attention and punishes sloppiness — which I consider a feature.
+The Example Guitar 1 ended up sounding the way it looks: direct, clear, and a little warmer than you'd expect. It's an instrument that rewards attention and punishes sloppiness — which I consider a feature.
 
 Available for inquiry. More photos coming.

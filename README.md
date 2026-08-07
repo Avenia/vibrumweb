@@ -479,7 +479,7 @@ rm "src/content/stories/2024-12-pyrocaster-build copy.md" \
 **Format** — every guitar and slideshow photo is still `.png`. Convert to `.webp` and update the paths in the `.md`/`.json` files. Sanity check after:
 
 ```bash
-grep -rn '\.png' src/content/    # should only match og-logo, if anything
+grep -rn '\.png' src/content/    # should match nothing
 ```
 
 **Thumbnails** — no guitar folder has a `thumbs/` subfolder yet, so the modal strip is still falling back to full-size files. Backfill every folder in one pass once the photos are final:
@@ -536,7 +536,8 @@ public/
     stories/            ← story images (create as needed)
     about/              ← team portraits
     slideshow/          ← hero slide images
-    og-logo.png         ← Open Graph share image
+    og-logo.png         ← Open Graph share image (pngquant-crushed; original in originals/images/)
+    og-logo.webp        ← same logo as WebP, for in-site use
     bimi-logo.svg       ← BIMI logo for email clients
   fonts/                ← TERMINAT.TTF (logo wordmark) — text fonts are self-hosted
                           via @fontsource packages, bundled at build (BaseLayout.astro)
