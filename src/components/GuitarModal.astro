@@ -339,6 +339,27 @@
 
 
   /* ---- Responsive ---- */
+  /* Desktop: the dialog grows with viewport height rather than stopping at
+     the 780px base cap, which left a 27" screen more than half empty.
+
+     Growth tops out at what a 1440px-tall screen gives — anything taller
+     (4K, portrait panels) gets that same size instead of a dialog that
+     keeps stretching. Width tracks height at the shell's existing 1100/780
+     ratio so the photo pane keeps its current proportions, and the max()
+     floor keeps it at today's 1100px on short screens, where the height is
+     already below the cap and the ratio would otherwise narrow it. */
+  @media (min-width: 1024px) {
+    .modal-shell {
+      --modal-h: min(
+        100vh - var(--space-lg) * 2,
+        1440px - var(--space-lg) * 2
+      );
+      height: var(--modal-h);
+      max-height: none;
+      max-width: min(94vw, max(1100px, var(--modal-h) * 1.41));
+    }
+  }
+
   @media (max-width: 768px) {
     .modal-backdrop {
       padding: var(--space-xs);
