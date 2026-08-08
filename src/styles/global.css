@@ -64,7 +64,7 @@ html {
 }
 
 body {
-  background: linear-gradient(110deg, #241c0d, #060403 25%, #060403 60%, #181209);
+  background: linear-gradient(110deg, #241c0d, #060403 10%, #060403 85%, #181209);
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: 1rem;
