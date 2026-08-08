@@ -199,6 +199,37 @@ strong {
   padding: 0 var(--space-md);
 }
 
+/* Reading compositions (about grid, contact body, story body, newsletter)
+   keep a book-like measure: they follow --max-width on laptops but stop
+   growing at 1320px, while visual sections run up to the full 1560px. */
+.container--reading {
+  max-width: min(var(--max-width), 1320px);
+}
+
+/* Big desktops (27"+): the content region grows with the viewport, from
+   1200px up to 1560px. 200vw/3 equals exactly 1200px at a 1800px viewport,
+   so the width is continuous at the breakpoint — laptops (≤1728px) are
+   untouched. (The story page's aside-column calc mirrors this formula.) */
+@media (min-width: 1800px) {
+  :root {
+    --max-width: min(1560px, calc(200vw / 3));
+  }
+}
+
+/* Ultrawide: full-bleed photo bands become a centered stage that melts
+   into the page background at the sides instead of stretching across the
+   whole monitor. The mask fades the band's photo, veil, and hairline
+   borders together; content stays well inside the fade zone because the
+   inner .container caps at 1560px (320px in from each stage edge). */
+@media (min-width: 2200px) {
+  .band-stage {
+    max-width: 2200px;
+    margin-inline: auto;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+}
+
 .section {
   /* Block-axis only: the shorthand `padding: var(--space-lg) 0` was zeroing
      the horizontal padding that .container.section elements need to line up

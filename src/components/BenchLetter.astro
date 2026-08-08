@@ -3,15 +3,26 @@
  * "Stay in tune" — full-bleed newsletter band.
  * Photo + copy + Web3Forms signup. Used as the page closer on
  * the home, about, and contact pages.
+ *
+ * `wide`: match the host page's alignment system on big screens.
+ * The home page's sections all sit on the full-width container, so it
+ * passes `wide`; about/contact content sits on the 1320px reading
+ * container, which is this band's default.
  */
 import { background } from '../lib/backgrounds';
+
+interface Props {
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props;
 
 // Same photos on every page that renders this band.
 const bandBg = background('stay-in-tune');
 const insetPhoto = background('stay-in-tune-photo');
 ---
 
-<section class="bench-letter">
+<section class="bench-letter band-stage">
   <img
     class="bench-letter-bg"
     src={bandBg}
@@ -19,7 +30,7 @@ const insetPhoto = background('stay-in-tune-photo');
     loading="lazy"
   />
   <div class="bench-letter-shade" aria-hidden="true"></div>
-  <div class="bench-letter-inner container">
+  <div class:list={['bench-letter-inner', 'container', { 'container--reading': !wide }]}>
     <div class="bench-letter-copy">
       <p class="eyebrow">Stay in tune</p>
       <h2 class="bench-letter-title">Notes from the workshop.</h2>

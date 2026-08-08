@@ -10,7 +10,7 @@ import BenchLetter from '../components/BenchLetter.astro';
 >
   <PageLogoBg />
 
-  <div class="container section">
+  <div class="container container--reading section">
     <h1 class="visually-hidden">About Vibrum Guitars</h1>
 
 <div class="about-grid">
@@ -170,6 +170,14 @@ import BenchLetter from '../components/BenchLetter.astro';
     line-height: 1.85;
     color: var(--color-text);
     max-width: 600px;
+  }
+
+  /* Big desktops: the reading container grows to 1320px, so let the
+     content cells take a little of that room too. */
+  @media (min-width: 1800px) {
+    .grid-content {
+      max-width: 660px;
+    }
   }
 
   /* Team */

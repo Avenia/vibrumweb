@@ -54,10 +54,10 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
 >
   <div class="story-detail">
     <!-- Hero — full-bleed band, same treatment as the homepage banners -->
-    <section class="story-hero">
+    <section class="story-hero band-stage">
       <img src={story.data.coverImage} alt="" class="story-hero-img" />
       <div class="story-hero-shade" aria-hidden="true"></div>
-      <div class="story-hero-inner container">
+      <div class="story-hero-inner container container--reading">
         <p class="story-meta">
           <time datetime={story.data.date.toISOString()} title={formattedDate}>{metaDate}</time>
           <span> · {categoryLabel}</span>
@@ -66,7 +66,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
       </div>
     </section>
 
-    <div class="container">
+    <div class="container container--reading">
       <div class="story-content-wrap">
         <article class="story-prose prose">
           <Content />
@@ -323,6 +323,17 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
       grid-template-columns: 1fr 300px;
       gap: var(--space-lg);
       align-items: start;
+    }
+  }
+
+  /* Big desktops: the reading container grows to 1320px — give the first
+     60px of extra room to the photo column so the prose measure stays put,
+     then let the prose take the rest. The calc mirrors the global
+     --max-width formula (200vw/3, continuous at 1800px), so the aside
+     grows exactly as fast as the container until it caps at 360px. */
+  @media (min-width: 1800px) {
+    .story-content-wrap {
+      grid-template-columns: 1fr min(360px, calc(300px + (200vw / 3) - 1200px));
     }
   }
 

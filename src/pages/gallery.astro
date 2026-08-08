@@ -149,7 +149,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
   </div>
 
   <!-- Commission CTA — full-bleed closer band -->
-  <section class="commission-band">
+  <section class="commission-band band-stage">
     <img
       class="commission-img"
       src={commissionsBg}
@@ -370,8 +370,15 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
   // ---- Scroll-triggered card reveals ----
   const revealCards = document.querySelectorAll<HTMLElement>('.card-reveal');
 
+  // Stagger by column so each row cascades left→right. The column count
+  // follows the container, which grows on big desktops (4 cols at 1200px,
+  // 5+ at 1560px), so read it from the rendered grid instead of hardcoding.
+  const guitarGrid = document.querySelector('.guitar-grid');
+  const gridCols = guitarGrid
+    ? getComputedStyle(guitarGrid).gridTemplateColumns.split(' ').length
+    : 4;
   revealCards.forEach((card, i) => {
-    card.style.setProperty('--reveal-delay', `${(i % 4) * 90}ms`);
+    card.style.setProperty('--reveal-delay', `${(i % gridCols) * 90}ms`);
   });
 
   const revealObserver = new IntersectionObserver(

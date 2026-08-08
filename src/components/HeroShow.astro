@@ -5,7 +5,7 @@ const slideEntries = (await getCollection('slides')).sort((a, b) => a.id.localeC
 const slides = slideEntries.map(e => e.data);
 ---
 
-<section class="hero" id="hero" aria-label="Vibrum — handcrafted guitars">
+<section class="hero band-stage" id="hero" aria-label="Vibrum — handcrafted guitars">
   <div class="hero-media" aria-hidden="true">
     {slides.map((slide, i) => (
       <div class={`hero-slide${i === 0 ? ' active' : ''}`} data-index={i}>
@@ -329,6 +329,15 @@ const slides = slideEntries.map(e => e.data);
     .hero-arrow { display: none; }
   }
 
+  /* Ultrawide: the hero is a capped stage whose sides fade out (global
+     .band-stage), so edge-pinned arrows would sit in the faded zone.
+     Park them just outside the content container instead — past the
+     10% mask fade, over fully opaque photo. */
+  @media (min-width: 2200px) {
+    .hero-prev { left: calc((100% - var(--max-width)) / 2 - 4rem); }
+    .hero-next { right: calc((100% - var(--max-width)) / 2 - 4rem); }
+  }
+
   /* ---- Dots ---- */
   .hero-dots {
     position: absolute;
@@ -511,17 +520,17 @@ const slides = slideEntries.map(e => e.data);
       dragStartX = e.clientX;
       dragging = true;
     });
-    hero.addEventListener('mousemove', e => {
+    // Move/up live on the document: on ultrawide screens the hero is a
+    // centered stage narrower than the viewport, so a drag can end past
+    // its side edge — the release must still complete the swipe.
+    document.addEventListener('mousemove', e => {
       if (dragging) e.preventDefault();
     });
-    hero.addEventListener('mouseup', e => {
+    document.addEventListener('mouseup', e => {
       if (!dragging) return;
       dragging = false;
       const diff = dragStartX - e.clientX;
       if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
-    });
-    hero.addEventListener('mouseleave', () => {
-      dragging = false;
     });
 
     schedule();

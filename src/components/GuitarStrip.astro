@@ -90,6 +90,16 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
     scrollbar-width: none;
   }
 
+  /* Big desktops: the container outgrows a non-overflowing strip, and a
+     centered card cluster reads as adrift from its left-aligned section
+     header — pin it to the header instead. (When the strip overflows,
+     `safe center` already behaves like flex-start, so nothing changes.) */
+  @media (min-width: 1800px) {
+    .guitar-strip {
+      justify-content: flex-start;
+    }
+  }
+
   .guitar-strip::-webkit-scrollbar {
     display: none;
   }

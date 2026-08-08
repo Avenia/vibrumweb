@@ -37,7 +37,7 @@ const guitars = (await getCollection('guitars'))
   <HeroShow />
 
   {featured && (
-    <section class="bench-feature">
+    <section class="bench-feature band-stage">
       <img class="bench-feature-img" src={benchBg} alt="" loading="lazy" />
       <div class="bench-feature-shade" aria-hidden="true"></div>
       <div class="bench-feature-inner container">
@@ -52,7 +52,7 @@ const guitars = (await getCollection('guitars'))
   )}
 
   {guitars.length > 0 && (
-    <section class="guitar-band">
+    <section class="guitar-band band-stage">
       <img
         class="guitar-band-img"
         src={guitarsBg}
@@ -71,7 +71,7 @@ const guitars = (await getCollection('guitars'))
   )}
 
   {(workshopStories.length > 0 || stories.length === 0) && (
-    <section class="workshop-band" id="stories">
+    <section class="workshop-band band-stage" id="stories">
       <img
         class="workshop-band-img"
         src={workshopBg}
@@ -128,7 +128,7 @@ const guitars = (await getCollection('guitars'))
     </section>
   )}
 
-  <BenchLetter />
+  <BenchLetter wide />
 </PageLayout>
 
 <style>
