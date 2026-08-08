@@ -155,16 +155,9 @@ declare module 'astro:content' {
   collection: "guitars";
   data: InferEntrySchema<"guitars">
 } & { render(): Render[".md"] };
-"example-guitar-1.md": {
-	id: "example-guitar-1.md";
-  slug: "example-guitar-1";
-  body: string;
-  collection: "guitars";
-  data: InferEntrySchema<"guitars">
-} & { render(): Render[".md"] };
-"example-guitar-2.md": {
-	id: "example-guitar-2.md";
-  slug: "example-guitar-2";
+"003-pyrocaster.md": {
+	id: "003-pyrocaster.md";
+  slug: "003-pyrocaster";
   body: string;
   collection: "guitars";
   data: InferEntrySchema<"guitars">
