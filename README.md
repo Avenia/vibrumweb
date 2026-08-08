@@ -431,9 +431,9 @@ Place each image after the paragraph it belongs to, not mid-sentence. No `thumbs
 Every section background is a **drop-in folder** under `public/images/backgrounds/` — one folder per section, one photo inside. The build ([src/lib/backgrounds.ts](src/lib/backgrounds.ts)) picks the first image file in the folder (alphabetical order), so swapping a background is a file operation, no code edit:
 
 ```bash
-# Example: new photo for the contact page header
-cp new-shot.webp public/images/backgrounds/contact/
-rm public/images/backgrounds/contact/old-shot.webp
+# Example: new photo for the gallery commissions band
+cp new-shot.webp public/images/backgrounds/gallery-commissions/
+rm public/images/backgrounds/gallery-commissions/old-shot.webp
 ```
 
 Any filename works (lowercase, no spaces — same rules as everywhere). Keep **one image per folder**: with several, the alphabetically first wins and the rest are dead weight shipped to the site. An **empty or missing folder fails the build** with a message naming the folder.
@@ -446,7 +446,6 @@ Any filename works (lowercase, no spaces — same rules as everywhere). Keep **o
 | `stay-in-tune/` | "Stay in tune" newsletter band — background. Same photo on **home, about, and contact pages** (shared component) | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
 | `stay-in-tune-photo/` | "Stay in tune" band — the inset photo next to the copy (16/10 crop) | centre | [BenchLetter.astro](src/components/BenchLetter.astro) |
 | `gallery-commissions/` | Gallery — "Commissions" CTA band | `center 32%` | [gallery.astro](src/pages/gallery.astro) |
-| `contact/` | Contact — "Get in touch" page header | `center 40%` | [contact.astro](src/pages/contact.astro) |
 
 Not folder-driven: the Open Graph share image stays `/images/og-logo.png` ([BaseLayout.astro:27](src/layouts/BaseLayout.astro#L27)).
 

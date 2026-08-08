@@ -1,9 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
-import { background } from '../lib/backgrounds';
-
-const heroBg = background('contact');
 ---
 
 <PageLayout
@@ -12,15 +9,9 @@ const heroBg = background('contact');
 >
   <PageLogoBg />
 
-  <!-- Page header over a full-bleed image band, same treatment as the homepage banners -->
-  <section class="contact-hero band-stage">
-    <img
-      class="contact-hero-img"
-      src={heroBg}
-      alt=""
-      loading="eager"
-    />
-    <div class="contact-hero-shade" aria-hidden="true"></div>
+  <!-- Page header on the plain page background — no photo band here, so the
+       logo watermark behind it stays visible. -->
+  <section class="contact-hero">
     <div class="contact-hero-inner container container--reading">
       <header class="page-header">
         <p class="eyebrow">Get in touch</p>
@@ -296,52 +287,14 @@ const heroBg = background('contact');
 </script>
 
 <style>
-  /* ---- Hero band ---- */
-  .contact-hero {
-    position: relative;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    background: var(--color-bg);
-  }
-
-  .contact-hero-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 40%;
-  }
-
-  /* Source photo has a light studio backdrop — keep the veil heavy
-     end to end so the band stays dark and the copy readable. */
-  .contact-hero-shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to right,
-      rgba(10, 9, 6, 0.95) 0%,
-      rgba(10, 9, 6, 0.85) 55%,
-      rgba(10, 9, 6, 0.74) 100%
-    );
-  }
-
-  @media (max-width: 639px) {
-    .contact-hero-shade {
-      background: linear-gradient(
-        to right,
-        rgba(10, 9, 6, 0.93) 0%,
-        rgba(10, 9, 6, 0.78) 100%
-      );
-    }
-  }
-
+  /* ---- Page header ---- */
+  /* Only a top gap here: the form section below opens with its own
+     `.section` padding, which supplies the space under the lead. */
   .contact-hero-inner {
     position: relative;
     z-index: 1;
     width: 100%;
-    padding-block: var(--space-lg);
+    padding-top: var(--space-lg);
   }
 
   .page-header {
@@ -720,6 +673,15 @@ const heroBg = background('contact');
   @media (min-width: 768px) {
     .contact-body {
       grid-template-columns: 3fr 2fr;
+    }
+  }
+
+  /* Desktop: nudge the contact-details column toward the page's right
+     edge so it doesn't hug the form. (Mobile reorders this column via
+     display: contents, which ignores the padding.) */
+  @media (min-width: 1024px) {
+    .network-section {
+      padding-left: var(--space-lg);
     }
   }
 
