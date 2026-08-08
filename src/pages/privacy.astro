@@ -76,9 +76,12 @@ import PageLogoBg from '../components/PageLogoBg.astro';
     max-width: 720px;
   }
 
+  /* Same section-label treatment as everywhere else on the site —
+     see .label-text in about.astro and .eyebrow in index/gallery/contact. */
   .eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: 0.68rem;
+    font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-accent);
@@ -102,7 +105,7 @@ import PageLogoBg from '../components/PageLogoBg.astro';
   }
 
   .privacy-header {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-sm);
   }
 
   .privacy-h2 {
