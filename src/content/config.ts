@@ -13,6 +13,7 @@ const specsSchema = z.object({
     fretboard: z.string().optional(),
     headstock_top: z.string().optional(),
     bridge: z.string().optional(),
+    pickguard: z.string().optional(),
     // Acoustic bridge pins
     pins: z.string().optional(),
     fretmarkers: z.string().optional(),

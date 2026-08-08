@@ -18,7 +18,7 @@ export const fieldLabels: Record<string, string> = {
   top: 'Top', top_and_bracing: 'Top and Bracing',
   base: 'Base', back_and_sides: 'Back and Sides',
   neck: 'Neck', fretboard: 'Fingerboard',
-  headstock_top: 'Headstock Top', pins: 'Pins',
+  headstock_top: 'Headstock Top', pickguard: 'Pickguard', pins: 'Pins',
   fretmarkers: 'Fret Markers', details: 'Details',
   nut: 'Nut', saddle: 'Saddle', nut_and_saddle: 'Nut and Saddle',
   binding: 'Binding', finish: 'Finish',
