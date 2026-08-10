@@ -75,4 +75,4 @@ specs:
 
 Breaking new ground: the first electric guitar to come out of the workshop.
 
-Built with the same obsessive attention to detail as the acoustics, and elevated by the striking visual concept from [Pyrohyper](https://www.instagram.com/pyrohyper) — an alder burl top over a single piece of ash, a neck laminated from flamed maple, fossilized oak and mahogany, and hardware chosen for stability and precision. It sounds just as powerful as it looks.
+Built with the obsessive attention to detail, and elevated by the striking visual concept from [@pyrohyper](https://www.instagram.com/pyrohyper). An alder burl top over a single piece of ash, a neck laminated from flamed maple, fossilized oak and mahogany, for stability and precision. It sounds just as powerful as it looks.
