@@ -1,34 +1,28 @@
 {
-  "$ref": "#/definitions/slides",
-  "definitions": {
-    "slides": {
-      "type": "object",
-      "properties": {
-        "src": {
-          "type": "string"
-        },
-        "alt": {
-          "type": "string",
-          "default": ""
-        },
-        "caption": {
-          "type": "string"
-        },
-        "detail": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "$schema": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "src"
-      ],
-      "additionalProperties": false
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "src": {
+      "type": "string"
+    },
+    "alt": {
+      "default": "",
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
     }
   },
-  "$schema": "http://json-schema.org/draft-07/schema#"
+  "required": [
+    "src"
+  ]
 }

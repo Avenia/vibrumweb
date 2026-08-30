@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GuitarModal from '../../components/GuitarModal.astro';
 import { sectionLabels, fieldLabels } from '../../lib/specLabels';
@@ -7,16 +7,16 @@ import { sectionLabels, fieldLabels } from '../../lib/specLabels';
 export async function getStaticPaths() {
   const stories = await getCollection('stories', ({ data }) => !data.draft);
   return stories.map(story => ({
-    params: { slug: story.slug },
+    params: { slug: story.id },
     props: { story },
   }));
 }
 
 const { story } = Astro.props;
-const { Content } = await story.render();
+const { Content } = await render(story);
 
 const guitar = story.data.guitar ? await getEntry('guitars', story.data.guitar) : null;
-const guitarRendered = guitar ? await guitar.render() : null;
+const guitarRendered = guitar ? await render(guitar) : null;
 const GuitarContent = guitarRendered?.Content;
 const guitarImages = guitar ? [guitar.data.coverImage, ...(guitar.data.images ?? [])] : [];
 
@@ -97,8 +97,8 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     </div>
   </div>
 
+  <!-- Minimal fullscreen viewer for story photos when no guitar is linked -->
   {!guitar && (
-    <!-- Minimal fullscreen viewer for story photos when no guitar is linked -->
     <div class="story-lightbox" id="story-lightbox" aria-hidden="true">
       <button class="lightbox-close" id="lightbox-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -116,7 +116,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
 
   {guitar && GuitarContent && (
     <div id="story-guitar-wrapper" hidden>
-      <template class="modal-data" data-slug={guitar.slug}>
+      <template class="modal-data" data-slug={guitar.id}>
         <div
           data-title={guitar.data.title}
           data-year={guitar.data.year}

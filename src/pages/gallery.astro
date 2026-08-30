@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import GuitarCard from '../components/GuitarCard.astro';
 import GuitarModal from '../components/GuitarModal.astro';
@@ -89,7 +89,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
     <div class="gallery-main">
       <div class="guitar-grid" id="guitar-grid">
         {guitars.map(async (guitar) => {
-          const { Content } = await guitar.render();
+          const { Content } = await render(guitar);
           const images = [guitar.data.coverImage, ...guitar.data.images];
           return (
             <div
@@ -107,7 +107,7 @@ const guitars = allGuitars.sort((a, b) => b.data.year - a.data.year);
               />
 
               <!-- Hidden modal data -->
-              <template class="modal-data" data-slug={guitar.slug}>
+              <template class="modal-data" data-slug={guitar.id}>
                 <div
                   data-title={guitar.data.title}
                   data-year={guitar.data.year}

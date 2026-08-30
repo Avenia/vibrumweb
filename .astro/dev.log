@@ -1,0 +1,13 @@
+{"message":"connected.","label":"vite","level":"info"}
+{"message":"Generated 0ms","label":"types","level":"info"}
+{"message":"connected.","label":"vite","level":"info"}
+{"message":"Syncing content","label":"content","level":"info"}
+{"message":"Synced content","label":"content","level":"info"}
+{"message":"Re-optimizing dependencies because vite config has changed","label":"vite","level":"info"}
+{"message":" astro  v7.2.9 ready in 1501 ms\n┃ Local    http://localhost:4321/\n┃ Network  use --host to expose","label":"SKIP_FORMAT","level":"info"}
+{"message":"watching for file changes...","label":null,"level":"info"}
+{"message":"[200] / 52ms","label":null,"level":"info"}
+{"message":"[200] /gallery 15ms","label":null,"level":"info"}
+Entry guitars → example-guitar-1 was not found.
+{"message":"[200] /stories/example-story-1 13ms","label":null,"level":"info"}
+{"message":"[200] /about 11ms","label":null,"level":"info"}

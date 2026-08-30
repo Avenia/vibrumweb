@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "electric",
+        "acoustic",
+        "bass",
+        "jazz"
+      ]
+    },
+    "status": {
+      "default": "available",
+      "type": "string",
+      "enum": [
+        "available",
+        "unavailable"
+      ]
+    },
+    "year": {
+      "type": "number"
+    },
+    "strings": {
+      "type": "number"
+    },
+    "electronics": {
+      "type": "string",
+      "enum": [
+        "active",
+        "passive"
+      ]
+    },
+    "coverImage": {
+      "type": "string"
+    },
+    "images": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "specs": {
+      "type": "object",
+      "properties": {
+        "materials": {
+          "type": "object",
+          "properties": {
+            "top": {
+              "type": "string"
+            },
+            "top_and_bracing": {
+              "type": "string"
+            },
+            "base": {
+              "type": "string"
+            },
+            "back_and_sides": {
+              "type": "string"
+            },
+            "neck": {
+              "type": "string"
+            },
+            "fretboard": {
+              "type": "string"
+            },
+            "headstock_top": {
+              "type": "string"
+            },
+            "bridge": {
+              "type": "string"
+            },
+            "pickguard": {
+              "type": "string"
+            },
+            "pins": {
+              "type": "string"
+            },
+            "fretmarkers": {
+              "type": "string"
+            },
+            "frets": {
+              "type": "string"
+            },
+            "details": {
+              "type": "string"
+            },
+            "nut": {
+              "type": "string"
+            },
+            "saddle": {
+              "type": "string"
+            },
+            "nut_and_saddle": {
+              "type": "string"
+            },
+            "binding": {
+              "type": "string"
+            },
+            "finish": {
+              "type": "string"
+            }
+          }
+        },
+        "technical": {
+          "type": "object",
+          "properties": {
+            "body_shape": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "string"
+            },
+            "nut_width": {
+              "type": "string"
+            },
+            "radius": {
+              "type": "string"
+            },
+            "neck_profile": {
+              "type": "string"
+            },
+            "frets": {
+              "type": "string"
+            },
+            "weight": {
+              "type": "string"
+            }
+          }
+        },
+        "hardware": {
+          "type": "object",
+          "properties": {
+            "pickups": {
+              "type": "string"
+            },
+            "bridge": {
+              "type": "string"
+            },
+            "tailpiece": {
+              "type": "string"
+            },
+            "nut": {
+              "type": "string"
+            },
+            "pots": {
+              "type": "string"
+            },
+            "controls": {
+              "type": "string"
+            },
+            "switch": {
+              "type": "string"
+            },
+            "tuners": {
+              "type": "string"
+            },
+            "neck_plate": {
+              "type": "string"
+            },
+            "strap_locks": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "finish": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "year",
+    "coverImage",
+    "excerpt"
+  ]
+}

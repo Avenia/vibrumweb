@@ -1,24 +1,27 @@
 import { defineConfig } from 'astro/config';
+import { satteri } from '@astrojs/markdown-satteri';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 
 // Tags markdown images as story photos: lazy-loaded, and .story-float so the
 // story page can restyle them (in-flow on phones, right column on desktop).
-function rehypeStoryImages() {
-  return (tree) => {
-    const walk = (node) => {
-      if (node.type === 'element' && node.tagName === 'img') {
-        const props = node.properties ?? (node.properties = {});
-        props.loading = 'lazy';
-        props.decoding = 'async';
-        const prev = Array.isArray(props.className)
-          ? props.className
-          : typeof props.className === 'string' ? props.className.split(/\s+/) : [];
-        props.className = [...prev, 'story-float'];
-      }
-      for (const child of node.children ?? []) walk(child);
-    };
-    walk(tree);
+// Runs before Astro's own image-marker plugin, so these props are carried
+// through image optimization onto the final <img>.
+function storyImages() {
+  return {
+    name: 'story-images',
+    element: {
+      filter: ['img'],
+      visit(node, ctx) {
+        const prev = node.properties?.className;
+        const classes = Array.isArray(prev)
+          ? prev
+          : typeof prev === 'string' ? prev.split(/\s+/).filter(Boolean) : [];
+        ctx.setProperty(node, 'loading', 'lazy');
+        ctx.setProperty(node, 'decoding', 'async');
+        ctx.setProperty(node, 'className', [...classes, 'story-float']);
+      },
+    },
   };
 }
 
@@ -28,7 +31,7 @@ export default defineConfig({
   output: 'static',
 
   markdown: {
-    rehypePlugins: [rehypeStoryImages],
+    processor: satteri({ hastPlugins: [storyImages] }),
   },
 
   vite: {

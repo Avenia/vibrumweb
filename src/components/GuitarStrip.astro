@@ -1,5 +1,5 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 import GuitarModal from './GuitarModal.astro';
 import { sectionLabels, fieldLabels } from '../lib/specLabels';
 
@@ -9,7 +9,7 @@ interface Props {
 
 const { guitars } = Astro.props;
 
-const rendered = await Promise.all(guitars.map(g => g.render()));
+const rendered = await Promise.all(guitars.map(g => render(g)));
 ---
 
 <div class="guitar-strip-wrap">
@@ -27,7 +27,7 @@ const rendered = await Promise.all(guitars.map(g => g.render()));
             <span class="strip-card-title">{g.data.title}</span>
           </div>
 
-          <template class="modal-data" data-slug={g.slug}>
+          <template class="modal-data" data-slug={g.id}>
             <div
               data-title={g.data.title}
               data-year={g.data.year}

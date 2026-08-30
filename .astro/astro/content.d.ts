@@ -194,6 +194,11 @@ declare module 'astro:content' {
   collection: "slides";
   data: InferEntrySchema<"slides">
 };
+"example-slide-3": {
+	id: "example-slide-3";
+  collection: "slides";
+  data: InferEntrySchema<"slides">
+};
 };
 
 	};

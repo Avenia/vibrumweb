@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 // Field order here is also the render order: zod rebuilds each object in schema
 // key order, so SpecTable prints the rows in the sequence declared below.
@@ -52,7 +53,7 @@ const specsSchema = z.object({
 }).optional();
 
 const guitars = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/guitars' }),
   schema: z.object({
     title: z.string(),
     type: z.enum(['electric', 'acoustic', 'bass', 'jazz']),
@@ -68,7 +69,7 @@ const guitars = defineCollection({
 });
 
 const stories = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/stories' }),
   schema: z.object({
     title: z.string(),
     date: z.date(),
@@ -82,7 +83,7 @@ const stories = defineCollection({
 });
 
 const slides = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/slides' }),
   schema: z.object({
     src: z.string(),
     alt: z.string().default(''),
