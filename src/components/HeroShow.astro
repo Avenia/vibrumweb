@@ -64,10 +64,18 @@ const slides = slideEntries.map(e => e.data);
 
 
 <style>
+  /* Fills the viewport exactly on laptops: hero + nav = 100svh for any
+     viewport up to 1120px tall, which covers every laptop and 1080p
+     display. The 1050px cap exists only to stop the hero becoming absurd
+     on 1440p/5K monitors, where it hands the surplus to the section below.
+     Its crossover is parked in the 1120-1250px gap between real laptop and
+     real desktop heights on purpose — right at a cap the leftover strip
+     grows from zero, and a 10px strip reads as a bug, so the crossover
+     wants to sit where few viewports actually land. */
   .hero {
     position: relative;
     width: 100%;
-    height: clamp(540px, calc(100svh - var(--nav-height)), 820px);
+    height: clamp(540px, calc(100svh - var(--nav-height)), 1050px);
     overflow: hidden;
     background: var(--color-bg);
   }
