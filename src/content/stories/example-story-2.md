@@ -1,7 +1,7 @@
 ---
-title: "Example Story 2: A Dark Build"
+title: "Pyrocaster: A Dark Build"
 date: 2025-03-14
-coverImage: /images/guitars/example-guitar-2/photo-1.png
+coverImage: /images/guitars/001-Zora/photo-2.webp
 guitar: example-guitar-2
 category: build-diary
 excerpt: "The brief was simple: something heavy, something dark, something that does not apologise for what it is. The Example Guitar 2 started from that sentence."

@@ -1,7 +1,7 @@
 ---
-title: "Example Story 1: From Blank to Build"
+title: "Pyrocaster: From Blank to Build"
 date: 2024-12-15
-coverImage: "/images/guitars/example-guitar-1/photo-1.png"
+coverImage: "/images/guitars/001-Zora/photo-1.webp"
 guitar: "example-guitar-1"
 category: build-diary
 excerpt: "The Example Guitar 1 began as a question about what a vintage-voiced electric could become when nothing was rushed. This is its story."
