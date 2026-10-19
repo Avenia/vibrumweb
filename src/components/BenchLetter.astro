@@ -1,13 +1,13 @@
 ---
 /**
  * "Stay in tune" — full-bleed newsletter band.
- * Photo + copy + Web3Forms signup. Used as the page closer on
- * the home, about, and contact pages.
+ * Copy + Web3Forms signup over a workshop photo. Used as the page closer on
+ * the home page.
  *
  * `wide`: match the host page's alignment system on big screens.
  * The home page's sections all sit on the full-width container, so it
- * passes `wide`; about/contact content sits on the 1320px reading
- * container, which is this band's default.
+ * passes `wide`; the default is the 1320px reading container, for any
+ * page whose content sits on that.
  */
 import { background } from '../lib/backgrounds';
 
@@ -17,9 +17,8 @@ interface Props {
 
 const { wide = false } = Astro.props;
 
-// Same photos on every page that renders this band.
-const bandBg = background('stay-in-tune');
-const insetPhoto = background('stay-in-tune-photo');
+// Same photo on every page that renders this band.
+const bandBg = background('home-stay-in-tune');
 ---
 
 <section class="bench-letter band-stage">
@@ -71,10 +70,6 @@ const insetPhoto = background('stay-in-tune-photo');
         <p class="nl-success-body">A letter will come when the next guitar finishes.</p>
       </div>
     </div>
-
-    <div class="bench-letter-photo">
-      <img src={insetPhoto} alt="At the bench in the Vibrum workshop" loading="lazy" />
-    </div>
   </div>
 </section>
 
@@ -103,20 +98,16 @@ const insetPhoto = background('stay-in-tune-photo');
     inset: 0;
     background: linear-gradient(
       to bottom,
-      rgba(10, 9, 6, 0.96) 0%,
-      rgba(10, 9, 6, 0.9) 35%,
-      rgba(10, 9, 6, 0.9) 65%,
-      rgba(10, 9, 6, 0.96) 100%
+      rgba(10, 9, 6, 0.92) 0%,
+      rgba(10, 9, 6, 0.8) 35%,
+      rgba(10, 9, 6, 0.8) 65%,
+      rgba(10, 9, 6, 0.92) 100%
     );
   }
 
   .bench-letter-inner {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: var(--space-lg);
-    align-items: stretch;
   }
 
   .bench-letter-copy {
@@ -273,36 +264,9 @@ const insetPhoto = background('stay-in-tune-photo');
     margin: 0;
   }
 
-  .bench-letter-photo {
-    position: relative;
-    min-height: 340px;
-    overflow: hidden;
-  }
-
-  .bench-letter-photo img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(0.35);
-  }
-
   @media (max-width: 767px) {
-    .bench-letter-inner {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-
     .bench-letter-copy {
-      padding-block: var(--space-lg) var(--space-md);
-    }
-
-    .bench-letter-photo {
-      min-height: 0;
-      aspect-ratio: 16 / 10;
-      margin-bottom: var(--space-lg);
-      border-radius: var(--radius-sm);
+      padding-block: var(--space-lg);
     }
   }
 </style>

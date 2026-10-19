@@ -139,7 +139,6 @@ Every slot uses `object-fit: cover`, so the image is cropped to the slot's aspec
 | Gallery card | **9 / 16** (tall portrait) | centre | [GuitarCard.astro:48](src/components/GuitarCard.astro#L48) |
 | Home guitar strip card | **3 / 4** (portrait) | centre | [GuitarStrip.astro:121](src/components/GuitarStrip.astro#L121) |
 | Story card | **16 / 10** (landscape) | centre | [WorkshopStoryCard.astro:53](src/components/WorkshopStoryCard.astro#L53) |
-| Newsletter band photo | **16 / 10** | centre | [BenchLetter.astro:287](src/components/BenchLetter.astro#L287) |
 | About team portrait | **1 / 2** (very tall) | centre | [about.astro:196](src/pages/about.astro#L196) |
 | Modal photo viewer | none — `object-fit: contain` | — | [GuitarModal.astro:150](src/components/GuitarModal.astro#L150) |
 | Modal thumbnail strip | none — uncropped, 10 across | — | [GuitarModal.astro:657-688](src/components/GuitarModal.astro#L657-L688) |
@@ -241,12 +240,12 @@ magick input.jpg -resize '1800x1350^' -gravity center -extent 1800x1350 \
 
 ### The routine, start to finish
 
-Slug = the `.md` filename = the URL fragment. Lowercase, hyphens, no year in it. `SLUG=ironveil` below; change that one line and the rest is copy-paste.
+Slug = the `.md` filename = the URL fragment. Start it with the next running number (`001-zora`, `002-zora-sc`, `003-pyrocaster`, …): within the same `year`, the higher number sorts first on the gallery and the home strip. Lowercase, hyphens, no year in it. `SLUG=004-ironveil` below; change that one line and the rest is copy-paste.
 
 **Step 1 — folder and raw photos**
 
 ```bash
-SLUG=ironveil
+SLUG=004-ironveil
 mkdir -p public/images/guitars/$SLUG
 # copy the raw camera files into that folder now, then:
 cd public/images/guitars/$SLUG
@@ -309,7 +308,7 @@ git add src/content/guitars/$SLUG.md public/images/guitars/$SLUG
 git commit -m "Add $SLUG"
 ```
 
-Push to `main` — it appears in the gallery automatically, sorted by `year` descending. The home page strip picks up the 6 newest.
+Push to `main` — it appears in the gallery automatically, newest first: `year` descending, and within the same year the higher filename number wins ([guitarOrder.ts](src/lib/guitarOrder.ts)). The home page strip picks up the 6 newest.
 
 ### Frontmatter template
 
@@ -431,9 +430,9 @@ Place each image after the paragraph it belongs to, not mid-sentence. No `thumbs
 Every section background is a **drop-in folder** under `public/images/backgrounds/` — one folder per section, one photo inside. The build ([src/lib/backgrounds.ts](src/lib/backgrounds.ts)) picks the first image file in the folder (alphabetical order), so swapping a background is a file operation, no code edit:
 
 ```bash
-# Example: new photo for the gallery commissions band
-cp new-shot.webp public/images/backgrounds/gallery-commissions/
-rm public/images/backgrounds/gallery-commissions/old-shot.webp
+# Example: new photo for the home "More from the workshop" band
+cp new-shot.webp public/images/backgrounds/home-workshop/
+rm public/images/backgrounds/home-workshop/old-shot.webp
 ```
 
 Any filename works (lowercase, no spaces — same rules as everywhere). Keep **one image per folder**: with several, the alphabetically first wins and the rest are dead weight shipped to the site. An **empty or missing folder fails the build** with a message naming the folder.
@@ -443,15 +442,13 @@ Any filename works (lowercase, no spaces — same rules as everywhere). Keep **o
 | `home-bench/` | Home — "From the bench" feature band | `center 40%` | [index.astro](src/pages/index.astro) |
 | `home-guitars/` | Home — "Recent guitars" band | `center 40%` | [index.astro](src/pages/index.astro) |
 | `home-workshop/` | Home — "More from the workshop" band | `center 62%` | [index.astro](src/pages/index.astro) |
-| `stay-in-tune/` | "Stay in tune" newsletter band — background. Same photo on **home, about, and contact pages** (shared component) | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
-| `stay-in-tune-photo/` | "Stay in tune" band — the inset photo next to the copy (16/10 crop) | centre | [BenchLetter.astro](src/components/BenchLetter.astro) |
-| `gallery-commissions/` | Gallery — "Commissions" CTA band | `center 32%` | [gallery.astro](src/pages/gallery.astro) |
+| `home-stay-in-tune/` | Home — "Stay in tune" newsletter band | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
 
 Not folder-driven: the Open Graph share image stays `/images/og-logo.png` ([BaseLayout.astro:27](src/layouts/BaseLayout.astro#L27)).
 
 The current files are `example-*` placeholders — replace them with real photos.
 
-Each background sits under a dark shade overlay with light text on top, so pick frames that are already dark, or at least busy-free where the text lands. Best backgrounds are **wide workshop/detail shots**, not full-instrument portraits: wood grain, tools on the bench, hands working, a body under a lamp. Full guitars get awkwardly cropped by the band heights. The `stay-in-tune` band appears on more pages than any other background — worth a good workshop shot. The `stay-in-tune-photo` inset is the one non-background slot here: it's a framed photo next to the newsletter copy, cropped 16/10, so a person at the bench works well.
+Each background sits under a dark shade overlay with light text on top, so pick frames that are already dark, or at least busy-free where the text lands. Best backgrounds are **wide workshop/detail shots**, not full-instrument portraits: wood grain, tools on the bench, hands working, a body under a lamp. Full guitars get awkwardly cropped by the band heights.
 
 Convert to WebP q82 / 1800 px like everything else (section 1). After swapping, check the section in `npm run dev` — if the subject sits wrong, adjust `object-position` in the `<style>` block of the file listed above.
 
@@ -525,7 +522,7 @@ src/
     GuitarModal.astro        ← guitar detail overlay + #guitar-<slug> deep links
     SpecTable.astro          ← guitar specs table
     WorkshopStoryCard.astro  ← story card (16/10)
-    BenchLetter.astro        ← newsletter band (home, about, contact pages)
+    BenchLetter.astro        ← newsletter band (home page)
     PageLogoBg.astro         ← faint inline-SVG logo watermark
   pages/
     index.astro         ← home (hero, feature story, guitars, stories, newsletter)
@@ -545,9 +542,7 @@ public/
       home-bench/           home "From the bench" band
       home-guitars/         home "Recent guitars" band
       home-workshop/        home "More from the workshop" band
-      stay-in-tune/         newsletter band background (home + about + contact)
-      stay-in-tune-photo/   newsletter band inset photo
-      gallery-commissions/  gallery "Commissions" CTA band
+      home-stay-in-tune/    home "Stay in tune" newsletter band
       contact/              contact page header
     guitars/            ← one subfolder per guitar, photo-1…photo-N
     stories/            ← story images (create as needed)
