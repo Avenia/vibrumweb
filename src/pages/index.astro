@@ -15,8 +15,10 @@ const benchBg = background('home-bench');
 const guitarsBg = background('home-guitars');
 const workshopBg = background('home-workshop');
 
+// Newest story first, by file name (story-003 before story-001), not by the
+// date in the frontmatter: the number in the name is the publishing order.
 const stories = (await getCollection('stories', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }));
 
 const featured = stories[0];
 const workshopStories = stories.slice(1);

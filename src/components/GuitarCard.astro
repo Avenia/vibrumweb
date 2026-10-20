@@ -3,10 +3,9 @@ interface Props {
   title: string;
   year: number;
   coverImage: string;
-  excerpt: string;
 }
 
-const { title, year, coverImage, excerpt } = Astro.props;
+const { title, year, coverImage } = Astro.props;
 ---
 
 <button type="button" class="guitar-card guitar-card-trigger">
@@ -16,7 +15,6 @@ const { title, year, coverImage, excerpt } = Astro.props;
   <div class="guitar-card-body">
     <h3 class="guitar-card-title">{title}</h3>
     <p class="guitar-card-meta">{year}</p>
-    <p class="guitar-card-excerpt">{excerpt}</p>
   </div>
 </button>
 
@@ -72,23 +70,10 @@ const { title, year, coverImage, excerpt } = Astro.props;
     font-size: 0.75rem;
     color: var(--color-text-muted);
     letter-spacing: 0.08em;
-    margin-bottom: var(--space-xs);
-  }
-
-  .guitar-card-excerpt {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    margin-bottom: 0;
   }
 
   @media (max-width: 768px) {
-    .guitar-card-excerpt { display: none; }
-    .guitar-card-meta { margin-bottom: 0; }
     .guitar-card-title { font-size: 0.85rem; }
   }
 </style>

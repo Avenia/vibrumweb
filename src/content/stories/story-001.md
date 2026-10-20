@@ -1,5 +1,5 @@
 ---
-title: "Pyrocaster: A Dark Build"
+title: "Example story"
 date: 2025-03-14
 coverImage: /images/guitars/001-Zora/photo-2.webp
 guitar: example-guitar-2

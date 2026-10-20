@@ -147,6 +147,19 @@ strong {
   margin-top: 0;
 }
 
+/* Links in prose: accent colour with an underline rule, same as the guitar
+   description in the gallery modal */
+.prose a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent-hover);
+  transition: border-color var(--transition);
+}
+
+.prose a:hover {
+  border-bottom-color: var(--color-accent);
+}
+
 .prose ul, .prose ol {
   list-style: initial;
   padding-left: 1.5em;
@@ -162,13 +175,24 @@ strong {
   margin: var(--space-md) 0;
 }
 
-/* Story photos — markdown images. On phones they sit full-width in the text
-   flow; on desktop the story page hides them and shows the same photos in the
-   right-hand column instead. */
+/* Story photos — markdown images. They sit in the text flow at every width
+   and open in the story page's lightbox on click.
+
+   A photo alone in its paragraph is centred and, on desktop, kept to roughly
+   half a screen tall. Photos written on consecutive markdown lines (no blank
+   line between them) share one row: each takes a width proportional to its
+   shape (--ar, set at build time from the file), so the whole row has one
+   height and nothing is cropped. */
+.prose p:has(> img.story-float) {
+  margin: var(--space-md) auto;
+}
+
 .prose img.story-float {
-  width: 100%;
+  display: block;
+  width: auto;
+  max-width: 100%;
   height: auto;
-  margin: var(--space-md) 0;
+  margin: 0 auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg-surface);
@@ -184,9 +208,34 @@ strong {
   transform: scale(1.015);
 }
 
+/* A row of photos */
+.prose p:has(> img.story-float:not(:only-child)) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.prose p:has(> img.story-float:not(:only-child)) > img.story-float {
+  flex: var(--ar, 1) 1 0%;
+  min-width: 0;
+  margin: 0;
+}
+
 @media (min-width: 768px) {
-  .story-detail .prose img.story-float {
-    display: none;
+  .story-detail .prose img.story-float:only-child {
+    max-height: 58vh;
+  }
+}
+
+/* Phones: three or more in a row would be thumbnails, so stack them instead */
+@media (max-width: 767px) {
+  .prose p:has(> img.story-float:nth-child(3)) {
+    flex-direction: column;
+  }
+
+  .prose p:has(> img.story-float:nth-child(3)) > img.story-float {
+    flex: 0 0 auto;
+    width: 100%;
   }
 }
 

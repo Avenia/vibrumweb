@@ -18,17 +18,10 @@ const { Content } = await render(story);
 const guitar = story.data.guitar ? await getEntry('guitars', story.data.guitar) : null;
 const guitarRendered = guitar ? await render(guitar) : null;
 const GuitarContent = guitarRendered?.Content;
-const guitarImages = guitar ? [guitar.data.coverImage, ...(guitar.data.images ?? [])] : [];
 
-// Photos placed in the story body (markdown ![alt](src)). On desktop they render
-// as the right-hand photo column; on phones they stay in the text flow. They also
-// merge into the modal's image list, so a clicked photo opens the modal on itself.
-const inlinePhotos = [...story.body.matchAll(/!\[([^\]]*)\]\(\s*([^)\s]+)/g)]
-  .map(m => ({ alt: m[1], src: m[2] }));
-const modalImages = [
-  ...guitarImages,
-  ...inlinePhotos.map(p => p.src).filter(src => !guitarImages.includes(src)),
-];
+// The modal shows the guitar's own gallery only. Photos placed in the story
+// body (markdown ![alt](src)) stay in the text flow and open in the lightbox.
+const guitarImages = guitar ? [guitar.data.coverImage, ...(guitar.data.images ?? [])] : [];
 
 const typeLabels: Record<string, string> = {
   electric: 'Electric', acoustic: 'Acoustic', bass: 'Bass', classical: 'Classical',
@@ -72,23 +65,14 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
           <Content />
         </article>
 
-        {(guitar || inlinePhotos.length > 0) && (
+        {guitar && (
           <aside class="story-aside">
-            {guitar && (
-              <div class="story-guitar-link">
-                <p class="story-guitar-label">Featured instrument</p>
-                <button type="button" class="story-guitar-btn" id="story-guitar-trigger">
-                  View all photos
-                </button>
-              </div>
-            )}
-            {inlinePhotos.length > 0 && (
-              <div class="story-aside-photos">
-                {inlinePhotos.map(p => (
-                  <img class="story-side-photo" src={p.src} alt={p.alt} loading="lazy" decoding="async" />
-                ))}
-              </div>
-            )}
+            <div class="story-guitar-link">
+              <p class="story-guitar-label">Featured instrument</p>
+              <button type="button" class="story-guitar-btn" id="story-guitar-trigger">
+                View the guitar
+              </button>
+            </div>
           </aside>
         )}
       </div>
@@ -97,22 +81,20 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     </div>
   </div>
 
-  <!-- Minimal fullscreen viewer for story photos when no guitar is linked -->
-  {!guitar && (
-    <div class="story-lightbox" id="story-lightbox" aria-hidden="true">
-      <button class="lightbox-close" id="lightbox-close" aria-label="Close">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <button class="lightbox-nav lightbox-nav--prev" id="lightbox-prev" aria-label="Previous photo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <img class="lightbox-img" id="lightbox-img" src="" alt="" />
-      <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" aria-label="Next photo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-      <div class="lightbox-counter" id="lightbox-counter"></div>
-    </div>
-  )}
+  <!-- Fullscreen viewer for the photos in the story body -->
+  <div class="story-lightbox" id="story-lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-nav--prev" id="lightbox-prev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+    <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
 
   {guitar && GuitarContent && (
     <div id="story-guitar-wrapper" hidden>
@@ -122,7 +104,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
           data-year={guitar.data.year}
           data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
           data-status={guitar.data.status}
-          data-images={JSON.stringify(modalImages)}
+          data-images={JSON.stringify(guitarImages)}
         >
           <div class="modal-specs">
             {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
@@ -162,30 +144,10 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     trigger.addEventListener('click', () => window.openGuitarModal(wrapper));
   }
 
-  // --- Story photos: in-text copies (mobile) + right-column copies (desktop) ---
+  // --- Lightbox for the photos in the story body ---
   const photos = Array.from(
     document.querySelectorAll<HTMLImageElement>('.story-prose img.story-float')
   );
-  const allPhotoEls = [
-    ...photos,
-    ...document.querySelectorAll<HTMLImageElement>('.story-side-photo'),
-  ];
-
-  if (wrapper && allPhotoEls.length > 0) {
-    // Guitar linked: photos open the guitar modal on themselves.
-    const data = (wrapper.querySelector('template.modal-data') as HTMLTemplateElement)
-      .content.querySelector<HTMLElement>('[data-title]')!;
-    const modalImages: string[] = JSON.parse(data.dataset.images!);
-    allPhotoEls.forEach(img => {
-      img.classList.add('story-float--clickable');
-      img.addEventListener('click', () => {
-        const idx = modalImages.indexOf(img.getAttribute('src') ?? '');
-        window.openGuitarModal(wrapper, Math.max(idx, 0));
-      });
-    });
-  }
-
-  // --- Lightbox (stories without a featured guitar) ---
   const lightbox = document.getElementById('story-lightbox');
   if (lightbox && photos.length > 0) {
     const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
@@ -193,7 +155,14 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     const lbPrev = document.getElementById('lightbox-prev')!;
     const lbNext = document.getElementById('lightbox-next')!;
     const lbClose = document.getElementById('lightbox-close')!;
+    const box: HTMLElement = lightbox;
     let current = 0;
+    // Opening pushes a "#photo-N" history entry, so the phone's back button
+    // (and swipe-back) closes the photo instead of leaving the story. Same
+    // scheme as the guitar modal's "#guitar-<slug>-pN".
+    let pushedHash = false;
+    const photoHash = () => `#photo-${current + 1}`;
+    const isOpen = () => box.classList.contains('story-lightbox--open');
 
     function show(i: number) {
       current = (i + photos.length) % photos.length;
@@ -202,27 +171,67 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
       lbCounter.textContent = photos.length > 1 ? `${current + 1} / ${photos.length}` : '';
       lbPrev.style.display = photos.length > 1 ? '' : 'none';
       lbNext.style.display = photos.length > 1 ? '' : 'none';
+      // Stepping between photos updates the entry in place, never adds one.
+      if (location.hash.startsWith('#photo-') && location.hash !== photoHash()) {
+        history.replaceState(null, '', photoHash());
+      }
     }
 
     function open(i: number) {
       show(i);
-      lightbox!.classList.add('story-lightbox--open');
-      lightbox!.setAttribute('aria-hidden', 'false');
+      box.classList.add('story-lightbox--open');
+      box.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      if (location.hash === photoHash()) {
+        // Deep-link load or Forward: the entry is already there.
+        pushedHash = false;
+      } else {
+        history.pushState(null, '', photoHash());
+        pushedHash = true;
+      }
     }
 
-    function close() {
-      lightbox!.classList.remove('story-lightbox--open');
-      lightbox!.setAttribute('aria-hidden', 'true');
+    function hide() {
+      box.classList.remove('story-lightbox--open');
+      box.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
 
-    allPhotoEls.forEach(img => {
+    function close() {
+      if (pushedHash) {
+        // We added the hash entry on open; pop it so Back then leaves the
+        // page rather than returning to a stale photo entry. popstate hides.
+        pushedHash = false;
+        history.back();
+        return;
+      }
+      hide();
+      if (location.hash.startsWith('#photo-')) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    }
+
+    // "#photo-N" in the URL (deep link, or Forward after a Back) opens photo N
+    function openFromHash() {
+      const m = location.hash.match(/^#photo-(\d+)$/);
+      const n = m ? parseInt(m[1], 10) : 0;
+      if (n >= 1 && n <= photos.length) {
+        open(n - 1);
+        return true;
+      }
+      return false;
+    }
+
+    window.addEventListener('popstate', () => {
+      pushedHash = false;
+      if (!openFromHash() && isOpen()) hide();
+    });
+
+    openFromHash();
+
+    photos.forEach((img, i) => {
       img.classList.add('story-float--clickable');
-      img.addEventListener('click', () => {
-        const idx = photos.findIndex(p => p.getAttribute('src') === img.getAttribute('src'));
-        open(Math.max(idx, 0));
-      });
+      img.addEventListener('click', () => open(i));
     });
 
     lbPrev.addEventListener('click', () => show(current - 1));
@@ -233,7 +242,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     });
 
     document.addEventListener('keydown', e => {
-      if (!lightbox!.classList.contains('story-lightbox--open')) return;
+      if (!isOpen()) return;
       if (e.key === 'Escape') close();
       if (e.key === 'ArrowLeft') show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
@@ -316,82 +325,43 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     padding: var(--space-md) 0 var(--space-lg);
   }
 
-  /* Desktop: two columns — text left, photo column right */
-  @media (min-width: 768px) {
-    .story-content-wrap {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: var(--space-lg);
-      align-items: start;
-    }
-  }
-
-  /* Big desktops: the reading container grows to 1320px — give the first
-     60px of extra room to the photo column so the prose measure stays put,
-     then let the prose take the rest. The calc mirrors the global
-     --max-width formula (200vw/3, continuous at 1800px), so the aside
-     grows exactly as fast as the container until it caps at 360px. */
-  @media (min-width: 1800px) {
-    .story-content-wrap {
-      grid-template-columns: 1fr min(360px, calc(300px + (200vw / 3) - 1200px));
-    }
-  }
-
   .story-prose {
     font-size: 1.05rem;
     line-height: 1.85;
     display: flow-root;
   }
 
-  /* Mobile: aside stacks after the article — button only, photos stay in-text */
+  /* "Featured instrument" + button: after the article on phones */
   .story-aside {
     margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
   }
 
-  .story-aside-photos {
-    display: none;
-  }
-
+  /* Desktop: text and photos take three quarters, the featured instrument
+     the right quarter behind a thin divider, the same line the gallery draws
+     beside its filters. The aside spans the full height of the text so the
+     line runs the whole way; the block inside sticks below the fixed nav
+     while the text scrolls. Stories without a guitar keep the single column. */
   @media (min-width: 768px) {
-    /* Photos on top, "Featured instrument" + button underneath */
-    .story-aside {
-      margin-top: 0;
-      display: flex;
-      flex-direction: column;
+    .story-content-wrap:has(> .story-aside) {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: var(--space-md);
     }
 
-    .story-aside-photos {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      order: 1;
+    .story-aside {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+      padding-left: var(--space-md);
+      border-left: 1px solid rgba(201, 168, 76, 0.25);
     }
 
     .story-guitar-link {
-      order: 2;
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-md));
     }
-
-    .story-aside:has(.story-aside-photos) .story-guitar-link {
-      margin-top: var(--space-md);
-    }
-  }
-
-  .story-side-photo {
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-bg-surface);
-  }
-
-  :global(.story-side-photo.story-float--clickable) {
-    cursor: pointer;
-    transition: border-color var(--transition), transform var(--transition);
-  }
-
-  :global(.story-side-photo.story-float--clickable:hover) {
-    border-color: rgba(201, 168, 76, 0.45);
-    transform: scale(1.015);
   }
 
   /* Same recipe as the About page section labels (The Story / The Team / The Work) */
@@ -402,7 +372,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-sm);
   }
 
   /* Same recipe as the newsletter Subscribe button, full radius (standalone) */
@@ -427,13 +397,15 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     opacity: 0.88;
   }
 
-  /* ---- Lightbox (no-guitar stories) ---- */
+  /* ---- Lightbox ---- */
   .story-lightbox {
     display: none;
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background-color: rgba(10, 9, 6, 0.92);
+    /* Same backlight as the guitar modal: a dark field with a gold glow behind the photo */
+    background-color: rgba(10, 9, 6, 0.88);
+    background-image: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 168, 76, 0.53) 0%, transparent 70%);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     align-items: center;
@@ -456,6 +428,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     max-height: 86vh;
     object-fit: contain;
     border-radius: var(--radius-sm);
+    box-shadow: 0 12px 48px rgba(10, 9, 6, 0.7);
   }
 
   .lightbox-close,
