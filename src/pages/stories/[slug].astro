@@ -248,15 +248,75 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
       if (e.key === 'ArrowRight') show(current + 1);
     });
 
-    // Swipe between photos on touch screens
-    let touchX = 0;
-    lightbox.addEventListener('touchstart', e => {
-      touchX = (e as TouchEvent).touches[0].clientX;
-    }, { passive: true });
-    lightbox.addEventListener('touchend', e => {
-      const dx = (e as TouchEvent).changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 40) show(dx < 0 ? current + 1 : current - 1);
-    }, { passive: true });
+    // Touch, same as the gallery modal: two fingers pinch-zoom the photo and
+    // it springs back on release; one finger swipes to the next photo only
+    // when the movement is mostly horizontal. A pinch locks swiping until the
+    // next fresh touch, so the first finger of a pinch is never read as the
+    // start of a swipe and a zoom cannot change the photo by accident.
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeLocked = false;
+    let isPinching = false;
+    let pinchStartDist = 0;
+
+    const pinchDist = (te: TouchEvent) =>
+      Math.hypot(te.touches[0].clientX - te.touches[1].clientX, te.touches[0].clientY - te.touches[1].clientY);
+
+    box.addEventListener('touchstart', e => {
+      const te = e as TouchEvent;
+      if (te.touches.length >= 2) {
+        swipeLocked = true;
+        isPinching = true;
+        pinchStartDist = pinchDist(te);
+        const rect = lbImg.getBoundingClientRect();
+        const midX = (te.touches[0].clientX + te.touches[1].clientX) / 2;
+        const midY = (te.touches[0].clientY + te.touches[1].clientY) / 2;
+        lbImg.style.transformOrigin = `${((midX - rect.left) / rect.width) * 100}% ${((midY - rect.top) / rect.height) * 100}%`;
+        te.preventDefault();
+        return;
+      }
+      swipeStartX = te.touches[0].clientX;
+      swipeStartY = te.touches[0].clientY;
+      swipeLocked = false;
+      isPinching = false;
+    }, { passive: false });
+
+    box.addEventListener('touchmove', e => {
+      const te = e as TouchEvent;
+      if (isPinching && te.touches.length >= 2) {
+        const scale = Math.max(1, Math.min(4, pinchDist(te) / pinchStartDist));
+        lbImg.style.transition = 'none';
+        lbImg.style.transform = `scale(${scale})`;
+        te.preventDefault();
+        return;
+      }
+      if (isPinching) return;
+      const t = te.touches[0];
+      if (Math.abs(t.clientY - swipeStartY) > Math.abs(t.clientX - swipeStartX)) swipeLocked = true;
+    }, { passive: false });
+
+    box.addEventListener('touchend', e => {
+      const te = e as TouchEvent;
+      if (isPinching) {
+        if (te.touches.length < 2) {
+          isPinching = false;
+          lbImg.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+          lbImg.style.transform = 'scale(1)';
+          lbImg.addEventListener('transitionend', () => {
+            lbImg.style.transition = '';
+            lbImg.style.transform = '';
+            lbImg.style.transformOrigin = '';
+          }, { once: true });
+        }
+        return;
+      }
+      if (swipeLocked) return;
+      const t = te.changedTouches[0];
+      const dx = t.clientX - swipeStartX;
+      const dy = t.clientY - swipeStartY;
+      if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
+      show(dx < 0 ? current + 1 : current - 1);
+    }, { passive: false });
   }
 </script>
 
@@ -403,6 +463,8 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     position: fixed;
     inset: 0;
     z-index: 1000;
+    /* The script handles pinch zoom and swipes; keep the browser from zooming the page */
+    touch-action: none;
     /* Same backlight as the guitar modal: a dark field with a gold glow behind the photo */
     background-color: rgba(10, 9, 6, 0.88);
     background-image: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 168, 76, 0.53) 0%, transparent 70%);
