@@ -5,16 +5,14 @@ interface Props {
   date: Date;
   coverImage: string;
   excerpt: string;
-  category: string;
 }
 
-const { title, slug, date, coverImage, excerpt, category } = Astro.props;
+const { title, slug, date, coverImage, excerpt } = Astro.props;
 
-// "SEPTEMBER 2025 · BUILD DIARY"
+// "SEPTEMBER 2025"
 const formattedDate = date
   .toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
   .toUpperCase();
-const kicker = category.replace(/-/g, ' ').toUpperCase();
 ---
 
 <a href={`/stories/${slug}`} class="workshop-card">
@@ -22,7 +20,7 @@ const kicker = category.replace(/-/g, ' ').toUpperCase();
     <img src={coverImage} alt={title} loading="lazy" />
   </div>
   <p class="workshop-card-meta">
-    <time datetime={date.toISOString()}>{formattedDate}</time>{` · ${kicker}`}
+    <time datetime={date.toISOString()}>{formattedDate}</time>
   </p>
   <h3 class="workshop-card-title">{title}</h3>
   <p class="workshop-card-excerpt">{excerpt}</p>

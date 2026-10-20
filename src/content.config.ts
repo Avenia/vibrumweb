@@ -76,7 +76,7 @@ const stories = defineCollection({
     coverImage: z.string(),
     guitar: z.string().optional(),
     // Story category: workshop build log, guitars out in the world, or announcements
-    category: z.enum(['build-diary', 'in-the-wild', 'news']).default('build-diary'),
+    category: z.enum(['build-diary', 'in-the-wild', 'news', 'story']).default('story'),
     excerpt: z.string(),
     draft: z.boolean().default(false),
   }),

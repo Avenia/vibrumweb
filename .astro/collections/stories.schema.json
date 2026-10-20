@@ -16,12 +16,13 @@
       "type": "string"
     },
     "category": {
-      "default": "build-diary",
+      "default": "story",
       "type": "string",
       "enum": [
         "build-diary",
         "in-the-wild",
-        "news"
+        "news",
+        "story"
       ]
     },
     "excerpt": {
