@@ -767,7 +767,7 @@
       const m = raw.match(/^(.+)-p(\d+)$/);
       if (m && (tpl = findTpl(m[1]))) startIndex = parseInt(m[2], 10) - 1;
     }
-    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger, #story-guitar-wrapper');
+    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger, .story-guitar-wrapper');
     if (card) openModal(card, startIndex);
   }
 

@@ -74,7 +74,12 @@ const stories = defineCollection({
     title: z.string(),
     date: z.date(),
     coverImage: z.string(),
-    guitar: z.string().optional(),
+    // A guitar id, or a list of ids for a story that covers more than one build.
+    // Normalised to an array so the story page always loops over it.
+    guitar: z
+      .union([z.string(), z.array(z.string())])
+      .optional()
+      .transform(v => (v === undefined ? [] : Array.isArray(v) ? v : [v])),
     // Story category: workshop build log, guitars out in the world, or announcements
     category: z.enum(['build-diary', 'in-the-wild', 'news', 'story']).default('story'),
     excerpt: z.string(),

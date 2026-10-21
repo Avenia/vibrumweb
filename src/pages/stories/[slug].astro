@@ -15,13 +15,20 @@ export async function getStaticPaths() {
 const { story } = Astro.props;
 const { Content } = await render(story);
 
-const guitar = story.data.guitar ? await getEntry('guitars', story.data.guitar) : null;
-const guitarRendered = guitar ? await render(guitar) : null;
-const GuitarContent = guitarRendered?.Content;
-
-// The modal shows the guitar's own gallery only. Photos placed in the story
+// A story can feature one guitar or several (the schema normalises `guitar`
+// to a list). Ids that match no entry are dropped; Astro warns about them.
+// The modal shows each guitar's own gallery only. Photos placed in the story
 // body (markdown ![alt](src)) stay in the text flow and open in the lightbox.
-const guitarImages = guitar ? [guitar.data.coverImage, ...(guitar.data.images ?? [])] : [];
+const featured = (
+  await Promise.all(
+    story.data.guitar.map(async id => {
+      const entry = await getEntry('guitars', id);
+      if (!entry) return null;
+      const { Content } = await render(entry);
+      return { entry, Content, images: [entry.data.coverImage, ...(entry.data.images ?? [])] };
+    })
+  )
+).filter((g): g is NonNullable<typeof g> => g !== null);
 
 const typeLabels: Record<string, string> = {
   electric: 'Electric', acoustic: 'Acoustic', bass: 'Bass', classical: 'Classical',
@@ -65,13 +72,19 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
           <Content />
         </article>
 
-        {guitar && (
+        {featured.length > 0 && (
           <aside class="story-aside">
             <div class="story-guitar-link">
-              <p class="story-guitar-label">Featured instrument</p>
-              <button type="button" class="story-guitar-btn" id="story-guitar-trigger">
-                View the guitar
-              </button>
+              <p class="story-guitar-label">
+                {featured.length > 1 ? 'Featured instruments' : 'Featured instrument'}
+              </p>
+              <div class="story-guitar-btns">
+                {featured.map(g => (
+                  <button type="button" class="story-guitar-btn" data-guitar={g.entry.id}>
+                    View {g.entry.data.title}
+                  </button>
+                ))}
+              </div>
             </div>
           </aside>
         )}
@@ -96,8 +109,8 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     <div class="lightbox-counter" id="lightbox-counter"></div>
   </div>
 
-  {guitar && GuitarContent && (
-    <div id="story-guitar-wrapper" hidden>
+  {featured.map(({ entry: guitar, Content: GuitarContent, images: guitarImages }) => (
+    <div class="story-guitar-wrapper" data-guitar={guitar.id} hidden>
       <template class="modal-data" data-slug={guitar.id}>
         <div
           data-title={guitar.data.title}
@@ -132,17 +145,20 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
         </div>
       </template>
     </div>
-  )}
+  ))}
 
   <GuitarModal />
 </PageLayout>
 
 <script>
-  const trigger = document.getElementById('story-guitar-trigger');
-  const wrapper = document.getElementById('story-guitar-wrapper');
-  if (trigger && wrapper) {
-    trigger.addEventListener('click', () => window.openGuitarModal(wrapper));
-  }
+  // Each featured-guitar button opens the modal on its own hidden wrapper
+  document.querySelectorAll<HTMLButtonElement>('.story-guitar-btn').forEach(btn => {
+    const id = btn.dataset.guitar ?? '';
+    const wrapper = document.querySelector<HTMLElement>(
+      `.story-guitar-wrapper[data-guitar="${CSS.escape(id)}"]`
+    );
+    if (wrapper) btn.addEventListener('click', () => window.openGuitarModal(wrapper));
+  });
 
   // --- Lightbox for the photos in the story body ---
   const photos = Array.from(
@@ -391,7 +407,7 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     display: flow-root;
   }
 
-  /* "Featured instrument" + button: after the article on phones */
+  /* "Featured instrument(s)" + buttons: after the article on phones */
   .story-aside {
     margin-top: var(--space-md);
     padding-top: var(--space-md);
@@ -422,6 +438,19 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
       position: sticky;
       top: calc(var(--nav-height) + var(--space-md));
     }
+
+    /* The quarter column is too narrow for two buttons abreast */
+    .story-guitar-btns {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* One button per featured guitar, side by side on phones */
+  .story-guitar-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   /* Same recipe as the About page section labels (The Story / The Team / The Work) */

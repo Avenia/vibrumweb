@@ -42,7 +42,7 @@ draft: false
 
 - `category` is one of `build-diary`, `in-the-wild`, `news`.
 - `coverImage`: a landscape workshop shot with some atmosphere. The hero band lays a dark shade and the title over the lower left, so a white-background render or studio shot goes grey and flat there. A render belongs in the body as the first photo instead.
-- `guitar` is optional. When set, the page shows a "Featured instrument" block with a "View the guitar" button that opens the guitar's own gallery, description and specs. Story photos never go into that gallery; they open in the story's lightbox.
+- `guitar` is optional: one id, or a list of ids for a story that covers more than one build, for example `guitar: ["001-zora", "002-zora-sc"]`. The page shows a "Featured instrument" block (or "Featured instruments" for several) with one "View <guitar title>" button per guitar, for example "View Pyrocaster". Each button opens that guitar's own gallery, description and specs. Story photos never go into that gallery; they open in the story's lightbox.
 
 ## Writing the body
 

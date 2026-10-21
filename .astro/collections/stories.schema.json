@@ -13,7 +13,17 @@
       "type": "string"
     },
     "guitar": {
-      "type": "string"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "category": {
       "default": "story",
