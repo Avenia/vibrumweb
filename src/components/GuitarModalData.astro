@@ -1,0 +1,54 @@
+---
+/**
+ * The hidden data block GuitarModal reads when it opens on a guitar: the
+ * photo list, title and year on the root element, and the spec table and
+ * description it clones into its info panel. Inert until the modal clones
+ * it, so it costs nothing on the page. Rendered once next to every modal
+ * trigger: gallery cards, the home strip, story asides, the guitar page.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import { sectionLabels, fieldLabels, typeLabels } from '../lib/specLabels';
+import { guitarPath } from '../lib/seo';
+
+interface Props {
+  guitar: CollectionEntry<'guitars'>;
+}
+
+const { guitar } = Astro.props;
+const { Content } = await render(guitar);
+const images = [guitar.data.coverImage, ...guitar.data.images];
+---
+
+<template class="modal-data" data-slug={guitar.id} data-url={guitarPath(guitar.id)}>
+  <div
+    data-title={guitar.data.title}
+    data-year={guitar.data.year}
+    data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
+    data-status={guitar.data.status}
+    data-images={JSON.stringify(images)}
+  >
+    <div class="modal-specs">
+      {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
+        if (!fields) return null;
+        const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
+        if (rows.length === 0) return null;
+        return (
+          <div class="spec-section">
+            <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
+            <dl class="spec-list">
+              {rows.map(([key, value]) => (
+                <div class="spec-row">
+                  <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
+                  <dd class="spec-val">{String(value)}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        );
+      })}
+    </div>
+    <div class="modal-prose prose">
+      <Content />
+    </div>
+  </div>
+</template>

@@ -26,6 +26,7 @@ Built with [Astro](https://astro.build). Deployed to GitHub Pages via GitHub Act
   - [5. Section background photos](#5-section-background-photos)
   - [6. About page](#6-about-page)
   - [7. Replacing the current placeholders](#7-replacing-the-current-placeholders)
+- [SEO](#seo)
 - [Project structure](#project-structure)
 
 ---
@@ -161,7 +162,7 @@ The homepage hero rotates through background slides driven by JSON files in [src
   "alt": "Pyrocaster on the workbench under a window",
   "caption": "Pyrocaster · 2024",
   "detail": "Electric · Available",
-  "url": "/gallery#guitar-pyrocaster"
+  "url": "/guitars/pyrocaster/"
 }
 ```
 
@@ -240,7 +241,7 @@ magick input.jpg -resize '1800x1350^' -gravity center -extent 1800x1350 \
 
 ### The routine, start to finish
 
-Slug = the `.md` filename = the URL fragment. Start it with the next running number (`001-zora`, `002-zora-sc`, `003-pyrocaster`, …): within the same `year`, the higher number sorts first on the gallery and the home strip. Lowercase, hyphens, no year in it. `SLUG=004-ironveil` below; change that one line and the rest is copy-paste.
+Slug = the `.md` filename. Start it with the next running number (`001-zora`, `002-zora-sc`, `003-pyrocaster`, …): within the same `year`, the higher number sorts first on the gallery and the home strip. Lowercase, hyphens, no year in it. The guitar's page drops the number: `003-pyrocaster` publishes at `/guitars/pyrocaster/`. `SLUG=004-ironveil` below; change that one line and the rest is copy-paste.
 
 **Step 1 — folder and raw photos**
 
@@ -369,7 +370,11 @@ what the wood does, how it plays.
 
 **Filters** in the gallery sidebar read `status`, `type`, `strings`, `electronics` ([gallery.astro:38-91](src/pages/gallery.astro#L38-L91)). Omit `strings` or `electronics` and the guitar simply won't match those filters. Note `type: "classical"` is valid in the schema but has **no filter checkbox** — add one in [gallery.astro:48-62](src/pages/gallery.astro#L48-L62) if a classical guitar is ever added.
 
-**Deep links.** There are no per-guitar pages — guitars open in a modal on the gallery page. Link to one with `/gallery#guitar-<slug>`, e.g. `/gallery#guitar-pyrocaster`. Append `-pN` to open a specific photo: `/gallery#guitar-pyrocaster-p3` opens photo 3 (1-based). The modal opens on load from that hash and keeps the hash in sync while browsing photos, so the URL in the address bar is always shareable ([GuitarModal.astro:724-739](src/components/GuitarModal.astro#L724-L739)). Use this in slide `url` fields and in story text.
+**Pages.** Every guitar has its own page at `/guitars/<slug>/`, the slug being the filename without its running number: `003-pyrocaster` → `/guitars/pyrocaster/` ([guitars/[slug].astro](src/pages/guitars/[slug].astro)). That is the address to share, link from slides and stories, and the one search engines index. It shows the cover, every other photo in a grid below it, the description, the spec table and every story that features the guitar under "Related stories"; each photo opens the same modal as the gallery, at that photo. Two guitars whose names differ only by the number would collide at the same URL, and the build stops with a message saying so. Gallery cards carry a "Details" link to the page, and the modal a "View more" link under the specs.
+
+**Quick view in a new tab.** Gallery cards, the home strip cards and a story's "View <guitar>" buttons are links to the quick view, `#guitar-<slug>` on the page they sit on. A plain click opens the modal in place ([plainClick.ts](src/lib/plainClick.ts) decides which clicks to intercept); a middle-click, Cmd/Ctrl-click or "open in new tab" opens a new tab on that same page, where the modal opens from the hash on load. Either way the visitor sees the same thing.
+
+**Deep links into the modal.** The gallery modal is the quick view. `/gallery#guitar-<slug>` (full slug, with the number, e.g. `/gallery#guitar-003-pyrocaster`) opens it on load; append `-pN` to open photo N (1-based): `/gallery#guitar-003-pyrocaster-p3`. The same hash works on the guitar's own page. The modal keeps the hash in sync while browsing photos, so the URL in the address bar is always shareable ([GuitarModal.astro](src/components/GuitarModal.astro)).
 
 **Escaping.** Inch marks must be escaped inside double-quoted YAML: `scale: "25.5\""`. Apostrophes in `excerpt` and `title` are fine inside double quotes.
 
@@ -444,7 +449,7 @@ Any filename works (lowercase, no spaces — same rules as everywhere). Keep **o
 | `home-workshop/` | Home — "More from the workshop" band | `center 62%` | [index.astro](src/pages/index.astro) |
 | `home-stay-in-tune/` | Home — "Stay in tune" newsletter band | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
 
-Not folder-driven: the Open Graph share image stays `/images/og-logo.png` ([BaseLayout.astro:27](src/layouts/BaseLayout.astro#L27)).
+Not folder-driven: the link-preview (Open Graph) image stays `/images/og-default.png` — see [SEO](#seo).
 
 The current files are `example-*` placeholders — replace them with real photos.
 
@@ -501,6 +506,37 @@ done
 
 ---
 
+## SEO
+
+Everything a search engine or a link preview reads comes from two places: [src/lib/seo.ts](src/lib/seo.ts) (site constants, the Organization record, the Product builder) and [BaseLayout.astro](src/layouts/BaseLayout.astro) (the `<head>`). Pages pass `title`, `description`, optionally `ogImage` and a `schema` object; the layout does the rest.
+
+**What every page gets:** `<title>`, meta description, canonical URL, Open Graph and Twitter card tags (with image size and alt), and a schema.org `Organization` record (name, logo, Belgrade address, email, phone, Instagram and Facebook) as JSON-LD.
+
+**Per page:**
+
+| Page | Extra structured data | Notes |
+|---|---|---|
+| Home | `WebSite` | Title and description are `SITE_DESCRIPTION` in seo.ts |
+| Gallery | `CollectionPage` → `ItemList` | One entry per guitar, linking to its page. The meta description lists the guitar names. |
+| Guitar | `Product` | Name, excerpt, every photo, type, woods, every spec row. Title and description come from the frontmatter `title` and `excerpt`; the cover is the link-preview image. |
+| Story | `BlogPosting` + `article:published_time` | Headline, excerpt, cover + every body photo, date, the featured guitars as `about`. The cover is the link-preview image. |
+| About / Contact | `AboutPage` / `ContactPage` | |
+| Privacy, 404 | `noindex` | Privacy is also left out of the sitemap |
+
+**Files:** `public/robots.txt` (allow all, sitemap pointer), `sitemap-index.xml` (generated by `@astrojs/sitemap` at build), `public/images/og-default.png` (link-preview image for pages without a photo, 1200×630; regenerate from the logo with `magick -size 1200x630 xc:'srgb(21,21,22)' \( public/images/og-logo.png -trim +repage -resize 420x420 \) -gravity center -composite PNG8:public/images/og-default.png`, or replace it with any 1200×630 PNG/JPG).
+
+**Link previews for photos.** A page with a photo of its own (story, guitar) references it as `<photo>.preview.jpg`, and [ogPreviewImages.ts](src/integrations/ogPreviewImages.ts) renders that file into `dist/` after every build: a 1200×630 JPEG (LinkedIn and some mail clients do not show WebP), cropped when the photo is wide, or the whole photo on a blurred copy of itself when it is portrait, so a full-length guitar shot still shows the whole guitar. Nothing is written to `public/` and nothing is committed. To hand-craft one, put `photo-5.preview.jpg` next to `photo-5.webp` in `public/` and the build leaves it alone. `astro dev` does not render previews; they only resolve on a built site (`npm run build && npm run preview`).
+
+**Writing for search:** keep meta descriptions and story excerpts under 160 characters; give every photo alt text that says what is in the frame; one `h1` per page.
+
+**Checking a change:** build, then open a page from `dist/` in the [Rich Results Test](https://search.google.com/test/rich-results) or the [Schema Markup Validator](https://validator.schema.org/) by pasting the HTML. For link previews use [Facebook's Sharing Debugger](https://developers.facebook.com/tools/debug/) once the page is live; it also clears Facebook's cache of an old preview.
+
+**After publishing (one-time):** verify the domain in [Google Search Console](https://search.google.com/search-console) (DNS record, or drop the HTML verification file into `public/`), submit `https://www.vibrumguitars.com/sitemap-index.xml` there, do the same in [Bing Webmaster Tools](https://www.bing.com/webmasters), and create a Google Business Profile for the workshop — for a local business that listing matters more than anything on the site.
+
+**Contact details** (email, phone, social links) that appear in the structured data are in `CONTACT` in seo.ts. The contact page and footer still carry their own copies; change all three together.
+
+---
+
 ## Project structure
 
 ```
@@ -511,8 +547,16 @@ src/
     slides/       ← one .json file per hero slide, sorted by filename
     config.ts     ← collection schemas — the source of truth for valid fields
   layouts/
-    BaseLayout.astro    ← <html>, <head>, fonts, meta, Open Graph
+    BaseLayout.astro    ← <html>, <head>, fonts, meta, Open Graph, JSON-LD
     PageLayout.astro    ← nav + footer wrapper
+  integrations/
+    ogPreviewImages.ts  ← renders 1200×630 JPEG link-preview cards into dist/ after the build
+  lib/
+    seo.ts              ← site constants, Organization/WebSite records, Product builder, guitar URLs
+    imageSize.ts        ← WebP/PNG pixel size from the file header (story photos, og:image)
+    specLabels.ts       ← display labels for guitar types and spec fields
+    guitarOrder.ts      ← newest-first sort
+    backgrounds.ts      ← section background photo lookup
   components/
     Nav.astro
     Footer.astro
@@ -520,13 +564,16 @@ src/
     GuitarCard.astro         ← gallery grid card (9/16)
     GuitarStrip.astro        ← horizontal guitar strip on home (3/4)
     GuitarModal.astro        ← guitar detail overlay + #guitar-<slug> deep links
-    SpecTable.astro          ← guitar specs table
+    GuitarModalData.astro    ← the hidden <template> the modal reads (photos, specs, description)
+    SpecTable.astro          ← guitar specs table (guitar page)
     WorkshopStoryCard.astro  ← story card (16/10)
     BenchLetter.astro        ← newsletter band (home page)
     PageLogoBg.astro         ← faint inline-SVG logo watermark
   pages/
     index.astro         ← home (hero, feature story, guitars, stories, newsletter)
     gallery.astro       ← all guitars + filters; details open in a modal
+    guitars/
+      [slug].astro      ← guitar page: /guitars/<slug without number>/
     stories/
       [slug].astro      ← story detail page
     about.astro
@@ -548,9 +595,12 @@ public/
     stories/            ← story images (create as needed)
     about/              ← team portraits
     slideshow/          ← hero slide images
-    og-logo.png         ← Open Graph share image (pngquant-crushed; original in originals/images/)
+    og-default.png      ← link-preview (Open Graph) image, 1200×630 — see SEO section
+    og-logo.png         ← square logo, 1200×1200: Organization logo in structured data
+                          (pngquant-crushed; original in originals/images/)
     og-logo.webp        ← same logo as WebP, for in-site use
     bimi-logo.svg       ← BIMI logo for email clients
+  robots.txt            ← allows everything, points crawlers at the sitemap
   fonts/                ← TERMINAT.TTF (logo wordmark) — text fonts are self-hosted
                           via @fontsource packages, bundled at build (BaseLayout.astro)
   favicon/              ← all sizes + site.webmanifest

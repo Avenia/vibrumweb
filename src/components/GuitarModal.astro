@@ -31,6 +31,12 @@
         <p class="modal-year" id="guitar-modal-year"></p>
       </div>
       <div class="modal-info-body" id="guitar-modal-info-body"></div>
+      <!-- Last thing in the column, scrolls into view under the specs. Filled
+           from the data block's data-url; hidden when the modal was opened
+           from that very page -->
+      <div class="modal-info-footer" id="guitar-modal-footer" hidden>
+        <a class="modal-page-link" id="guitar-modal-page" href="/gallery">View more</a>
+      </div>
     </div>
 
     </div>
@@ -222,6 +228,38 @@
     padding: var(--space-md) var(--space-md) var(--space-sm);
     border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
+  }
+
+  /* Under the specs, closing the column; the body's bottom padding is
+     pulled in so the link sits one step below the last spec table. */
+  .modal-info-footer {
+    flex-shrink: 0;
+    margin-top: calc(-1 * var(--space-sm));
+    padding: 0 var(--space-md) var(--space-md);
+  }
+
+  .modal-info-footer[hidden] {
+    display: none;
+  }
+
+  /* Link to the guitar's own page. Same underlined mono micro-link as
+     "Read the story" on the home page. */
+  .modal-page-link {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #EDE7D4;
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+    transition: color var(--transition);
+  }
+
+  .modal-page-link:hover {
+    color: var(--color-accent);
   }
 
   .modal-title {
@@ -416,6 +454,13 @@
       gap: 0;
     }
 
+    /* One more row after the collapsible sections, with the same hairline */
+    .modal-info-footer {
+      margin-top: 0;
+      padding: 14px var(--space-md) var(--space-md);
+      border-top: 1px solid var(--color-border);
+    }
+
     /* Collapsible sections */
     :global(.modal-section) {
       border-top: 1px solid var(--color-border);
@@ -486,7 +531,12 @@
 <script>
   declare global {
     interface Window {
-      openGuitarModal: (card: HTMLElement, startIndex?: number) => void;
+      /**
+       * Open the modal on a guitar. `card` is any element containing that
+       * guitar's <template class="modal-data">; `trigger` is the element
+       * that was activated, which gets focus back when the modal closes.
+       */
+      openGuitarModal: (card: HTMLElement, startIndex?: number, trigger?: HTMLElement | null) => void;
     }
   }
 
@@ -498,6 +548,8 @@
   const thumbsEl  = document.getElementById('guitar-modal-thumbs')!;
   const titleEl   = document.getElementById('guitar-modal-title')!;
   const yearEl    = document.getElementById('guitar-modal-year')!;
+  const pageLink  = document.getElementById('guitar-modal-page') as HTMLAnchorElement;
+  const pageFooter = document.getElementById('guitar-modal-footer')!;
   const infoBody  = document.getElementById('guitar-modal-info-body')!;
   const prevBtn   = document.getElementById('guitar-modal-prev')!;
   const nextBtn   = document.getElementById('guitar-modal-next')!;
@@ -588,7 +640,7 @@
     setTimeout(finish, 400);
   }
 
-  function openModal(card: HTMLElement, startIndex = 0) {
+  function openModal(card: HTMLElement, startIndex = 0, trigger: HTMLElement | null = null) {
     const tpl = card.querySelector('template.modal-data') as HTMLTemplateElement;
     const slug = tpl.dataset.slug ?? '';
     const data = tpl.content.querySelector<HTMLElement>('[data-title]')!;
@@ -597,12 +649,20 @@
     current = Math.min(Math.max(startIndex, 0), images.length - 1);
     openSlug = slug;
 
-    // The strip card is itself the trigger button; the gallery card wraps one.
-    lastTrigger = card.closest<HTMLElement>('button') ?? card.querySelector<HTMLElement>('button');
+    // Focus goes back here on close. Callers pass the activated element; a
+    // deep-link open has none, so fall back to the card's own link or button
+    // (the strip card is the link itself, the gallery card wraps one).
+    lastTrigger = trigger ?? card.closest<HTMLElement>('a, button') ?? card.querySelector<HTMLElement>('a, button');
 
     titleEl.textContent = data.dataset.title!;
     yearEl.textContent = data.dataset.year!;
     imgEl.alt = data.dataset.title!;
+
+    // Link to the guitar's own page, unless this modal was opened from it.
+    const pageUrl = tpl.dataset.url ?? '';
+    const onOwnPage = location.pathname.replace(/\/?$/, '/') === pageUrl;
+    pageFooter.hidden = !pageUrl || onOwnPage;
+    if (pageUrl) pageLink.href = pageUrl;
 
     infoBody.innerHTML = '';
 
@@ -767,7 +827,7 @@
       const m = raw.match(/^(.+)-p(\d+)$/);
       if (m && (tpl = findTpl(m[1]))) startIndex = parseInt(m[2], 10) - 1;
     }
-    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger, .story-guitar-wrapper');
+    const card = tpl?.closest<HTMLElement>('.guitar-card-wrapper, .strip-card-trigger, .story-guitar-wrapper, .guitar-page');
     if (card) openModal(card, startIndex);
   }
 

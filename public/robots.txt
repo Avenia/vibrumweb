@@ -1,0 +1,7 @@
+# vibrumguitars.com — everything is open to crawlers. The privacy page is
+# kept out of results with a noindex meta tag instead of a rule here, so
+# crawlers can still read the tag.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.vibrumguitars.com/sitemap-index.xml

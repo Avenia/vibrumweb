@@ -2,7 +2,8 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GuitarModal from '../../components/GuitarModal.astro';
-import { sectionLabels, fieldLabels } from '../../lib/specLabels';
+import GuitarModalData from '../../components/GuitarModalData.astro';
+import { WEBSITE_ID, absoluteUrl, guitarModalHash, guitarUrl, publisherRef } from '../../lib/seo';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories', ({ data }) => !data.draft);
@@ -20,19 +21,9 @@ const { Content } = await render(story);
 // The modal shows each guitar's own gallery only. Photos placed in the story
 // body (markdown ![alt](src)) stay in the text flow and open in the lightbox.
 const featured = (
-  await Promise.all(
-    story.data.guitar.map(async id => {
-      const entry = await getEntry('guitars', id);
-      if (!entry) return null;
-      const { Content } = await render(entry);
-      return { entry, Content, images: [entry.data.coverImage, ...(entry.data.images ?? [])] };
-    })
-  )
-).filter((g): g is NonNullable<typeof g> => g !== null);
+  await Promise.all(story.data.guitar.map(id => getEntry('guitars', id)))
+).filter((g): g is NonNullable<typeof g> => g != null);
 
-const typeLabels: Record<string, string> = {
-  electric: 'Electric', acoustic: 'Acoustic', bass: 'Bass', classical: 'Classical',
-};
 const formattedDate = story.data.date.toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -43,14 +34,47 @@ const formattedDate = story.data.date.toLocaleDateString('en-GB', {
 const metaDate = story.data.date
   .toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
   .toUpperCase();
-const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
+const categoryName = story.data.category.replace(/-/g, ' ');
+const categoryLabel = categoryName.toUpperCase();
+
+// The story as a schema.org BlogPosting. Photos are the cover plus every
+// markdown image in the body, in order; the featured guitars are linked as
+// the Products the post is about (same @id as on the gallery page).
+const bodyPhotos = [...(story.body ?? '').matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)].map(m => m[1]);
+const photos = [...new Set([story.data.coverImage, ...bodyPhotos])];
+const isoDate = story.data.date.toISOString().slice(0, 10);
+const schema = {
+  '@type': 'BlogPosting',
+  headline: story.data.title,
+  description: story.data.excerpt,
+  image: photos.map(absoluteUrl),
+  datePublished: isoDate,
+  dateModified: isoDate,
+  author: publisherRef,
+  publisher: publisherRef,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(`/stories/${story.id}/`) },
+  isPartOf: { '@id': WEBSITE_ID },
+  articleSection: categoryName.replace(/^\w/, c => c.toUpperCase()),
+  inLanguage: 'en',
+  ...(featured.length > 0 && {
+    about: featured.map(g => ({
+      '@type': 'Product',
+      '@id': guitarUrl(g.id),
+      name: g.data.title,
+      url: guitarUrl(g.id),
+    })),
+  }),
+};
 ---
 
 <PageLayout
   title={`${story.data.title} — Vibrum Guitars`}
   description={story.data.excerpt}
   ogImage={story.data.coverImage}
+  ogImageAlt={story.data.title}
   ogType="article"
+  publishedTime={story.data.date}
+  schema={schema}
 >
   <div class="story-detail">
     <!-- Hero — full-bleed band, same treatment as the homepage banners -->
@@ -78,11 +102,14 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
               <p class="story-guitar-label">
                 {featured.length > 1 ? 'Featured instruments' : 'Featured instrument'}
               </p>
+              <!-- Links to the quick view (#guitar-<id>): a plain click opens the
+                   modal here, a middle-click or Cmd/Ctrl-click opens a new tab on
+                   this story with the modal already open -->
               <div class="story-guitar-btns">
                 {featured.map(g => (
-                  <button type="button" class="story-guitar-btn" data-guitar={g.entry.id}>
-                    View {g.entry.data.title}
-                  </button>
+                  <a href={guitarModalHash(g.id)} class="story-guitar-btn" data-guitar={g.id}>
+                    View {g.data.title}
+                  </a>
                 ))}
               </div>
             </div>
@@ -109,41 +136,9 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
     <div class="lightbox-counter" id="lightbox-counter"></div>
   </div>
 
-  {featured.map(({ entry: guitar, Content: GuitarContent, images: guitarImages }) => (
+  {featured.map(guitar => (
     <div class="story-guitar-wrapper" data-guitar={guitar.id} hidden>
-      <template class="modal-data" data-slug={guitar.id}>
-        <div
-          data-title={guitar.data.title}
-          data-year={guitar.data.year}
-          data-type={typeLabels[guitar.data.type] ?? guitar.data.type}
-          data-status={guitar.data.status}
-          data-images={JSON.stringify(guitarImages)}
-        >
-          <div class="modal-specs">
-            {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
-              if (!fields) return null;
-              const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
-              if (rows.length === 0) return null;
-              return (
-                <div class="spec-section">
-                  <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
-                  <dl class="spec-list">
-                    {rows.map(([key, value]) => (
-                      <div class="spec-row">
-                        <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
-                        <dd class="spec-val">{String(value)}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              );
-            })}
-          </div>
-          <div class="modal-prose prose">
-            <GuitarContent />
-          </div>
-        </div>
-      </template>
+      <GuitarModalData guitar={guitar} />
     </div>
   ))}
 
@@ -151,13 +146,22 @@ const categoryLabel = story.data.category.replace(/-/g, ' ').toUpperCase();
 </PageLayout>
 
 <script>
-  // Each featured-guitar button opens the modal on its own hidden wrapper
-  document.querySelectorAll<HTMLButtonElement>('.story-guitar-btn').forEach(btn => {
+  import { isPlainClick } from '../../lib/plainClick';
+
+  // Each featured-guitar link opens the modal on its own hidden wrapper on a
+  // plain click; modified and middle clicks are left to the browser, which
+  // opens this story in a new tab where the modal opens from the hash on load.
+  document.querySelectorAll<HTMLAnchorElement>('.story-guitar-btn').forEach(btn => {
     const id = btn.dataset.guitar ?? '';
     const wrapper = document.querySelector<HTMLElement>(
       `.story-guitar-wrapper[data-guitar="${CSS.escape(id)}"]`
     );
-    if (wrapper) btn.addEventListener('click', () => window.openGuitarModal(wrapper));
+    if (!wrapper) return;
+    btn.addEventListener('click', e => {
+      if (!isPlainClick(e)) return;
+      e.preventDefault();
+      window.openGuitarModal(wrapper, 0, btn);
+    });
   });
 
   // --- Lightbox for the photos in the story body ---

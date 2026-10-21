@@ -8,6 +8,7 @@ import WorkshopStoryCard from '../components/WorkshopStoryCard.astro';
 import BenchLetter from '../components/BenchLetter.astro';
 import { background } from '../lib/backgrounds';
 import { newestFirst } from '../lib/guitarOrder';
+import { SITE_DESCRIPTION, website } from '../lib/seo';
 
 // Section background photos — swap by replacing the file in the folder,
 // see README "Section background photos".
@@ -32,8 +33,9 @@ const guitars = (await getCollection('guitars'))
 ---
 
 <PageLayout
-  title="Vibrum | Handcrafted guitars"
-  description="Handcrafted guitars made by Vibrum, where traditional craftsmanship meets design. We are dedicated to creating unique, high-quality instruments that inspire musicians worldwide."
+  title="Vibrum Guitars — Handcrafted Guitars Built in Belgrade"
+  description={SITE_DESCRIPTION}
+  schema={website}
 >
   <PageLogoBg reveal />
 

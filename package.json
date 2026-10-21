@@ -19,5 +19,8 @@
     "@iconify-json/simple-icons": "^1.2.76",
     "astro": "^7.2.9",
     "astro-icon": "^1.1.5"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

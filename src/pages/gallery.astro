@@ -1,19 +1,47 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import GuitarCard from '../components/GuitarCard.astro';
 import GuitarModal from '../components/GuitarModal.astro';
-import { sectionLabels, fieldLabels } from '../lib/specLabels';
+import GuitarModalData from '../components/GuitarModalData.astro';
 import { newestFirst } from '../lib/guitarOrder';
+import { guitarListItem, guitarModalHash, guitarPath, webPage } from '../lib/seo';
 
 const allGuitars = await getCollection('guitars');
 const guitars = allGuitars.sort(newestFirst);
 
+// "Pyrocaster, Zora SC and Zora" — the instrument names go into the meta
+// description, so a search for a guitar by name lands here. Search results
+// show about 160 characters; the names come first so they survive the cut
+// as the list grows.
+const names = guitars.map(g => g.data.title);
+const nameList = names.length > 1
+  ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
+  : names.join('');
+const description =
+  `Handcrafted acoustic and electric guitars from the Vibrum workshop in Belgrade: ${nameList}. ` +
+  'Photos, woods and full specs of each instrument.';
+
+// The list of guitars, each pointing at its own page, which carries the full
+// Product record. (Google's pattern: a summary list here, the details there.)
+const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
+  description,
+  mainEntity: {
+    '@type': 'ItemList',
+    name: 'Guitars built at Vibrum',
+    numberOfItems: guitars.length,
+    itemListElement: guitars.map((g, i) => guitarListItem(g, i + 1)),
+  },
+});
 ---
 
-<PageLayout title="Gallery — Vibrum Guitars" description="Browse handcrafted guitars built at Vibrum workshop in Belgrade. Each instrument is unique.">
+<PageLayout
+  title="Handcrafted Acoustic & Electric Guitars — Vibrum Guitars"
+  description={description}
+  schema={schema}
+>
   <div class="gallery-layout container">
-    <h1 class="visually-hidden">The Vibrum instruments</h1>
+    <h1 class="visually-hidden">Guitars handcrafted at the Vibrum workshop</h1>
 
     <!-- Sidebar filters / mobile drawer -->
     <aside class="filters" id="filters">
@@ -86,58 +114,27 @@ const guitars = allGuitars.sort(newestFirst);
     <!-- Guitar grid -->
     <div class="gallery-main">
       <div class="guitar-grid" id="guitar-grid">
-        {guitars.map(async (guitar) => {
-          const { Content } = await render(guitar);
-          const images = [guitar.data.coverImage, ...guitar.data.images];
-          return (
-            <div
-              class="guitar-card-wrapper card-reveal"
-              data-status={guitar.data.status}
-              data-type={guitar.data.type}
-              data-strings={guitar.data.strings ?? ''}
-              data-electronics={guitar.data.electronics ?? ''}
-            >
-              <GuitarCard
-                title={guitar.data.title}
-                year={guitar.data.year}
-                coverImage={guitar.data.coverImage}
-              />
+        {guitars.map(guitar => (
+          <div
+            class="guitar-card-wrapper card-reveal"
+            data-status={guitar.data.status}
+            data-type={guitar.data.type}
+            data-strings={guitar.data.strings ?? ''}
+            data-electronics={guitar.data.electronics ?? ''}
+          >
+            <GuitarCard
+              title={guitar.data.title}
+              type={guitar.data.type}
+              year={guitar.data.year}
+              coverImage={guitar.data.coverImage}
+              href={guitarPath(guitar.id)}
+              quickViewHref={guitarModalHash(guitar.id)}
+            />
 
-              <!-- Hidden modal data -->
-              <template class="modal-data" data-slug={guitar.id}>
-                <div
-                  data-title={guitar.data.title}
-                  data-year={guitar.data.year}
-                  data-images={JSON.stringify(images)}
-                >
-                  <div class="modal-specs">
-                    {guitar.data.specs && Object.entries(guitar.data.specs).map(([sectionKey, fields]) => {
-                      if (!fields) return null;
-                      const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
-                      if (rows.length === 0) return null;
-                      return (
-                        <div class="spec-section">
-                          <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
-                          <dl class="spec-list">
-                            {rows.map(([key, value]) => (
-                              <div class="spec-row">
-                                <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
-                                <dd class="spec-val">{value}</dd>
-                              </div>
-                            ))}
-                          </dl>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div class="modal-prose prose">
-                    <Content />
-                  </div>
-                </div>
-              </template>
-            </div>
-          );
-        })}
+            <!-- Hidden modal data -->
+            <GuitarModalData guitar={guitar} />
+          </div>
+        ))}
       </div>
 
       <p class="no-results" id="no-results" aria-live="polite">No guitars match the selected filters.</p>
@@ -171,6 +168,8 @@ const guitars = allGuitars.sort(newestFirst);
 </PageLayout>
 
 <script>
+  import { isPlainClick } from '../lib/plainClick';
+
   // ---- Filters ----
   const checkboxes = document.querySelectorAll<HTMLInputElement>('input[data-filter]');
   const cards = document.querySelectorAll<HTMLElement>('.guitar-card-wrapper');
@@ -350,10 +349,16 @@ const guitars = allGuitars.sort(newestFirst);
   clearBtn.addEventListener('click', updateBadge);
 
   // ---- Modal triggers ----
-  document.querySelectorAll<HTMLElement>('.guitar-card-trigger').forEach(trigger => {
-    trigger.addEventListener('click', () => {
+  // Cards link to their quick view (#guitar-<id>). A plain click opens it
+  // here; Cmd/Ctrl-click, Shift-click and middle-click are left to the
+  // browser, which opens this page in a new tab where the modal then opens
+  // from the hash on load, the same view as here.
+  document.querySelectorAll<HTMLAnchorElement>('.guitar-card-trigger').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      if (!isPlainClick(e)) return;
+      e.preventDefault();
       const wrapper = trigger.closest<HTMLElement>('.guitar-card-wrapper')!;
-      window.openGuitarModal(wrapper);
+      window.openGuitarModal(wrapper, 0, trigger);
     });
   });
 

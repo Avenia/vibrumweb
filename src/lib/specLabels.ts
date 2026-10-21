@@ -2,6 +2,16 @@
 // Shared by every place that renders a spec table, so a new field in
 // src/content/config.ts only needs a label added here.
 
+// Instrument types from the `type` frontmatter field, as shown to people
+// (story page, image alt text) and to search engines (Product category).
+export const typeLabels: Record<string, string> = {
+  electric: 'Electric',
+  acoustic: 'Acoustic',
+  bass: 'Bass',
+  jazz: 'Jazz',
+  classical: 'Classical',
+};
+
 export const sectionLabels: Record<string, string> = {
   materials: 'Materials',
   technical: 'Technical',

@@ -1,11 +1,16 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
+import { ORG_ID, webPage } from '../lib/seo';
+
+const description =
+  'Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship.';
 ---
 
 <PageLayout
-  title="About — Vibrum Guitars"
-  description="Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship."
+  title="About the Workshop — Vibrum Guitars"
+  description={description}
+  schema={webPage('AboutPage', 'About Vibrum Guitars', '/about/', { description, about: { '@id': ORG_ID } })}
 >
   <PageLogoBg />
 

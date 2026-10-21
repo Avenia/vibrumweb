@@ -1,0 +1,357 @@
+---
+/**
+ * One page per guitar: /guitars/<slug>/, the slug being the entry id without
+ * its running number (003-pyrocaster → pyrocaster). The gallery modal stays
+ * the quick view; this is the guitar's permanent address, the page search
+ * engines rank and the one to share. Photos open in the same modal as
+ * everywhere else, at the photo that was clicked.
+ */
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import GuitarModal from '../../components/GuitarModal.astro';
+import GuitarModalData from '../../components/GuitarModalData.astro';
+import SpecTable from '../../components/SpecTable.astro';
+import WorkshopStoryCard from '../../components/WorkshopStoryCard.astro';
+import { imageSize } from '../../lib/imageSize';
+import { typeLabels } from '../../lib/specLabels';
+import { guitarProduct, guitarSlug } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const guitars = await getCollection('guitars');
+  const taken = new Map<string, string>();
+  for (const g of guitars) {
+    const slug = guitarSlug(g.id);
+    const other = taken.get(slug);
+    if (other) {
+      throw new Error(
+        `[guitars] "${g.id}" and "${other}" would both publish at /guitars/${slug}/. ` +
+          'Rename one so the part after the number differs.'
+      );
+    }
+    taken.set(slug, g.id);
+  }
+  return guitars.map(guitar => ({ params: { slug: guitarSlug(guitar.id) }, props: { guitar } }));
+}
+
+const { guitar } = Astro.props;
+const { Content } = await render(guitar);
+const { title, year, type, coverImage, images, excerpt } = guitar.data;
+const typeLabel = typeLabels[type] ?? type;
+// The cover leads, every other photo follows in a grid; each opens the modal
+// at that photo.
+const photos = [coverImage, ...images];
+
+const coverAlt = `${title} — handcrafted ${typeLabel.toLowerCase()} guitar by Vibrum Guitars`;
+const photoAlt = (i: number) => `${title}, photo ${i + 1} of ${photos.length}`;
+
+// Stories that feature this guitar, newest first (same order as the home page).
+const stories = (await getCollection('stories', ({ data }) => !data.draft && data.guitar.includes(guitar.id)))
+  .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }));
+
+const description = `${excerpt} Photos, woods and full specifications.`;
+// No BreadcrumbList: the page shows no breadcrumb, and structured data must
+// describe what is visible.
+const schema = guitarProduct(guitar);
+---
+
+<PageLayout
+  title={`${title}, handcrafted ${typeLabel.toLowerCase()} guitar — Vibrum Guitars`}
+  description={description}
+  ogImage={coverImage}
+  ogImageAlt={coverAlt}
+  schema={schema}
+>
+  <div class="guitar-page container" data-guitar={guitar.id}>
+    <header class="guitar-header">
+      <p class="eyebrow">{year}</p>
+      <h1 class="guitar-title">{title}</h1>
+    </header>
+
+    <div class="guitar-layout">
+      <section class="guitar-photos" aria-label="Photos">
+        <button type="button" class="guitar-lead" data-photo="0" aria-label={`Open photo 1 of ${photos.length}`}>
+          <img
+            src={coverImage}
+            alt={coverAlt}
+            width={imageSize(coverImage)?.width}
+            height={imageSize(coverImage)?.height}
+            fetchpriority="high"
+            decoding="async"
+          />
+        </button>
+
+        {images.length > 0 && (
+          <div class="guitar-grid">
+            {images.map((src, i) => (
+              <button type="button" data-photo={i + 1} aria-label={`Open photo ${i + 2} of ${photos.length}`}>
+                <img
+                  src={src}
+                  alt={photoAlt(i + 1)}
+                  width={imageSize(src)?.width}
+                  height={imageSize(src)?.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <div class="guitar-info">
+        <div class="prose guitar-prose">
+          <Content />
+        </div>
+
+        {guitar.data.specs && (
+          <section aria-labelledby="specs-heading">
+            <h2 class="eyebrow" id="specs-heading">Specifications</h2>
+            <SpecTable specs={guitar.data.specs} />
+          </section>
+        )}
+
+        <div class="guitar-ctas">
+          <a href="/gallery" class="guitar-cta">All guitars</a>
+        </div>
+      </div>
+    </div>
+
+    {stories.length > 0 && (
+      <section class="guitar-stories" aria-labelledby="stories-heading">
+        <div class="section-header">
+          <h2 class="section-heading" id="stories-heading">Related stories</h2>
+        </div>
+        <div class="guitar-stories-grid">
+          {stories.map(story => (
+            <WorkshopStoryCard
+              title={story.data.title}
+              slug={story.id}
+              date={story.data.date}
+              coverImage={story.data.coverImage}
+              excerpt={story.data.excerpt}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <GuitarModalData guitar={guitar} />
+  </div>
+
+  <GuitarModal />
+</PageLayout>
+
+<script>
+  // Every photo button opens the shared modal on this page's data block, at
+  // the photo that was clicked (data-photo is its index in the photo list).
+  const page = document.querySelector<HTMLElement>('.guitar-page');
+  if (page) {
+    page.querySelectorAll<HTMLButtonElement>('[data-photo]').forEach(btn => {
+      btn.addEventListener('click', () => window.openGuitarModal(page, Number(btn.dataset.photo), btn));
+    });
+  }
+</script>
+
+<style>
+  .guitar-page {
+    position: relative;
+    z-index: 1;
+    padding-top: var(--space-md);
+    padding-bottom: var(--space-lg);
+  }
+
+  /* ---- Header: year, then the name ---- */
+  .guitar-header {
+    margin-bottom: var(--space-md);
+  }
+
+  /* Section label, same recipe as the eyebrows on the other pages */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 14px;
+  }
+
+  .guitar-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.1;
+    color: #EDE7D4;
+    margin: 0;
+  }
+
+  /* ---- Two columns on desktop: photos left, text and specs right ----
+     minmax(0, …) everywhere: a plain 1fr track refuses to shrink below the
+     photos' intrinsic width and pushes the page past the viewport on phones. */
+  .guitar-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 1024px) {
+    .guitar-layout {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+
+  /* ---- Photos ---- */
+  .guitar-lead {
+    display: block;
+    width: 100%;
+    padding: 0;
+    cursor: zoom-in;
+  }
+
+  /* Covers are portrait, so the lead photo is capped at most of the viewport
+     height and centred in its column rather than stretched to the width. */
+  .guitar-lead img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 78vh;
+    margin: 0 auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-surface);
+    transition: border-color var(--transition);
+  }
+
+  .guitar-lead:hover img {
+    border-color: rgba(201, 168, 76, 0.45);
+  }
+
+  /* The other photos, three to a row, cropped square; the modal shows them whole */
+  .guitar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .guitar-grid button {
+    padding: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-surface);
+    cursor: zoom-in;
+    transition: border-color var(--transition);
+  }
+
+  .guitar-grid button:hover {
+    border-color: rgba(201, 168, 76, 0.45);
+  }
+
+  .guitar-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 350ms ease;
+  }
+
+  .guitar-grid button:hover img {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .guitar-grid img {
+      transition: none;
+    }
+
+    .guitar-grid button:hover img {
+      transform: none;
+    }
+  }
+
+  /* ---- Text and specs ---- */
+  .guitar-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .guitar-prose {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    color: var(--color-text);
+  }
+
+  .guitar-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    margin-top: var(--space-xs);
+  }
+
+  /* Same outlined button as the hero's "Get in touch" */
+  .guitar-cta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    color: #EDE7D4;
+    border: 1px solid rgba(255, 245, 220, 0.28);
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .guitar-cta:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* ---- Stories about this guitar ---- */
+  .guitar-stories {
+    margin-top: var(--space-xl);
+  }
+
+  /* Same header row as the home page sections */
+  .section-header {
+    border-bottom: 1px solid rgba(255, 245, 220, 0.14);
+    padding-bottom: 16px;
+    margin-bottom: 40px;
+  }
+
+  .section-heading {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  .guitar-stories-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .guitar-stories-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .guitar-stories-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+  }
+
+</style>

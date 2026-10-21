@@ -20,9 +20,9 @@ const { specs } = Astro.props;
       if (rows.length === 0) return null;
       return (
         <div class="spec-section">
-          <h4 class="spec-section-title">
+          <h3 class="spec-section-title">
             {sectionLabels[sectionKey] ?? sectionKey}
-          </h4>
+          </h3>
           <dl class="spec-list">
             {rows.map(([key, value]) => (
               <div class="spec-row">

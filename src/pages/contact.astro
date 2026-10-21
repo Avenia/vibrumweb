@@ -1,11 +1,16 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
+import { ORG_ID, webPage } from '../lib/seo';
+
+const description =
+  'Get in touch with Vibrum Guitars in Belgrade. Commission inquiries, availability questions, and workshop visits by appointment.';
 ---
 
 <PageLayout
-  title="Contact — Vibrum Guitars"
-  description="Get in touch with Vibrum Guitars in Belgrade. Commission inquiries, availability questions, and workshop visits by appointment."
+  title="Contact & Commissions — Vibrum Guitars"
+  description={description}
+  schema={webPage('ContactPage', 'Contact Vibrum Guitars', '/contact/', { description, about: { '@id': ORG_ID } })}
 >
   <PageLogoBg />
 

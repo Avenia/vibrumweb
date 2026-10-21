@@ -1,7 +1,9 @@
 ---
-import { render, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import GuitarModal from './GuitarModal.astro';
-import { sectionLabels, fieldLabels } from '../lib/specLabels';
+import GuitarModalData from './GuitarModalData.astro';
+import { typeLabels } from '../lib/specLabels';
+import { guitarModalHash } from '../lib/seo';
 
 interface Props {
   guitars: CollectionEntry<'guitars'>[];
@@ -9,58 +11,29 @@ interface Props {
 
 const { guitars } = Astro.props;
 
-const rendered = await Promise.all(guitars.map(g => render(g)));
+// Same alt text recipe as GuitarCard, so a photo reads the same wherever it shows.
+const altFor = (g: CollectionEntry<'guitars'>) =>
+  `${g.data.title} — handcrafted ${(typeLabels[g.data.type] ?? g.data.type).toLowerCase()} guitar by Vibrum Guitars`;
 ---
 
 <div class="guitar-strip-wrap">
   <button class="strip-arrow strip-prev" aria-label="Previous guitars">&#8592;</button>
   <div class="guitar-strip" id="guitar-strip">
-    {guitars.map((g, i) => {
-      const { Content } = rendered[i];
-      const images = [g.data.coverImage, ...(g.data.images ?? [])];
-      return (
-        <button type="button" class="strip-card strip-card-trigger">
-          <img class="strip-card-img" src={g.data.coverImage} alt={g.data.title} loading="lazy" />
-          <div class="strip-card-veil" aria-hidden="true"></div>
-          <div class="strip-card-caption">
-            <span class="strip-card-year">{g.data.year}</span>
-            <span class="strip-card-title">{g.data.title}</span>
-          </div>
+    <!-- Each card links to its quick view (#guitar-<id>): a plain click opens
+         the modal here, a middle-click or Cmd/Ctrl-click opens a new tab on
+         the home page with the modal already open -->
+    {guitars.map(g => (
+      <a href={guitarModalHash(g.id)} class="strip-card strip-card-trigger">
+        <img class="strip-card-img" src={g.data.coverImage} alt={altFor(g)} loading="lazy" />
+        <div class="strip-card-veil" aria-hidden="true"></div>
+        <div class="strip-card-caption">
+          <span class="strip-card-year">{g.data.year}</span>
+          <span class="strip-card-title">{g.data.title}</span>
+        </div>
 
-          <template class="modal-data" data-slug={g.id}>
-            <div
-              data-title={g.data.title}
-              data-year={g.data.year}
-              data-images={JSON.stringify(images)}
-            >
-              <div class="modal-specs">
-                {g.data.specs && Object.entries(g.data.specs).map(([sectionKey, fields]) => {
-                  if (!fields) return null;
-                  const rows = Object.entries(fields).filter(([, v]) => v !== undefined && v !== null);
-                  if (rows.length === 0) return null;
-                  return (
-                    <div class="spec-section">
-                      <h4 class="spec-section-title">{sectionLabels[sectionKey] ?? sectionKey}</h4>
-                      <dl class="spec-list">
-                        {rows.map(([key, value]) => (
-                          <div class="spec-row">
-                            <dt class="spec-key">{fieldLabels[key] ?? key}</dt>
-                            <dd class="spec-val">{String(value)}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                  );
-                })}
-              </div>
-              <div class="modal-prose prose">
-                <Content />
-              </div>
-            </div>
-          </template>
-        </button>
-      );
-    })}
+        <GuitarModalData guitar={g} />
+      </a>
+    ))}
     <a href="/gallery" class="strip-card--view-all" aria-label="View all guitars">
       <span class="strip-view-all-label">View All<br />Guitars</span>
     </a>
@@ -299,6 +272,8 @@ const rendered = await Promise.all(guitars.map(g => render(g)));
 </style>
 
 <script>
+  import { isPlainClick } from '../lib/plainClick';
+
   // ---- Strip scroll ----
   const strip = document.getElementById('guitar-strip');
   const wrap = strip?.closest('.guitar-strip-wrap') as HTMLElement | null;
@@ -323,7 +298,13 @@ const rendered = await Promise.all(guitars.map(g => render(g)));
   stripNext?.addEventListener('click', () => strip?.scrollBy({ left: 276, behavior: 'smooth' }));
 
   // ---- Modal triggers ----
-  document.querySelectorAll<HTMLElement>('.strip-card-trigger').forEach(trigger => {
-    trigger.addEventListener('click', () => window.openGuitarModal(trigger));
+  // Plain click: quick view here. Modified or middle click: the browser opens
+  // a new tab on this page, where the modal opens from the hash on load.
+  document.querySelectorAll<HTMLAnchorElement>('.strip-card-trigger').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      if (!isPlainClick(e)) return;
+      e.preventDefault();
+      window.openGuitarModal(trigger, 0, trigger);
+    });
   });
 </script>

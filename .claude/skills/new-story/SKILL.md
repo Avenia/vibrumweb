@@ -41,8 +41,9 @@ draft: false
 ```
 
 - `category` is one of `build-diary`, `in-the-wild`, `news`.
-- `coverImage`: a landscape workshop shot with some atmosphere. The hero band lays a dark shade and the title over the lower left, so a white-background render or studio shot goes grey and flat there. A render belongs in the body as the first photo instead.
-- `guitar` is optional: one id, or a list of ids for a story that covers more than one build, for example `guitar: ["001-zora", "002-zora-sc"]`. The page shows a "Featured instrument" block (or "Featured instruments" for several) with one "View <guitar title>" button per guitar, for example "View Pyrocaster". Each button opens that guitar's own gallery, description and specs. Story photos never go into that gallery; they open in the story's lightbox.
+- `coverImage`: a landscape workshop shot with some atmosphere. The hero band lays a dark shade and the title over the lower left, so a white-background render or studio shot goes grey and flat there. A render belongs in the body as the first photo instead. The cover is also the link-preview image when the story is shared, so a portrait cover gets cropped to a strip on Facebook, WhatsApp and Instagram DMs.
+- `excerpt`: under 160 characters. It is the meta description, so search results cut it there.
+- `guitar` is optional: one id, or a list of ids for a story that covers more than one build, for example `guitar: ["001-zora", "002-zora-sc"]`. The page shows a "Featured instrument" block (or "Featured instruments" for several) with one "View <guitar title>" button per guitar, for example "View Pyrocaster". Each button opens that guitar's own gallery, description and specs in the modal; it is a link to `#guitar-<id>`, so a middle-click or Cmd/Ctrl-click opens the story in a new tab with the modal already open. The modal's "View more" link, under the specs, leads to the guitar's own page; the aside has no other links. Story photos never go into that gallery; they open in the story's lightbox.
 
 ## Writing the body
 
@@ -56,7 +57,7 @@ Points the user has asked for before, which apply to every story:
 - Say who created the design, and that the collaboration ran through the whole build.
 - Give weight to hand work and material choice: a single-piece body, how a top was selected, why a neck is laminated. Credit the CNC honestly for what it did (fret slots, pockets, engraving) and the bench for the rest.
 - Describe body shapes neutrally, for example "a single-cutaway body", never by another maker's model name.
-- Close with thanks to the designer and a link to the guitar in the gallery: `/gallery#guitar-<guitar id>`.
+- Close with thanks to the designer and a link to the guitar's own page: `/guitars/<slug>/`, the slug being the guitar id without its number (`003-pyrocaster` → `/guitars/pyrocaster/`).
 
 ## Placing photos
 

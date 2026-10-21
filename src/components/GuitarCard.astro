@@ -1,34 +1,50 @@
 ---
+import { typeLabels } from '../lib/specLabels';
+
 interface Props {
   title: string;
+  /** Instrument type from the guitar's frontmatter (electric, acoustic, …). */
+  type: string;
   year: number;
   coverImage: string;
+  /** The guitar's own page, for the Details link. */
+  href: string;
+  /** The quick-view hash (#guitar-<id>), the card's own href. */
+  quickViewHref: string;
 }
 
-const { title, year, coverImage } = Astro.props;
+const { title, type, year, coverImage, href, quickViewHref } = Astro.props;
+
+// "Pyrocaster — handcrafted electric guitar by Vibrum Guitars": what image
+// search and screen readers get instead of the bare name.
+const alt = `${title} — handcrafted ${(typeLabels[type] ?? type).toLowerCase()} guitar by Vibrum Guitars`;
 ---
 
-<button type="button" class="guitar-card guitar-card-trigger">
-  <div class="guitar-card-image">
-    <img src={coverImage} alt={title} loading="lazy" />
-  </div>
-  <div class="guitar-card-body">
-    <h3 class="guitar-card-title">{title}</h3>
-    <p class="guitar-card-meta">{year}</p>
-  </div>
-</button>
+<!-- The card links to its quick view (#guitar-<id>): a plain click opens the
+     modal here (gallery script), a middle-click or Cmd/Ctrl-click opens a new
+     tab on this page with the modal already open. The Details link beside the
+     year goes to the guitar's own page; it sits outside the card link, as
+     links cannot nest. -->
+<div class="guitar-card">
+  <a href={quickViewHref} class="guitar-card-trigger">
+    <div class="guitar-card-image">
+      <img src={coverImage} alt={alt} loading="lazy" />
+    </div>
+    <div class="guitar-card-body">
+      <h3 class="guitar-card-title">{title}</h3>
+      <p class="guitar-card-meta">{year}</p>
+    </div>
+  </a>
+  <a class="guitar-card-link" href={href} aria-label={`${title}: full page`}>Details</a>
+</div>
 
 <style>
   .guitar-card {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
+    position: relative;
     background-color: var(--color-bg-raised);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
-    cursor: pointer;
     transition: border-color var(--transition), background-color var(--transition);
   }
 
@@ -39,6 +55,19 @@ const { title, year, coverImage } = Astro.props;
 
   .guitar-card:hover .guitar-card-image img {
     transform: scale(1.03);
+  }
+
+  .guitar-card-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* The card clips overflow, so the focus ring is drawn inside the edge. */
+  .guitar-card-trigger:focus-visible {
+    outline-offset: -2px;
   }
 
   .guitar-card-image {
@@ -70,7 +99,34 @@ const { title, year, coverImage } = Astro.props;
     font-size: 0.75rem;
     color: var(--color-text-muted);
     letter-spacing: 0.08em;
+    line-height: 1.7;
     margin-bottom: 0;
+  }
+
+  /* Sits on the year's line, right-aligned, in the same mono micro style as
+     the site's other small links. */
+  .guitar-card-link {
+    position: absolute;
+    right: var(--space-sm);
+    bottom: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: calc(0.75rem * 1.7);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid transparent;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .guitar-card-link:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .guitar-card-link:focus-visible {
+    outline-offset: 0;
   }
 
   @media (max-width: 768px) {

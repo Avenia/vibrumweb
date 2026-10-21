@@ -3,14 +3,14 @@ import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
 ---
 
+<!-- noindex: kept out of search results on purpose — the page exists for
+     people who click the link under a form, not as a landing page. It is
+     left out of the sitemap too (astro.config.mjs). -->
 <PageLayout
   title="Privacy — Vibrum Guitars"
   description="How Vibrum Guitars handles the details you share through the contact and newsletter forms."
+  noindex
 >
-  <!-- Kept out of search results on purpose — the page exists for people
-       who click the link under a form, not as a landing page. -->
-  <meta slot="head" name="robots" content="noindex, follow" />
-
   <PageLogoBg />
 
   <section class="privacy">
