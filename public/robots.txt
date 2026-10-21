@@ -4,4 +4,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.vibrumguitars.com/sitemap-index.xml
+Sitemap: https://vibrumguitars.com/sitemap-index.xml

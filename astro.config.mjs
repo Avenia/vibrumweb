@@ -39,7 +39,7 @@ function storyImages() {
 }
 
 export default defineConfig({
-  site: 'https://www.vibrumguitars.com',
+  site: 'https://vibrumguitars.com',
   integrations: [
     sitemap({
       // The privacy page is noindex (see src/pages/privacy.astro); listing a
