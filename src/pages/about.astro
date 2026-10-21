@@ -196,14 +196,18 @@ const description =
     }
   }
 
+  /* Plain block layout on purpose. An earlier version made this a column
+     flexbox whose photo wrapper carried `aspect-ratio` and held an image at
+     `height: 100%`. Older iOS Safari (15/16-era WebKit) mislays that
+     combination: the photos and names rendered one photo-height too low and
+     overlapped the Story paragraph beneath. Putting the ratio on the image
+     itself and spacing the name with a margin keeps every browser on the
+     most basic layout path. */
   .team-member {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    display: block;
   }
 
   .team-photo-wrap {
-    aspect-ratio: 1 / 2;
     overflow: hidden;
     border-radius: var(--radius-sm);
     background: var(--color-bg-surface);
@@ -213,7 +217,10 @@ const description =
 
   .team-photo {
     width: 100%;
-    height: 100%;
+    height: auto;
+    /* The sources are 600×1200, so browsers without `aspect-ratio` get the
+       same 1:2 shape from the image's own dimensions. */
+    aspect-ratio: 1 / 2;
     object-fit: cover;
     display: block;
     /* Sources are already black and white; this keeps any future colour
@@ -221,12 +228,12 @@ const description =
     filter: grayscale(100%);
   }
 
-.team-name {
+  .team-name {
     font-family: var(--font-body);
     font-size: 0.95rem;
     color: var(--color-text);
     text-align: center;
-    margin: 0;
+    margin: 0.75rem 0 0;
   }
 
 </style>
