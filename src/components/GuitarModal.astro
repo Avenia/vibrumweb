@@ -454,11 +454,11 @@
       gap: 0;
     }
 
-    /* One more row after the collapsible sections, with the same hairline */
+    /* No "View more" on phones: the info panel is short there and the row
+       costs too much of it. The gallery card's Details link still leads to
+       the page. */
     .modal-info-footer {
-      margin-top: 0;
-      padding: 14px var(--space-md) var(--space-md);
-      border-top: 1px solid var(--color-border);
+      display: none;
     }
 
     /* Collapsible sections */
