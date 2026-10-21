@@ -20,7 +20,6 @@ export const SITE_NAME = 'Vibrum Guitars';
 // Home page meta description and the fallback for any page without its own.
 // Kept under 160 characters so search results show it whole.
 export const SITE_DESCRIPTION =
-  'Handcrafted acoustic and electric guitars, built one at a time in Belgrade, Serbia. ' +
   'Explore the instruments, read the build stories or commission your own.';
 
 // Link-preview image for pages without a photo of their own (1200 × 630,
