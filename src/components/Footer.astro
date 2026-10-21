@@ -1,4 +1,8 @@
 ---
+// Build year, so the page is right without JavaScript; the script at the
+// bottom then refreshes every [data-current-year] on the page (here and in
+// the mobile menu) from the visitor's clock, so no rebuild is needed in
+// January. (Not `data-year`: GuitarModalData uses that for a guitar's year.)
 const year = new Date().getFullYear();
 ---
 
@@ -25,9 +29,16 @@ const year = new Date().getFullYear();
         </svg>
       </a>
     </div>
-    <p class="footer-copy">&copy; {year} Vibrum Guitars</p>
+    <p class="footer-copy">&copy; <span data-current-year>{year}</span> Vibrum Guitars</p>
   </div>
 </footer>
+
+<script>
+  const currentYear = String(new Date().getFullYear());
+  document.querySelectorAll('[data-current-year]').forEach(el => {
+    el.textContent = currentYear;
+  });
+</script>
 
 <style>
   .footer {

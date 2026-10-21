@@ -1,7 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 
-const slideEntries = (await getCollection('slides')).sort((a, b) => a.id.localeCompare(b.id));
+// Numeric order, so slide-10 follows slide-9 rather than slide-1.
+const slideEntries = (await getCollection('slides')).sort((a, b) =>
+  a.id.localeCompare(b.id, undefined, { numeric: true })
+);
 const slides = slideEntries.map(e => e.data);
 ---
 
@@ -31,8 +34,8 @@ const slides = slideEntries.map(e => e.data);
         One at a time, by hand, for players who know what they want to feel.
       </p>
       <div class="hero-ctas">
-        <a href="/gallery" class="hero-cta hero-cta--primary">Explore guitars</a>
-        <a href="/contact" class="hero-cta hero-cta--ghost">Get in touch</a>
+        <a href="/gallery/" class="hero-cta hero-cta--primary">Explore guitars</a>
+        <a href="/contact/" class="hero-cta hero-cta--ghost">Get in touch</a>
       </div>
     </div>
 

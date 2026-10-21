@@ -60,7 +60,7 @@ const description =
             </div>
             <button type="submit" class="cta-btn">Send message</button>
             <p class="form-consent">
-              By sending, you agree to the <a href="/privacy">privacy policy</a>
+              By sending, you agree to the <a href="/privacy/">privacy policy</a>
             </p>
           </form>
 
@@ -695,8 +695,17 @@ const description =
       padding-top: var(--space-md);
     }
 
+    /* The form card runs the full container width so the fields get all the
+       room a phone has. The 1.5rem inset moves onto the card's own padding
+       and onto the text around it, so the field edges, the "Send message"
+       label and the contact details all share one left edge with the header. */
     .page-header,
-    .contact-body {
+    .contact-form-col > .eyebrow,
+    .info-block {
+      padding-inline: 1.5rem;
+    }
+
+    .contact-cta-card {
       padding-inline: 1.5rem;
     }
 

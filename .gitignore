@@ -8,3 +8,6 @@ dist
 
 # Unoptimized source images, kept locally as backups of what ships in public/
 originals
+
+# Astro's generated types and content cache
+.astro

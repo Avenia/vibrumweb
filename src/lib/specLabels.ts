@@ -1,6 +1,6 @@
 // Display labels for the `specs` frontmatter in the guitars collection.
 // Shared by every place that renders a spec table, so a new field in
-// src/content/config.ts only needs a label added here.
+// src/content.config.ts only needs a label added here.
 
 // Instrument types from the `type` frontmatter field, as shown to people
 // (story page, image alt text) and to search engines (Product category).

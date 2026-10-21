@@ -115,7 +115,9 @@ const schemas = [organization, ...(Array.isArray(schema) ? schema : [schema])];
       <script is:inline type="application/ld+json" set:html={jsonLd(record)} />
     ))}
 
-    <!-- Favicons -->
+    <!-- Favicons. /favicon.ico is also what browsers and crawlers request
+         unprompted, so it exists at the root (16 + 32 + 48 px). -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon/favicon-48.png" />

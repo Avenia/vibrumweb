@@ -1,6 +1,6 @@
 ---
 title: "Three Angles, One Triangle"
-date: 2024-11-01
+date: 2025-11-01
 coverImage: "/images/stories/story-002/photo-0.webp"
 category: story
 excerpt: "Three of us, three triangles, one mark. Where the Vibrum name and logo come from, and what they say about how we build."

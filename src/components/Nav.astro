@@ -1,11 +1,15 @@
 ---
 const pathname = Astro.url.pathname;
+// Build year; Footer's script refreshes every [data-current-year] from the visitor's clock.
+const year = new Date().getFullYear();
 
+// Trailing slashes: the pages are built as folders, and GitHub Pages
+// redirects /gallery to /gallery/ — linking the final form skips that hop.
 const links = [
-  { href: '/',        label: 'Home' },
-  { href: '/gallery', label: 'Gallery' },
-  { href: '/about',   label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/',         label: 'Home' },
+  { href: '/gallery/', label: 'Gallery' },
+  { href: '/about/',   label: 'About' },
+  { href: '/contact/', label: 'Contact' },
 ];
 
 function isActive(href: string): boolean {
@@ -50,7 +54,7 @@ function isActive(href: string): boolean {
     ))}
   </ul>
 
-  <p class="mobile-menu-copyright">&copy; 2026 Vibrum Guitars</p>
+  <p class="mobile-menu-copyright">&copy; <span data-current-year>{year}</span> Vibrum Guitars</p>
 </div>
 
 <style>

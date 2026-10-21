@@ -48,10 +48,10 @@ const guitars = (await getCollection('guitars'))
       <div class="bench-feature-inner container">
         <p class="eyebrow">From the bench</p>
         <h2 class="bench-feature-title">
-          <a href={`/stories/${featured.id}`}>{featured.data.title}</a>
+          <a href={`/stories/${featured.id}/`}>{featured.data.title}</a>
         </h2>
         <p class="bench-feature-excerpt">{featured.data.excerpt}</p>
-        <a class="bench-feature-link" href={`/stories/${featured.id}`}>Read the story</a>
+        <a class="bench-feature-link" href={`/stories/${featured.id}/`}>Read the story</a>
       </div>
     </section>
   )}
@@ -125,7 +125,7 @@ const guitars = (await getCollection('guitars'))
         ) : (
           <div class="empty-state">
             <p>Stories coming soon. Check back after the first build.</p>
-            <a href="/gallery" class="empty-cta">Browse the gallery</a>
+            <a href="/gallery/" class="empty-cta">Browse the gallery</a>
           </div>
         )}
       </div>
