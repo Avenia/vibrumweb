@@ -9,7 +9,7 @@ draft: false
 
 There are three of us at Vibrum Guitars. Before the workshop had a guitar to show, it needed a name and a mark to put on the headstock. Both came from the same place: the way the three of us work.
 
-![The Vibrum mark: three triangles that make one, over the name](/images/stories/story-002/photo-2.webp)
+![The Vibrum mark: three triangles that make one, over the name](/images/stories/story-002/photo-2_v2.webp)
 
 The mark is one triangle made of three. Each of us looks at an instrument from a different angle. Each of us has a third of the work that no one else in the workshop does better. Any two of us could build a guitar without the third. It just would not be as good. Put the three thirds together and you get a whole.
 
