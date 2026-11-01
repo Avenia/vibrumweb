@@ -2,11 +2,24 @@
 // Shared guitar detail modal — open via window.openGuitarModal(cardEl)
 // cardEl must contain a <template class="modal-data"> with data-title, data-year,
 // data-images (JSON), and .modal-specs / .modal-prose children.
+import { langFromUrl, localizePath, useTranslations } from '../i18n';
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<div class="modal-backdrop" id="guitar-modal-backdrop" aria-hidden="true">
+<!-- data-label-*: the words the script below writes into the modal, in the
+     page's language -->
+<div
+  class="modal-backdrop"
+  id="guitar-modal-backdrop"
+  aria-hidden="true"
+  data-label-description={t.modal.description}
+  data-label-specs={t.modal.specifications}
+  data-label-photo={t.modal.photo}
+>
   <div class="modal-shell" role="dialog" aria-modal="true" aria-labelledby="guitar-modal-title">
-    <button class="modal-close" id="guitar-modal-close" aria-label="Close">
+    <button class="modal-close" id="guitar-modal-close" aria-label={t.modal.close}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="modal">
@@ -14,10 +27,10 @@
     <div class="modal-photos">
       <div class="modal-photo-stage">
         <img class="modal-photo-img" id="guitar-modal-photo-img" src="" alt="" />
-        <button class="modal-nav modal-nav--prev" id="guitar-modal-prev" aria-label="Previous photo">
+        <button class="modal-nav modal-nav--prev" id="guitar-modal-prev" aria-label={t.modal.prevPhoto}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="modal-nav modal-nav--next" id="guitar-modal-next" aria-label="Next photo">
+        <button class="modal-nav modal-nav--next" id="guitar-modal-next" aria-label={t.modal.nextPhoto}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
@@ -35,7 +48,7 @@
            from the data block's data-url; hidden when the modal was opened
            from that very page -->
       <div class="modal-info-footer" id="guitar-modal-footer" hidden>
-        <a class="modal-page-link" id="guitar-modal-page" href="/gallery/">View more</a>
+        <a class="modal-page-link" id="guitar-modal-page" href={localizePath('/gallery/', lang)}>{t.modal.viewMore}</a>
       </div>
     </div>
 
@@ -542,6 +555,7 @@
 
   const backdrop  = document.getElementById('guitar-modal-backdrop')!;
   document.body.appendChild(backdrop);
+  const labels = backdrop.dataset;
 
   let imgEl        = document.getElementById('guitar-modal-photo-img') as HTMLImageElement;
   const counterEl = document.getElementById('guitar-modal-counter')!;
@@ -727,8 +741,8 @@
       return det;
     }
 
-    infoBody.appendChild(makeSection('Description', data.querySelector('.modal-prose')!.cloneNode(true)));
-    infoBody.appendChild(makeSection('Specifications', data.querySelector('.modal-specs')!.cloneNode(true)));
+    infoBody.appendChild(makeSection(labels.labelDescription ?? '', data.querySelector('.modal-prose')!.cloneNode(true)));
+    infoBody.appendChild(makeSection(labels.labelSpecs ?? '', data.querySelector('.modal-specs')!.cloneNode(true)));
 
     backdrop.setAttribute('aria-hidden', 'false');
     backdrop.classList.add('modal-backdrop--open');
@@ -762,7 +776,7 @@
         btn.style.flexShrink = '0';
         btn.style.display = 'inline-block';
         btn.style.verticalAlign = 'top';
-        btn.setAttribute('aria-label', `Photo ${i + 1}`);
+        btn.setAttribute('aria-label', (labels.labelPhoto ?? '').replace('{n}', String(i + 1)));
         const img = document.createElement('img');
         // Thumbs render at ~64px (desktop) / ~29px (mobile), so serve the 200px
         // variant from the folder's thumbs/ subdir instead of the 1800px original.

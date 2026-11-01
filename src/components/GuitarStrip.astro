@@ -2,22 +2,25 @@
 import type { CollectionEntry } from 'astro:content';
 import GuitarModal from './GuitarModal.astro';
 import GuitarModalData from './GuitarModalData.astro';
-import { typeLabels } from '../lib/specLabels';
+import { guitarKind } from '../lib/specLabels';
 import { guitarModalHash } from '../lib/seo';
+import { langFromUrl, localizePath, useTranslations } from '../i18n';
 
 interface Props {
+  /** In the page's language (src/i18n/content.ts). */
   guitars: CollectionEntry<'guitars'>[];
 }
 
 const { guitars } = Astro.props;
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Same alt text recipe as GuitarCard, so a photo reads the same wherever it shows.
-const altFor = (g: CollectionEntry<'guitars'>) =>
-  `${g.data.title} — handcrafted ${(typeLabels[g.data.type] ?? g.data.type).toLowerCase()} guitar by Vibrum Guitars`;
+const altFor = (g: CollectionEntry<'guitars'>) => t.guitar.alt(g.data.title, guitarKind(g.data.type, lang));
 ---
 
 <div class="guitar-strip-wrap">
-  <button class="strip-arrow strip-prev" aria-label="Previous guitars">&#8592;</button>
+  <button class="strip-arrow strip-prev" aria-label={t.guitar.stripPrev}>&#8592;</button>
   <div class="guitar-strip" id="guitar-strip">
     <!-- Each card links to its quick view (#guitar-<id>): a plain click opens
          the modal here, a middle-click or Cmd/Ctrl-click opens a new tab on
@@ -34,11 +37,11 @@ const altFor = (g: CollectionEntry<'guitars'>) =>
         <GuitarModalData guitar={g} />
       </a>
     ))}
-    <a href="/gallery/" class="strip-card--view-all" aria-label="View all guitars">
-      <span class="strip-view-all-label">View All<br />Guitars</span>
+    <a href={localizePath('/gallery/', lang)} class="strip-card--view-all" aria-label={t.guitar.viewAllLabel}>
+      <span class="strip-view-all-label">{t.guitar.viewAll[0]}<br />{t.guitar.viewAll[1]}</span>
     </a>
   </div>
-  <button class="strip-arrow strip-next" aria-label="Next guitars">&#8594;</button>
+  <button class="strip-arrow strip-next" aria-label={t.guitar.stripNext}>&#8594;</button>
 </div>
 
 <GuitarModal />

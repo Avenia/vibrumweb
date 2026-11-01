@@ -5,7 +5,7 @@ description: Write, restructure or polish a workshop story for the Vibrum Guitar
 
 # New workshop story
 
-Stories are Markdown files in `src/content/stories/`, rendered by `src/pages/stories/[slug].astro` with the schema in `src/content.config.ts`. This skill captures how the Pyrocaster story (`story-003.md`) was written and laid out, so the next one matches it without rediscovering the rules. Read that story once before writing a new one to pick up the register.
+Stories are Markdown files in `src/content/stories/`, each with a Serbian version of the same name in `src/content/sr/stories/`, rendered by `src/pages/[...lang]/stories/[slug].astro` (at `/stories/story-NNN/` and `/sr/stories/story-NNN/`) with the schema in `src/content.config.ts`. This skill captures how the Pyrocaster story (`story-003.md`) was written and laid out, so the next one matches it without rediscovering the rules. Read that story once before writing a new one to pick up the register.
 
 ## Collect before writing
 
@@ -47,7 +47,7 @@ draft: false
 
 ## Writing the body
 
-Voice: first person plural, the workshop speaking. Short declarative sentences, concrete details, no marketing filler. English, whatever language the notes came in.
+Voice: first person plural, the workshop speaking. Short declarative sentences, concrete details, no marketing filler. English first, whatever language the notes came in; the Serbian version follows (below).
 
 Structure the body with `##` headings in build order. The Pyrocaster story uses: The idea, From pixels to millimetres, Wood and routing, The neck and fingerboard, Small things, Finish, Strings on. Adapt the set to the build and merge any section that would be thin.
 
@@ -71,18 +71,38 @@ Rules the user has settled on:
 - Keep photos in build order and use every photo in the folder unless told otherwise.
 - The first photo is usually the render or the starting point, on its own.
 
+## Serbian version
+
+Once the English story is settled, write `src/content/sr/stories/story-NNN.md` with the same file name. It carries only `title`, `excerpt` and the body; date, cover, category, `guitar` and `draft` come from the English file.
+
+```yaml
+---
+title: "Pyrocaster: od rendera do stvarnosti"
+excerpt: "Pod 160 znakova, kao i engleski."
+---
+```
+
+- Serbian in Latin script, same voice: first person plural, short sentences. When the notes came in Serbian, draw on their wording rather than translating the English back.
+- Keep the same `##` sections and the same image lines in the same rows (same blank lines), with the captions translated. Only the words change.
+- Workshop terms the site already uses: prstnica (fingerboard), gornji/donji prag (nut/saddle), kobilica (bridge), mašinice (tuners), magneti (pickups), menzura (scale length), dno i stranice (back and sides), plamenasti javor (flamed maple), ebanovina (ebony), sedef (mother of pearl), kvrga (burl), abonos (bog oak). Decimal commas: 25,5 inča.
+- A link to a guitar page points at its Serbian page: `/sr/guitars/<slug>/`.
+
+Without this file the Serbian pages show the English story, and the build prints `[i18n] src/content/sr/stories/story-NNN.md is missing`.
+
 ## Verify
 
-Run `npm run build`, then check three things:
+Run `npm run build`, then check four things:
 
-1. The build prints no schema error and no `Entry guitars → ... was not found` warning for this story.
-2. The photo layout is as planned. This prints each row and single, with dimensions, and fails if a portrait stands alone:
+1. The build prints no schema error, no `Entry guitars → ... was not found` warning and no `[i18n]` warning for this story.
+2. The photo layout is as planned, in both languages. This prints each row and single, with dimensions, and fails if a portrait stands alone:
 
    ```
    node .claude/skills/new-story/scripts/photo-sizes.mjs --check dist/stories/story-NNN/index.html
+   node .claude/skills/new-story/scripts/photo-sizes.mjs --check dist/sr/stories/story-NNN/index.html
    ```
 
-3. The home page features the story if it carries the highest number: its title appears in the From the bench section of `dist/index.html`.
+3. The home page features the story if it carries the highest number: its title appears in the From the bench section of `dist/index.html`, and the Serbian title in `dist/sr/index.html`.
+4. The two row listings from step 2 match line for line.
 
 A running `astro dev` server does not always pick up new or renamed content files, especially after a build has run alongside it. Suggest restarting it before judging the result in the browser.
 

@@ -15,7 +15,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/700.css';
 
 import { imageSize } from '../lib/imageSize';
-import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, jsonLd, organization } from '../lib/seo';
+import { DEFAULT_OG_IMAGE, SITE_NAME, jsonLd, organization } from '../lib/seo';
+import { DEFAULT_LANG, LANGS, langFromUrl, translatePath, useTranslations } from '../i18n';
 import { PREVIEW_SUFFIX } from '../integrations/ogPreviewImages';
 
 export interface Props {
@@ -33,9 +34,12 @@ export interface Props {
   schema?: object | object[];
 }
 
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const {
   title,
-  description = SITE_DESCRIPTION,
+  description = t.site.description,
   ogImage = DEFAULT_OG_IMAGE,
   ogImageAlt = ogImage === DEFAULT_OG_IMAGE ? `${SITE_NAME} logo` : title,
   ogType = 'website',
@@ -45,6 +49,19 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// The same page in every language, for search engines (hreflang). English is
+// also the default for visitors whose language is neither. Pages kept out of
+// search results get none.
+const alternates = noindex
+  ? []
+  : [
+      ...LANGS.map(l => ({
+        hreflang: useTranslations(l).meta.hreflang,
+        href: new URL(translatePath(Astro.url.pathname, l), Astro.site),
+      })),
+      { hreflang: 'x-default', href: new URL(translatePath(Astro.url.pathname, DEFAULT_LANG), Astro.site) },
+    ];
 
 // A photo (WebP or JPEG) is referenced as its 1200 × 630 JPEG preview card,
 // which src/integrations/ogPreviewImages.ts renders into dist/ after the
@@ -57,11 +74,11 @@ const ogImageURL = new URL(ogImagePath, Astro.site);
 const ogImageSize = isPhoto ? { width: 1200, height: 630 } : imageSize(ogImage);
 const ogImageType = ogImagePath.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
 
-const schemas = [organization, ...(Array.isArray(schema) ? schema : [schema])];
+const schemas = [organization(lang), ...(Array.isArray(schema) ? schema : [schema])];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={t.meta.htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -86,10 +103,14 @@ const schemas = [organization, ...(Array.isArray(schema) ? schema : [schema])];
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonicalURL} />
+    {alternates.map(a => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    {LANGS.filter(l => l !== lang).map(l => (
+      <meta property="og:locale:alternate" content={useTranslations(l).meta.ogLocale} />
+    ))}
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />

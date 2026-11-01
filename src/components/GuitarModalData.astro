@@ -7,19 +7,23 @@
  * trigger: gallery cards, the home strip, story asides, the guitar page.
  */
 import { render, type CollectionEntry } from 'astro:content';
-import { sectionLabels, fieldLabels, typeLabels } from '../lib/specLabels';
+import { specLabels } from '../lib/specLabels';
 import { guitarPath } from '../lib/seo';
+import { langFromUrl } from '../i18n';
 
 interface Props {
+  /** In the page's language (src/i18n/content.ts). */
   guitar: CollectionEntry<'guitars'>;
 }
 
 const { guitar } = Astro.props;
+const lang = langFromUrl(Astro.url);
+const { sectionLabels, fieldLabels, typeLabels } = specLabels(lang);
 const { Content } = await render(guitar);
 const images = [guitar.data.coverImage, ...guitar.data.images];
 ---
 
-<template class="modal-data" data-slug={guitar.id} data-url={guitarPath(guitar.id)}>
+<template class="modal-data" data-slug={guitar.id} data-url={guitarPath(guitar.id, lang)}>
   <div
     data-title={guitar.data.title}
     data-year={guitar.data.year}

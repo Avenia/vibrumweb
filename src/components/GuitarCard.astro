@@ -1,5 +1,6 @@
 ---
-import { typeLabels } from '../lib/specLabels';
+import { guitarKind } from '../lib/specLabels';
+import { langFromUrl, useTranslations } from '../i18n';
 
 interface Props {
   title: string;
@@ -14,10 +15,10 @@ interface Props {
 }
 
 const { title, type, year, coverImage, href, quickViewHref } = Astro.props;
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 
-// "Pyrocaster — handcrafted electric guitar by Vibrum Guitars": what image
-// search and screen readers get instead of the bare name.
-const alt = `${title} — handcrafted ${(typeLabels[type] ?? type).toLowerCase()} guitar by Vibrum Guitars`;
+const alt = t.guitar.alt(title, guitarKind(type, lang));
 ---
 
 <!-- The card links to its quick view (#guitar-<id>): a plain click opens the
@@ -35,7 +36,7 @@ const alt = `${title} — handcrafted ${(typeLabels[type] ?? type).toLowerCase()
       <p class="guitar-card-meta">{year}</p>
     </div>
   </a>
-  <a class="guitar-card-link" href={href} aria-label={`${title}: full page`}>Details</a>
+  <a class="guitar-card-link" href={href} aria-label={t.guitar.fullPage(title)}>{t.guitar.details}</a>
 </div>
 
 <style>

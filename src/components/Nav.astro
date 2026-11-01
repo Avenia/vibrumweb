@@ -1,4 +1,9 @@
 ---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { langFromUrl, localizePath, useTranslations } from '../i18n';
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 const pathname = Astro.url.pathname;
 // Build year; Footer's script refreshes every [data-current-year] from the visitor's clock.
 const year = new Date().getFullYear();
@@ -6,21 +11,21 @@ const year = new Date().getFullYear();
 // Trailing slashes: the pages are built as folders, and GitHub Pages
 // redirects /gallery to /gallery/ — linking the final form skips that hop.
 const links = [
-  { href: '/',         label: 'Home' },
-  { href: '/gallery/', label: 'Gallery' },
-  { href: '/about/',   label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: localizePath('/', lang),         label: t.nav.home },
+  { href: localizePath('/gallery/', lang), label: t.nav.gallery },
+  { href: localizePath('/about/', lang),   label: t.nav.about },
+  { href: localizePath('/contact/', lang), label: t.nav.contact },
 ];
 
 function isActive(href: string): boolean {
-  if (href === '/') return pathname === '/';
+  if (href === localizePath('/', lang)) return pathname === href;
   return pathname.startsWith(href);
 }
 ---
 
 <nav class="nav">
   <div class="nav-inner container">
-    <a href="/" class="nav-logo" aria-label="Home">VIBRUM</a>
+    <a href={localizePath('/', lang)} class="nav-logo" aria-label={t.nav.home}>VIBRUM</a>
 
     <ul class="nav-links" role="list">
       {links.map(({ href, label }) => (
@@ -32,18 +37,24 @@ function isActive(href: string): boolean {
       ))}
     </ul>
 
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-      <span class="nav-toggle-bar"></span>
-      <span class="nav-toggle-bar"></span>
-      <span class="nav-toggle-bar"></span>
-    </button>
+    <!-- Desktop: the language switcher right of the links. Phones: the links
+         move into the drawer, the switcher stays here, left of the toggle. -->
+    <div class="nav-actions">
+      <LanguageSwitcher />
+
+      <button class="nav-toggle" aria-label={t.nav.toggle} aria-expanded="false" aria-controls="mobile-menu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+    </div>
   </div>
 
   <div class="nav-accent-rule"></div>
 </nav>
 
 <!-- Drawer -->
-<div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Navigation">
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label={t.nav.drawer}>
   <ul role="list">
     {links.map(({ href, label }) => (
       <li>
@@ -92,6 +103,16 @@ function isActive(href: string): boolean {
     display: flex;
     gap: var(--space-md);
     align-items: center;
+    /* Takes the free space, so the links sit at the right with the language
+       switcher after them rather than in the middle of the bar. */
+    margin-left: auto;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-left: var(--space-md);
   }
 
   .nav-link {
@@ -228,6 +249,10 @@ function isActive(href: string): boolean {
   @media (max-width: 640px) {
     .nav-links {
       display: none;
+    }
+
+    .nav-actions {
+      margin-left: auto;
     }
 
     .nav-toggle {

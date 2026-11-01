@@ -1,11 +1,37 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import PageLogoBg from '../components/PageLogoBg.astro';
+import { localizePath, useTranslations } from '../i18n';
+
+const en = useTranslations('en');
+const sr = useTranslations('sr');
+
+// GitHub Pages serves this one file for every missing address, Serbian ones
+// included, so it is built in English and the script below switches it to
+// Serbian when the address starts with /sr/: the text here, the nav, the
+// footer and the language switcher. Inline and right after the text, so it
+// runs before the first paint and no English flashes by.
+const serbian = {
+  htmlLang: sr.meta.htmlLang,
+  title: sr.notFound.title,
+  // Nav links and the logo, by their English href
+  links: {
+    [localizePath('/', 'en')]: { href: localizePath('/', 'sr'), label: sr.nav.home },
+    [localizePath('/gallery/', 'en')]: { href: localizePath('/gallery/', 'sr'), label: sr.nav.gallery },
+    [localizePath('/about/', 'en')]: { href: localizePath('/about/', 'sr'), label: sr.nav.about },
+    [localizePath('/contact/', 'en')]: { href: localizePath('/contact/', 'sr'), label: sr.nav.contact },
+  },
+  toggle: sr.nav.toggle,
+  drawer: sr.nav.drawer,
+  email: sr.footer.email,
+  language: `${sr.nav.language}: ${sr.meta.name}`,
+  code: sr.meta.code,
+};
 ---
 
 <PageLayout
-  title="Vibrum | Page not found"
-  description="This page doesn't exist. Head back to the Vibrum workshop."
+  title={en.notFound.title}
+  description={en.notFound.description}
   noindex
 >
   <PageLogoBg />
@@ -13,15 +39,61 @@ import PageLogoBg from '../components/PageLogoBg.astro';
   <section class="nf">
     <div class="nf-inner container">
       <!-- <p class="nf-eyebrow">404 — Page not found</p> -->
-      <p class="nf-lead">
-        The page doesn't exist.
+      <p class="nf-lead" data-sr={sr.notFound.lead}>
+        {en.notFound.lead}
       </p>
       <div class="nf-ctas">
-        <a href="/" class="nf-cta nf-cta--primary">Back to home</a>
-        <a href="/gallery/" class="nf-cta nf-cta--ghost">Browse the guitars</a>
+        <a href={localizePath('/', 'en')} class="nf-cta nf-cta--primary" data-sr={sr.notFound.home} data-sr-href={localizePath('/', 'sr')}>{en.notFound.home}</a>
+        <a href={localizePath('/gallery/', 'en')} class="nf-cta nf-cta--ghost" data-sr={sr.notFound.guitars} data-sr-href={localizePath('/gallery/', 'sr')}>{en.notFound.guitars}</a>
       </div>
     </div>
   </section>
+
+  <script is:inline define:vars={{ sr: serbian }}>
+    if (/^\/sr(\/|$)/.test(location.pathname)) {
+      document.documentElement.lang = sr.htmlLang;
+      document.title = sr.title;
+
+      document.querySelectorAll('[data-sr]').forEach(el => {
+        el.textContent = el.dataset.sr;
+        if (el.dataset.srHref) el.setAttribute('href', el.dataset.srHref);
+      });
+
+      document.querySelectorAll('.nav-link, .mobile-menu-link').forEach(a => {
+        const link = sr.links[a.getAttribute('href')];
+        if (link) {
+          a.textContent = link.label;
+          a.setAttribute('href', link.href);
+        }
+      });
+      const logo = document.querySelector('.nav-logo');
+      logo?.setAttribute('href', sr.links['/'].href);
+      logo?.setAttribute('aria-label', sr.links['/'].label);
+      document.querySelector('.nav-toggle')?.setAttribute('aria-label', sr.toggle);
+      document.getElementById('mobile-menu')?.setAttribute('aria-label', sr.drawer);
+
+      // The switcher was built showing English: show Serbian as the current one.
+      const switcher = document.querySelector('.lang');
+      const toggle = switcher?.querySelector('.lang-toggle');
+      const srOption = switcher?.querySelector('.lang-option[data-lang="sr"]');
+      if (switcher && toggle && srOption) {
+        toggle.querySelector('.flag').replaceWith(srOption.querySelector('.flag').cloneNode(true));
+        toggle.querySelector('.lang-code').textContent = sr.code;
+        toggle.setAttribute('aria-label', sr.language);
+        switcher.querySelectorAll('.lang-option').forEach(option => {
+          const current = option === srOption;
+          option.classList.toggle('lang-option--current', current);
+          if (current) option.setAttribute('aria-current', 'true');
+          else option.removeAttribute('aria-current');
+        });
+      }
+
+      // The footer comes after this script.
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.footer a[href^="mailto:"]')?.setAttribute('aria-label', sr.email);
+      });
+    }
+  </script>
 </PageLayout>
 
 <style>

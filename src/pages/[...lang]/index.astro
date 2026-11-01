@@ -1,14 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
-import PageLayout from '../layouts/PageLayout.astro';
-import HeroShow from '../components/HeroShow.astro';
-import GuitarStrip from '../components/GuitarStrip.astro';
-import PageLogoBg from '../components/PageLogoBg.astro';
-import WorkshopStoryCard from '../components/WorkshopStoryCard.astro';
-import BenchLetter from '../components/BenchLetter.astro';
-import { background } from '../lib/backgrounds';
-import { newestFirst } from '../lib/guitarOrder';
-import { SITE_DESCRIPTION, website } from '../lib/seo';
+import PageLayout from '../../layouts/PageLayout.astro';
+import HeroShow from '../../components/HeroShow.astro';
+import GuitarStrip from '../../components/GuitarStrip.astro';
+import PageLogoBg from '../../components/PageLogoBg.astro';
+import WorkshopStoryCard from '../../components/WorkshopStoryCard.astro';
+import BenchLetter from '../../components/BenchLetter.astro';
+import { background } from '../../lib/backgrounds';
+import { newestFirst } from '../../lib/guitarOrder';
+import { website } from '../../lib/seo';
+import { langFromUrl, langParams, localizePath, useTranslations } from '../../i18n';
+import { getGuitars, getStories } from '../../i18n/content';
+
+export function getStaticPaths() {
+  return langParams().map(params => ({ params }));
+}
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Section background photos — swap by replacing the file in the folder,
 // see README "Section background photos".
@@ -18,24 +26,25 @@ const workshopBg = background('home-workshop');
 
 // Newest story first, by file name (story-003 before story-001), not by the
 // date in the frontmatter: the number in the name is the publishing order.
-const stories = (await getCollection('stories', ({ data }) => !data.draft))
+const stories = (await getStories(lang))
   .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }));
 
 const featured = stories[0];
 const workshopStories = stories.slice(1);
+const featuredHref = featured && localizePath(`/stories/${featured.id}/`, lang);
 
 const WORKSHOP_PAGE_SIZE = 6;        // desktop
 const WORKSHOP_PAGE_SIZE_MOBILE = 4; // ≤639px — applied client-side in the script below
 
-const guitars = (await getCollection('guitars'))
+const guitars = (await getGuitars(lang))
   .sort(newestFirst)
   .slice(0, 6);
 ---
 
 <PageLayout
-  title="Vibrum | Handcrafted Guitars"
-  description={SITE_DESCRIPTION}
-  schema={website}
+  title={t.home.title}
+  description={t.site.description}
+  schema={website(lang)}
 >
   <PageLogoBg reveal />
 
@@ -46,12 +55,12 @@ const guitars = (await getCollection('guitars'))
       <img class="bench-feature-img" src={benchBg} alt="" loading="lazy" />
       <div class="bench-feature-shade" aria-hidden="true"></div>
       <div class="bench-feature-inner container">
-        <p class="eyebrow">From the bench</p>
+        <p class="eyebrow">{t.home.fromTheBench}</p>
         <h2 class="bench-feature-title">
-          <a href={`/stories/${featured.id}/`}>{featured.data.title}</a>
+          <a href={featuredHref}>{featured.data.title}</a>
         </h2>
         <p class="bench-feature-excerpt">{featured.data.excerpt}</p>
-        <a class="bench-feature-link" href={`/stories/${featured.id}/`}>Read the story</a>
+        <a class="bench-feature-link" href={featuredHref}>{t.home.readStory}</a>
       </div>
     </section>
   )}
@@ -67,7 +76,7 @@ const guitars = (await getCollection('guitars'))
       <div class="guitar-band-shade" aria-hidden="true"></div>
       <div class="guitar-band-inner container section">
         <div class="section-header">
-          <h2 class="section-heading">Recent guitars</h2>
+          <h2 class="section-heading">{t.home.recentGuitars}</h2>
         </div>
 
         <GuitarStrip guitars={guitars} />
@@ -86,7 +95,7 @@ const guitars = (await getCollection('guitars'))
       <div class="workshop-band-shade" aria-hidden="true"></div>
       <div class="container section workshop-section workshop-band-inner">
         <div class="section-header">
-          <h2 class="section-heading">More from the workshop</h2>
+          <h2 class="section-heading">{t.home.moreFromWorkshop}</h2>
         </div>
 
         {workshopStories.length > 0 ? (
@@ -110,22 +119,22 @@ const guitars = (await getCollection('guitars'))
               ))}
             </div>
             {workshopStories.length > WORKSHOP_PAGE_SIZE_MOBILE && (
-              <div class="workshop-dots" role="group" aria-label="Story pages"></div>
+              <div class="workshop-dots" role="group" aria-label={t.home.storyPages} data-dot-label={t.home.storyPageDot}></div>
             )}
             {workshopStories.length > WORKSHOP_PAGE_SIZE_MOBILE && (
               <div class="workshop-nav workshop-nav--bottom">
-                <button class="workshop-arrow ws-prev" aria-label="Previous stories" disabled>&#8592;</button>
+                <button class="workshop-arrow ws-prev" aria-label={t.home.prevStories} disabled>&#8592;</button>
                 <span class="workshop-page ws-page" aria-live="polite">
                   1 / {Math.ceil(workshopStories.length / WORKSHOP_PAGE_SIZE)}
                 </span>
-                <button class="workshop-arrow ws-next" aria-label="More stories">&#8594;</button>
+                <button class="workshop-arrow ws-next" aria-label={t.home.nextStories}>&#8594;</button>
               </div>
             )}
           </>
         ) : (
           <div class="empty-state">
-            <p>Stories coming soon. Check back after the first build.</p>
-            <a href="/gallery/" class="empty-cta">Browse the gallery</a>
+            <p>{t.home.empty}</p>
+            <a href={localizePath('/gallery/', lang)} class="empty-cta">{t.home.browseGallery}</a>
           </div>
         )}
       </div>
@@ -636,7 +645,7 @@ const guitars = (await getCollection('guitars'))
       for (let i = 0; i < pageCount; i++) {
         const dot = document.createElement('button');
         dot.className = 'workshop-dot';
-        dot.setAttribute('aria-label', `Go to stories page ${i + 1}`);
+        dot.setAttribute('aria-label', (dotsWrap.dataset.dotLabel ?? '').replace('{n}', String(i + 1)));
         dot.addEventListener('click', () => goToPage(i, true));
         dotsWrap.appendChild(dot);
       }

@@ -1,5 +1,6 @@
 ---
-import { sectionLabels, fieldLabels } from '../lib/specLabels';
+import { specLabels } from '../lib/specLabels';
+import { langFromUrl } from '../i18n';
 
 type SpecValue = string | number | undefined;
 type SpecSection = Record<string, SpecValue>;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const { specs } = Astro.props;
-
+const { sectionLabels, fieldLabels } = specLabels(langFromUrl(Astro.url));
 ---
 
 {specs && (

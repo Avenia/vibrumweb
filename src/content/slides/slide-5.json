@@ -2,5 +2,8 @@
   "src": "/images/slideshow/hero-5.webp",
   "caption": "ZORA",
   "detail": "Vibrum's Zero Model",
-  "url": "/gallery/"
+  "url": "/gallery/",
+  "sr": {
+    "detail": "Vibrumov nulti model"
+  }
 }

@@ -1,13 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
-import PageLayout from '../layouts/PageLayout.astro';
-import GuitarCard from '../components/GuitarCard.astro';
-import GuitarModal from '../components/GuitarModal.astro';
-import GuitarModalData from '../components/GuitarModalData.astro';
-import { newestFirst } from '../lib/guitarOrder';
-import { guitarListItem, guitarModalHash, guitarPath, webPage } from '../lib/seo';
+import PageLayout from '../../layouts/PageLayout.astro';
+import GuitarCard from '../../components/GuitarCard.astro';
+import GuitarModal from '../../components/GuitarModal.astro';
+import GuitarModalData from '../../components/GuitarModalData.astro';
+import { newestFirst } from '../../lib/guitarOrder';
+import { guitarListItem, guitarModalHash, guitarPath, webPage } from '../../lib/seo';
+import { langFromUrl, langParams, localizePath, useTranslations } from '../../i18n';
+import { getGuitars } from '../../i18n/content';
 
-const allGuitars = await getCollection('guitars');
+export function getStaticPaths() {
+  return langParams().map(params => ({ params }));
+}
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
+const f = t.gallery.filters;
+
+const allGuitars = await getGuitars(lang);
 const guitars = allGuitars.sort(newestFirst);
 
 // "Pyrocaster, Zora SC and Zora" — the instrument names go into the meta
@@ -15,99 +24,94 @@ const guitars = allGuitars.sort(newestFirst);
 // show about 160 characters; the names come first so they survive the cut
 // as the list grows.
 const names = guitars.map(g => g.data.title);
-const nameList = names.length > 1
-  ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
-  : names.join('');
-const description =
-  `Handcrafted acoustic and electric guitars from the Vibrum workshop in Belgrade: ${nameList}. ` +
-  'Photos, woods and full specs of each instrument.';
+const description = t.gallery.description(t.gallery.nameList(names));
 
 // The list of guitars, each pointing at its own page, which carries the full
 // Product record. (Google's pattern: a summary list here, the details there.)
-const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
+const schema = webPage('CollectionPage', t.gallery.schemaName, '/gallery/', lang, {
   description,
   mainEntity: {
     '@type': 'ItemList',
-    name: 'Guitars built at Vibrum',
+    name: t.gallery.listName,
     numberOfItems: guitars.length,
-    itemListElement: guitars.map((g, i) => guitarListItem(g, i + 1)),
+    itemListElement: guitars.map((g, i) => guitarListItem(g, i + 1, lang)),
   },
 });
 ---
 
 <PageLayout
-  title="Vibrum | Gallery"
+  title={t.gallery.title}
   description={description}
   schema={schema}
 >
   <div class="gallery-layout container">
-    <h1 class="visually-hidden">Guitars handcrafted at the Vibrum workshop</h1>
+    <h1 class="visually-hidden">{t.gallery.heading}</h1>
 
     <!-- Sidebar filters / mobile drawer -->
     <aside class="filters" id="filters">
 
       <!-- Availability filter -->
       <!-- <div class="filter-group">
-        <p class="filter-label">Availability</p>
+        <p class="filter-label">{f.availability}</p>
         <label class="filter-option">
           <input type="checkbox" data-filter="status" value="available" />
-          <span>Available</span>
+          <span>{f.available}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="status" value="sold" />
-          <span>Unavailable</span>
+          <span>{f.unavailable}</span>
         </label>
       </div> -->
 
       <div class="filter-group">
-        <p class="filter-label">Instrument type</p>
+        <p class="filter-label">{f.type}</p>
         <label class="filter-option">
           <input type="checkbox" data-filter="type" value="acoustic" />
-          <span>Acoustic guitar</span>
+          <span>{f.acoustic}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="type" value="electric" />
-          <span>Electric guitar</span>
+          <span>{f.electric}</span>
         </label>
         <!-- <label class="filter-option">
           <input type="checkbox" data-filter="type" value="bass" />
-          <span>Bass guitar</span>
+          <span>{f.bass}</span>
         </label> -->
       </div>
 
       <!-- <div class="filter-group">
-        <p class="filter-label">Number of strings</p>
+        <p class="filter-label">{f.strings}</p>
         <label class="filter-option">
           <input type="checkbox" data-filter="strings" value="4" />
-          <span>4 strings</span>
+          <span>{f.stringCount(4)}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="strings" value="5" />
-          <span>5 strings</span>
+          <span>{f.stringCount(5)}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="strings" value="6" />
-          <span>6 strings</span>
+          <span>{f.stringCount(6)}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="strings" value="7" />
-          <span>7 strings</span>
+          <span>{f.stringCount(7)}</span>
         </label>
       </div>
 
       <div class="filter-group">
-        <p class="filter-label">Electronics</p>
+        <p class="filter-label">{f.electronics}</p>
         <label class="filter-option">
           <input type="checkbox" data-filter="electronics" value="active" />
-          <span>Active</span>
+          <span>{f.active}</span>
         </label>
         <label class="filter-option">
           <input type="checkbox" data-filter="electronics" value="passive" />
-          <span>Passive</span>
+          <span>{f.passive}</span>
         </label>
       </div> -->
 
-      <button class="filters-clear" id="filters-clear" hidden>Clear filters</button>
+      <button class="filters-clear" id="filters-clear" hidden>{f.clear}</button>
 
     </aside>
 
@@ -127,7 +131,7 @@ const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
               type={guitar.data.type}
               year={guitar.data.year}
               coverImage={guitar.data.coverImage}
-              href={guitarPath(guitar.id)}
+              href={guitarPath(guitar.id, lang)}
               quickViewHref={guitarModalHash(guitar.id)}
             />
 
@@ -137,7 +141,7 @@ const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
         ))}
       </div>
 
-      <p class="no-results" id="no-results" aria-live="polite">No guitars match the selected filters.</p>
+      <p class="no-results" id="no-results" aria-live="polite">{t.gallery.noResults}</p>
     </div>
 
   </div>
@@ -145,19 +149,16 @@ const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
   <!-- Commission CTA — closer band -->
   <section class="commission-band">
     <div class="commission-inner container">
-      <p class="eyebrow">Commissions</p>
-      <h2 class="commission-title">Don't see yours? It hasn't been built yet.</h2>
-      <p class="commission-lead">
-        A handful of instruments leave the bench each year, each one built around a player.
-        Tell us what sound you want to hear.
-      </p>
-      <a class="commission-link" href="/contact/">Start the conversation</a>
+      <p class="eyebrow">{t.gallery.commission.eyebrow}</p>
+      <h2 class="commission-title">{t.gallery.commission.title}</h2>
+      <p class="commission-lead">{t.gallery.commission.lead}</p>
+      <a class="commission-link" href={localizePath('/contact/', lang)}>{t.gallery.commission.link}</a>
     </div>
   </section>
 
   <!-- Mobile filter tab (fixed, outside the drawer to avoid overflow clipping) -->
-  <button class="filter-tab" id="filter-tab" aria-label="Open filters" aria-expanded="false">
-    <span class="filter-tab-label">Filters</span>
+  <button class="filter-tab" id="filter-tab" aria-label={f.open} aria-expanded="false">
+    <span class="filter-tab-label">{f.tab}</span>
     <span class="filter-tab-badge" id="filter-tab-badge" hidden>0</span>
   </button>
 
@@ -168,7 +169,7 @@ const schema = webPage('CollectionPage', 'Guitars by Vibrum', '/gallery/', {
 </PageLayout>
 
 <script>
-  import { isPlainClick } from '../lib/plainClick';
+  import { isPlainClick } from '../../lib/plainClick';
 
   // ---- Filters ----
   const checkboxes = document.querySelectorAll<HTMLInputElement>('input[data-filter]');

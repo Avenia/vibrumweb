@@ -1,18 +1,27 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
-import PageLayout from '../../layouts/PageLayout.astro';
-import GuitarModal from '../../components/GuitarModal.astro';
-import GuitarModalData from '../../components/GuitarModalData.astro';
-import { WEBSITE_ID, absoluteUrl, guitarModalHash, guitarUrl, publisherRef } from '../../lib/seo';
+import { getEntry, render } from 'astro:content';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import GuitarModal from '../../../components/GuitarModal.astro';
+import GuitarModalData from '../../../components/GuitarModalData.astro';
+import { WEBSITE_ID, absoluteUrl, guitarModalHash, guitarUrl, publisherRef } from '../../../lib/seo';
+import { LANGS, fullDate, langFromUrl, langParam, localizePath, monthYear, useTranslations } from '../../../i18n';
+import { getStories, localizeGuitar } from '../../../i18n/content';
 
 export async function getStaticPaths() {
-  const stories = await getCollection('stories', ({ data }) => !data.draft);
-  return stories.map(story => ({
-    params: { slug: story.id },
-    props: { story },
-  }));
+  // Every story once per language, each in that language.
+  const pages = await Promise.all(
+    LANGS.map(async lang =>
+      (await getStories(lang)).map(story => ({
+        params: { lang: langParam(lang), slug: story.id },
+        props: { story },
+      }))
+    )
+  );
+  return pages.flat();
 }
 
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 const { story } = Astro.props;
 const { Content } = await render(story);
 
@@ -20,21 +29,17 @@ const { Content } = await render(story);
 // to a list). Ids that match no entry are dropped; Astro warns about them.
 // The modal shows each guitar's own gallery only. Photos placed in the story
 // body (markdown ![alt](src)) stay in the text flow and open in the lightbox.
-const featured = (
-  await Promise.all(story.data.guitar.map(id => getEntry('guitars', id)))
-).filter((g): g is NonNullable<typeof g> => g != null);
+const featured = await Promise.all(
+  (await Promise.all(story.data.guitar.map(id => getEntry('guitars', id))))
+    .filter((g): g is NonNullable<typeof g> => g != null)
+    .map(g => localizeGuitar(g, lang))
+);
 
-const formattedDate = story.data.date.toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
+const formattedDate = fullDate(story.data.date, lang);
 
 // Card-style mono meta: "SEPTEMBER 2025 · BUILD DIARY"
-const metaDate = story.data.date
-  .toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
-  .toUpperCase();
-const categoryName = story.data.category.replace(/-/g, ' ');
+const metaDate = monthYear(story.data.date, lang);
+const categoryName = t.story.categories[story.data.category];
 const categoryLabel = categoryName.toUpperCase();
 
 // The story as a schema.org BlogPosting. Photos are the cover plus every
@@ -52,16 +57,16 @@ const schema = {
   dateModified: isoDate,
   author: publisherRef,
   publisher: publisherRef,
-  mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(`/stories/${story.id}/`) },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(localizePath(`/stories/${story.id}/`, lang)) },
   isPartOf: { '@id': WEBSITE_ID },
-  articleSection: categoryName.replace(/^\w/, c => c.toUpperCase()),
-  inLanguage: 'en',
+  articleSection: categoryName,
+  inLanguage: t.meta.htmlLang,
   ...(featured.length > 0 && {
     about: featured.map(g => ({
       '@type': 'Product',
-      '@id': guitarUrl(g.id),
+      '@id': guitarUrl(g.id, lang),
       name: g.data.title,
-      url: guitarUrl(g.id),
+      url: guitarUrl(g.id, lang),
     })),
   }),
 };
@@ -100,7 +105,7 @@ const schema = {
           <aside class="story-aside">
             <div class="story-guitar-link">
               <p class="story-guitar-label">
-                {featured.length > 1 ? 'Featured instruments' : 'Featured instrument'}
+                {featured.length > 1 ? t.story.featuredMany : t.story.featuredOne}
               </p>
               <!-- Links to the quick view (#guitar-<id>): a plain click opens the
                    modal here, a middle-click or Cmd/Ctrl-click opens a new tab on
@@ -108,7 +113,7 @@ const schema = {
               <div class="story-guitar-btns">
                 {featured.map(g => (
                   <a href={guitarModalHash(g.id)} class="story-guitar-btn" data-guitar={g.id}>
-                    View {g.data.title}
+                    {t.story.view(g.data.title)}
                   </a>
                 ))}
               </div>
@@ -117,20 +122,20 @@ const schema = {
         )}
       </div>
 
-      <a href="/#stories" class="back-link">All stories</a>
+      <a href={`${localizePath('/', lang)}#stories`} class="back-link">{t.story.allStories}</a>
     </div>
   </div>
 
   <!-- Fullscreen viewer for the photos in the story body -->
   <div class="story-lightbox" id="story-lightbox" aria-hidden="true">
-    <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+    <button class="lightbox-close" id="lightbox-close" aria-label={t.modal.close}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    <button class="lightbox-nav lightbox-nav--prev" id="lightbox-prev" aria-label="Previous photo">
+    <button class="lightbox-nav lightbox-nav--prev" id="lightbox-prev" aria-label={t.modal.prevPhoto}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <img class="lightbox-img" id="lightbox-img" src="" alt="" />
-    <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" aria-label="Next photo">
+    <button class="lightbox-nav lightbox-nav--next" id="lightbox-next" aria-label={t.modal.nextPhoto}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
     <div class="lightbox-counter" id="lightbox-counter"></div>
@@ -146,7 +151,7 @@ const schema = {
 </PageLayout>
 
 <script>
-  import { isPlainClick } from '../../lib/plainClick';
+  import { isPlainClick } from '../../../lib/plainClick';
 
   // Each featured-guitar link opens the modal on its own hidden wrapper on a
   // plain click; modified and middle clicks are left to the browser, which

@@ -1,4 +1,6 @@
 ---
+import { langFromUrl, localizePath, monthYear } from '../i18n';
+
 interface Props {
   title: string;
   slug: string;
@@ -8,14 +10,13 @@ interface Props {
 }
 
 const { title, slug, date, coverImage, excerpt } = Astro.props;
+const lang = langFromUrl(Astro.url);
 
 // "SEPTEMBER 2025"
-const formattedDate = date
-  .toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
-  .toUpperCase();
+const formattedDate = monthYear(date, lang);
 ---
 
-<a href={`/stories/${slug}/`} class="workshop-card">
+<a href={localizePath(`/stories/${slug}/`, lang)} class="workshop-card">
   <div class="workshop-card-media">
     <img src={coverImage} alt={title} loading="lazy" />
   </div>

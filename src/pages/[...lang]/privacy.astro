@@ -1,0 +1,123 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageLogoBg from '../../components/PageLogoBg.astro';
+import { CONTACT } from '../../lib/seo';
+import { langFromUrl, langParams, useTranslations } from '../../i18n';
+
+export function getStaticPaths() {
+  return langParams().map(params => ({ params }));
+}
+
+const t = useTranslations(langFromUrl(Astro.url));
+---
+
+<!-- noindex: kept out of search results on purpose — the page exists for
+     people who click the link under a form, not as a landing page. It is
+     left out of the sitemap too (astro.config.mjs). -->
+<PageLayout
+  title={t.privacy.title}
+  description={t.privacy.description}
+  noindex
+>
+  <PageLogoBg />
+
+  <section class="privacy">
+    <div class="privacy-inner container">
+      <header class="privacy-header">
+        <p class="eyebrow">{t.privacy.eyebrow}</p>
+        <h1 class="privacy-title">{t.privacy.heading}</h1>
+        <p class="privacy-lead">{t.privacy.lead}</p>
+      </header>
+
+      <div class="privacy-body">
+        {t.privacy.sections(CONTACT.email).map(section => (
+          <>
+            <h2 class="privacy-h2">{section.heading}</h2>
+            <p set:html={section.body} />
+          </>
+        ))}
+
+        <p class="privacy-updated">{t.privacy.updated}</p>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .privacy {
+    padding-block: var(--space-xl);
+  }
+
+  .privacy-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+  }
+
+  /* Same section-label treatment as everywhere else on the site —
+     see .label-text in about.astro and .eyebrow in index/gallery/contact. */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 18px;
+  }
+
+  .privacy-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.12;
+    color: #EDE7D4;
+    margin: 0 0 16px;
+  }
+
+  .privacy-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 245, 220, 0.62);
+    margin: 0 0 12px;
+  }
+
+  .privacy-header {
+    margin-bottom: var(--space-sm);
+  }
+
+  .privacy-h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: #EDE7D4;
+    margin: 34px 0 10px;
+  }
+
+  .privacy-body p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(255, 245, 220, 0.55);
+    margin: 0 0 14px;
+  }
+
+  /* :global — the links come from the translation strings (set:html), so
+     they carry no scope attribute. */
+  .privacy-body :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .privacy-body :global(a:hover) {
+    opacity: 0.85;
+  }
+
+  .privacy-updated {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(255, 245, 220, 0.35);
+    margin-top: var(--space-lg);
+  }
+</style>

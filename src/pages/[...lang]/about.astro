@@ -1,92 +1,64 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import PageLogoBg from '../components/PageLogoBg.astro';
-import { ORG_ID, webPage } from '../lib/seo';
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageLogoBg from '../../components/PageLogoBg.astro';
+import { ORG_ID, webPage } from '../../lib/seo';
+import { langFromUrl, langParams, useTranslations } from '../../i18n';
 
-const description =
-  'Vibrum is a custom guitar workshop in Belgrade, Serbia, founded by three friends driven by a shared obsession with guitars, wood, and craftsmanship.';
+export function getStaticPaths() {
+  return langParams().map(params => ({ params }));
+}
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
+// The copy lives in src/i18n/en.ts and sr.ts, under `about`.
+const { description } = t.about;
 ---
 
 <PageLayout
-  title="Vibrum | About"
+  title={t.about.title}
   description={description}
-  schema={webPage('AboutPage', 'About Vibrum Guitars', '/about/', { description, about: { '@id': ORG_ID } })}
+  schema={webPage('AboutPage', t.about.schemaName, '/about/', lang, { description, about: { '@id': ORG_ID } })}
 >
   <PageLogoBg />
 
   <div class="container container--reading section">
-    <h1 class="visually-hidden">About Vibrum Guitars</h1>
+    <h1 class="visually-hidden">{t.about.heading}</h1>
 
 <div class="about-grid">
 
       <div class="grid-row story-row">
         <div class="grid-label">
-          <h2 class="label-text">The Story</h2>
+          <h2 class="label-text">{t.about.storyLabel}</h2>
         </div>
         <div class="grid-content prose">
-          <p>
-            Vibrum was founded by three friends brought together by a shared obsession with guitars, wood and craftsmanship.
-          </p>
-          <p>
-            Although the workshop officially began taking shape in 2022, the idea behind it goes back to 2015 — when each of us, independently and in different ways, was already deeply involved with woodworking and music. Some professionally, some as a craft, and some as a passion that never really stopped growing.
-          </p>
-          <p>
-            We are not just builders of instruments — we are players first. Each of us plays guitar or bass. Two of us have shared the stage in a band for many years. Because of that, we understand what musicians need.
-          </p>
-          <p>
-            What connects us is a constant curiosity for sound quality, especially when it comes to guitars. We are also strongly drawn to the art of woodworking itself, which will always remain an essential part of what we do.
-          </p>
+          {t.about.story.map(paragraph => <p>{paragraph}</p>)}
         </div>
       </div>
 
       <div class="grid-row team-row">
         <div class="grid-label">
-          <h2 class="label-text">The Team</h2>
+          <h2 class="label-text">{t.about.teamLabel}</h2>
         </div>
         <div class="grid-content">
           <div class="team-grid">
-            <div class="team-member">
-              <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_01.webp" alt="Portrait of Martin" class="team-photo" width="600" height="1200" decoding="async" />
+            {t.about.team.map((member, i) => (
+              <div class="team-member">
+                <div class="team-photo-wrap">
+                  <img src={`/images/about/ProfilePhoto_0${i + 1}.webp`} alt={member.alt} class="team-photo" width="600" height="1200" decoding="async" />
+                </div>
+                <p class="team-name">{member.name}</p>
               </div>
-              <p class="team-name">Martin</p>
-            </div>
-            <div class="team-member">
-              <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_02.webp" alt="Portrait of Bratislav" class="team-photo" width="600" height="1200" decoding="async" />
-              </div>
-              <p class="team-name">Bratislav</p>
-            </div>
-            <div class="team-member">
-              <div class="team-photo-wrap">
-                <img src="/images/about/ProfilePhoto_03.webp" alt="Portrait of Ognjen" class="team-photo" width="600" height="1200" decoding="async" />
-              </div>
-              <p class="team-name">Ognjen</p>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
       <div class="grid-row">
         <div class="grid-label">
-          <h2 class="label-text">The Work</h2>
+          <h2 class="label-text">{t.about.workLabel}</h2>
         </div>
         <div class="grid-content prose">
-          <p>
-            Vibrum is a small, focused workshop based in Belgrade, Serbia.
-          </p>
-          <p>
-            We build slowly and intentionally — developing our own models while staying open to custom ideas and personal visions. Every instrument is treated as a one-off piece, shaped by deliberate decisions rather than speed or volume.
-          </p>
-          <p>
-            We select tonewoods not only for how they look, but for how they behave acoustically and structurally over time.
-          </p>
-          <p>
-            We hold precise geometry at every stage of construction — playability and balance rest on it. Hardware is matched to each instrument's character and purpose, rather than applied as a standard choice.
-          </p>
-          <p>
-            Our finishing process is breathable and durable, allowing the instrument to resonate freely and age naturally.
-          </p>
+          {t.about.work.map(paragraph => <p>{paragraph}</p>)}
         </div>
       </div>
 

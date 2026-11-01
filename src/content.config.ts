@@ -98,7 +98,38 @@ const slides = defineCollection({
     detail: z.string().optional(),
     // Makes the caption a link, e.g. "/gallery"
     url: z.string().optional(),
+    // Serbian alt and caption lines. Any one left out shows the English one.
+    sr: z.object({
+      alt: z.string().optional(),
+      caption: z.string().optional(),
+      detail: z.string().optional(),
+    }).optional(),
   }),
 });
 
-export const collections = { guitars, stories, slides };
+// Serbian translations, one file per guitar or story under src/content/sr/,
+// named exactly like the English file it translates. They carry only the
+// words: photos, year, type, date and the rest come from the English entry.
+// A guitar or story without one shows its English text on the Serbian pages
+// (the build warns), see src/i18n/content.ts.
+const guitarsSr = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sr/guitars' }),
+  schema: z.object({
+    // Only when the Serbian name differs; most names stay as they are.
+    title: z.string().optional(),
+    excerpt: z.string(),
+    // Same shape as the English specs. Each value given here replaces the
+    // English one; anything left out (model names, measurements) is kept.
+    specs: specsSchema,
+  }),
+});
+
+const storiesSr = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sr/stories' }),
+  schema: z.object({
+    title: z.string(),
+    excerpt: z.string(),
+  }),
+});
+
+export const collections = { guitars, stories, slides, guitarsSr, storiesSr };

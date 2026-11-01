@@ -7,19 +7,20 @@
  * everywhere else, at the photo that was clicked.
  */
 import { getCollection, render } from 'astro:content';
-import PageLayout from '../../layouts/PageLayout.astro';
-import GuitarModal from '../../components/GuitarModal.astro';
-import GuitarModalData from '../../components/GuitarModalData.astro';
-import SpecTable from '../../components/SpecTable.astro';
-import WorkshopStoryCard from '../../components/WorkshopStoryCard.astro';
-import { imageSize } from '../../lib/imageSize';
-import { typeLabels } from '../../lib/specLabels';
-import { guitarProduct, guitarSlug } from '../../lib/seo';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import GuitarModal from '../../../components/GuitarModal.astro';
+import GuitarModalData from '../../../components/GuitarModalData.astro';
+import SpecTable from '../../../components/SpecTable.astro';
+import WorkshopStoryCard from '../../../components/WorkshopStoryCard.astro';
+import { imageSize } from '../../../lib/imageSize';
+import { guitarKind } from '../../../lib/specLabels';
+import { guitarProduct, guitarSlug } from '../../../lib/seo';
+import { LANGS, langFromUrl, langParam, localizePath, useTranslations } from '../../../i18n';
+import { getGuitars, getStories } from '../../../i18n/content';
 
 export async function getStaticPaths() {
-  const guitars = await getCollection('guitars');
   const taken = new Map<string, string>();
-  for (const g of guitars) {
+  for (const g of await getCollection('guitars')) {
     const slug = guitarSlug(g.id);
     const other = taken.get(slug);
     if (other) {
@@ -30,28 +31,39 @@ export async function getStaticPaths() {
     }
     taken.set(slug, g.id);
   }
-  return guitars.map(guitar => ({ params: { slug: guitarSlug(guitar.id) }, props: { guitar } }));
+  // Every guitar once per language, each in that language.
+  const pages = await Promise.all(
+    LANGS.map(async lang =>
+      (await getGuitars(lang)).map(guitar => ({
+        params: { lang: langParam(lang), slug: guitarSlug(guitar.id) },
+        props: { guitar },
+      }))
+    )
+  );
+  return pages.flat();
 }
 
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 const { guitar } = Astro.props;
 const { Content } = await render(guitar);
 const { title, year, type, coverImage, images, excerpt } = guitar.data;
-const typeLabel = typeLabels[type] ?? type;
 // The cover leads, every other photo follows in a grid; each opens the modal
 // at that photo.
 const photos = [coverImage, ...images];
 
-const coverAlt = `${title} — handcrafted ${typeLabel.toLowerCase()} guitar by Vibrum Guitars`;
-const photoAlt = (i: number) => `${title}, photo ${i + 1} of ${photos.length}`;
+const coverAlt = t.guitar.alt(title, guitarKind(type, lang));
+const photoAlt = (i: number) => t.guitar.photoAlt(title, i + 1, photos.length);
 
 // Stories that feature this guitar, newest first (same order as the home page).
-const stories = (await getCollection('stories', ({ data }) => !data.draft && data.guitar.includes(guitar.id)))
+const stories = (await getStories(lang))
+  .filter(({ data }) => data.guitar.includes(guitar.id))
   .sort((a, b) => b.id.localeCompare(a.id, undefined, { numeric: true }));
 
-const description = `${excerpt} Photos, woods and full specifications.`;
+const description = t.guitar.pageDescription(excerpt);
 // No BreadcrumbList: the page shows no breadcrumb, and structured data must
 // describe what is visible.
-const schema = guitarProduct(guitar);
+const schema = guitarProduct(guitar, lang);
 ---
 
 <PageLayout
@@ -68,8 +80,8 @@ const schema = guitarProduct(guitar);
     </header>
 
     <div class="guitar-layout">
-      <section class="guitar-photos" aria-label="Photos">
-        <button type="button" class="guitar-lead" data-photo="0" aria-label={`Open photo 1 of ${photos.length}`}>
+      <section class="guitar-photos" aria-label={t.guitar.photos}>
+        <button type="button" class="guitar-lead" data-photo="0" aria-label={t.guitar.openPhoto(1, photos.length)}>
           <img
             src={coverImage}
             alt={coverAlt}
@@ -83,7 +95,7 @@ const schema = guitarProduct(guitar);
         {images.length > 0 && (
           <div class="guitar-grid">
             {images.map((src, i) => (
-              <button type="button" data-photo={i + 1} aria-label={`Open photo ${i + 2} of ${photos.length}`}>
+              <button type="button" data-photo={i + 1} aria-label={t.guitar.openPhoto(i + 2, photos.length)}>
                 <img
                   src={src}
                   alt={photoAlt(i + 1)}
@@ -105,13 +117,13 @@ const schema = guitarProduct(guitar);
 
         {guitar.data.specs && (
           <section aria-labelledby="specs-heading">
-            <h2 class="eyebrow" id="specs-heading">Specifications</h2>
+            <h2 class="eyebrow" id="specs-heading">{t.guitar.specifications}</h2>
             <SpecTable specs={guitar.data.specs} />
           </section>
         )}
 
         <div class="guitar-ctas">
-          <a href="/gallery/" class="guitar-cta">All guitars</a>
+          <a href={localizePath('/gallery/', lang)} class="guitar-cta">{t.guitar.allGuitars}</a>
         </div>
       </div>
     </div>
@@ -119,7 +131,7 @@ const schema = guitarProduct(guitar);
     {stories.length > 0 && (
       <section class="guitar-stories" aria-labelledby="stories-heading">
         <div class="section-header">
-          <h2 class="section-heading" id="stories-heading">Related stories</h2>
+          <h2 class="section-heading" id="stories-heading">{t.guitar.relatedStories}</h2>
         </div>
         <div class="guitar-stories-grid">
           {stories.map(story => (

@@ -42,10 +42,16 @@ export default defineConfig({
   site: 'https://vibrumguitars.com',
   integrations: [
     sitemap({
-      // The privacy page is noindex (see src/pages/privacy.astro); listing a
-      // page in the sitemap while asking crawlers not to index it is a mixed
-      // signal that Search Console flags.
-      filter: page => new URL(page).pathname !== '/privacy/',
+      // The privacy page is noindex (see src/pages/[...lang]/privacy.astro);
+      // listing a page in the sitemap while asking crawlers not to index it
+      // is a mixed signal that Search Console flags.
+      filter: page => !['/privacy/', '/sr/privacy/'].includes(new URL(page).pathname),
+      // Pairs each English page with its Serbian one (hreflang links), the
+      // same pairing BaseLayout puts in every page's <head>.
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', sr: 'sr' },
+      },
     }),
     icon(),
     // Renders the 1200 × 630 JPEG link-preview cards into dist/ after the build.

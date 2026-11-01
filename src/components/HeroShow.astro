@@ -1,14 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
+import { langFromUrl, localizePath, useTranslations } from '../i18n';
+
+const lang = langFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Numeric order, so slide-10 follows slide-9 rather than slide-1.
 const slideEntries = (await getCollection('slides')).sort((a, b) =>
   a.id.localeCompare(b.id, undefined, { numeric: true })
 );
-const slides = slideEntries.map(e => e.data);
+// On Serbian pages, each line the slide's `sr` block gives replaces the English one.
+const slides = slideEntries.map(({ data }) => (lang === 'sr' ? { ...data, ...data.sr } : data));
 ---
 
-<section class="hero band-stage" id="hero" aria-label="Vibrum — handcrafted guitars">
+<section class="hero band-stage" id="hero" aria-label={t.hero.label}>
   <div class="hero-media" aria-hidden="true">
     {slides.map((slide, i) => (
       <div class={`hero-slide${i === 0 ? ' active' : ''}`} data-index={i}>
@@ -26,16 +31,13 @@ const slides = slideEntries.map(e => e.data);
   <div class="hero-inner container">
     <div class="hero-content">
       <h1 class="hero-title">
-        <span class="hero-line">Handcrafted guitars</span>
-        <span class="hero-line hero-line-accent">Built to resonate</span>
+        <span class="hero-line">{t.hero.title}</span>
+        <span class="hero-line hero-line-accent">{t.hero.accent}</span>
       </h1>
-      <p class="hero-lead">
-        We build a limited number of instruments a year.
-        One at a time, by hand, for players who know what they want to feel.
-      </p>
+      <p class="hero-lead">{t.hero.lead}</p>
       <div class="hero-ctas">
-        <a href="/gallery/" class="hero-cta hero-cta--primary">Explore guitars</a>
-        <a href="/contact/" class="hero-cta hero-cta--ghost">Get in touch</a>
+        <a href={localizePath('/gallery/', lang)} class="hero-cta hero-cta--primary">{t.hero.explore}</a>
+        <a href={localizePath('/contact/', lang)} class="hero-cta hero-cta--ghost">{t.hero.contact}</a>
       </div>
     </div>
 
@@ -53,11 +55,11 @@ const slides = slideEntries.map(e => e.data);
 
   {slides.length > 1 && (
     <>
-      <button class="hero-arrow hero-prev" aria-label="Previous slide">&#8592;</button>
-      <button class="hero-arrow hero-next" aria-label="Next slide">&#8594;</button>
+      <button class="hero-arrow hero-prev" aria-label={t.hero.prev}>&#8592;</button>
+      <button class="hero-arrow hero-next" aria-label={t.hero.next}>&#8594;</button>
       <div class="hero-dots">
         {slides.map((_, i) => (
-          <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={`Go to slide ${i + 1}`}></button>
+          <button class={`hero-dot${i === 0 ? ' active' : ''}`} data-index={i} aria-label={t.hero.goTo(i + 1)}></button>
         ))}
       </div>
     </>
@@ -432,6 +434,11 @@ const slides = slideEntries.map(e => e.data);
     .hero-title {
       font-size: clamp(1.85rem, 8.4vw, 2.35rem);
       margin-bottom: 18px;
+    }
+
+    /* "Ručno rađene gitare" runs about 2% wider than "Handcrafted guitars". */
+    .hero-title:lang(sr) {
+      font-size: clamp(1.85rem, 8.1vw, 2.35rem);
     }
 
     .hero-lead {

@@ -25,6 +25,7 @@ Built with [Astro](https://astro.build). Deployed to GitHub Pages via GitHub Act
   - [4. Stories](#4-stories)
   - [5. Section background photos](#5-section-background-photos)
   - [6. About page](#6-about-page)
+- [Languages](#languages)
 - [SEO](#seo)
 - [Project structure](#project-structure)
 
@@ -57,6 +58,8 @@ Four kinds of content, all edited as plain files — no CMS, no admin login:
 | Guitars | `src/content/guitars/NNN-slug.md` | `public/images/guitars/<folder>/` |
 | Stories | `src/content/stories/story-NNN.md` | `public/images/stories/story-NNN/` |
 | Section backgrounds | drop the photo in its folder — see [Section background photos](#5-section-background-photos) | `public/images/backgrounds/<section>/` |
+
+Every guitar and story also gets a Serbian file with the same name under `src/content/sr/` — see [Languages](#languages). Without one, the Serbian pages show the English text and the build says so.
 
 Astro validates every frontmatter field against the schemas in [src/content.config.ts](src/content.config.ts). A typo in a field name, a wrong type, or a missing required field **fails the build** — run `npm run build` before pushing and read the errors.
 
@@ -141,9 +144,9 @@ Every slot uses `object-fit: cover`, so the image is cropped to the slot's aspec
 | Gallery card | **9 / 16** (tall portrait) | centre | [GuitarCard.astro](src/components/GuitarCard.astro), `.guitar-card-image` |
 | Home guitar strip card | **3 / 4** (portrait) | centre | [GuitarStrip.astro](src/components/GuitarStrip.astro), `.strip-card` |
 | Story card | **16 / 10** (landscape) | centre | [WorkshopStoryCard.astro](src/components/WorkshopStoryCard.astro), `.workshop-card-media` |
-| Story hero band | full-bleed, 420 px to 60 vh tall | `center 40%` | [stories/[slug].astro](src/pages/stories/[slug].astro), `.story-hero-img` |
-| Guitar page photo grid | **1 / 1** (square) | centre | [guitars/[slug].astro](src/pages/guitars/[slug].astro), `.guitar-grid button` |
-| About team portrait | **1 / 2** (very tall) | centre | [about.astro](src/pages/about.astro), `.team-photo-wrap` |
+| Story hero band | full-bleed, 420 px to 60 vh tall | `center 40%` | [stories/[slug].astro](src/pages/[...lang]/stories/[slug].astro), `.story-hero-img` |
+| Guitar page photo grid | **1 / 1** (square) | centre | [guitars/[slug].astro](src/pages/[...lang]/guitars/[slug].astro), `.guitar-grid button` |
+| About team portrait | **1 / 2** (very tall) | centre | [about.astro](src/pages/[...lang]/about.astro), `.team-photo-wrap` |
 | Modal photo viewer | none — `object-fit: contain` | — | [GuitarModal.astro](src/components/GuitarModal.astro), `.modal-photo-img` |
 | Modal thumbnail strip | none — uncropped, 10 across | — | [GuitarModal.astro](src/components/GuitarModal.astro), `.modal-thumbs` |
 
@@ -176,10 +179,11 @@ The homepage hero rotates through background slides driven by JSON files in [src
 | `caption` | no | Small mono label, bottom-right of the hero |
 | `detail` | no | Second caption line |
 | `url` | no | Accepted by the schema but not rendered: captions are plain labels, not links |
+| `sr` | no | Serbian `alt`, `caption` and `detail`, e.g. `"sr": { "detail": "Vibrumov nulti model" }`. Any one left out shows the English one |
 
 Arrows and dots appear automatically once there is more than one slide.
 
-The hero's fixed copy (headline, lead, CTA buttons) lives in the markup of [HeroShow.astro](src/components/HeroShow.astro) — edit it there, not in content files.
+The hero's fixed copy (headline, lead, CTA buttons) lives under `hero` in [src/i18n/en.ts](src/i18n/en.ts) and [src/i18n/sr.ts](src/i18n/sr.ts) — edit it there, not in content files.
 
 ### Slide photo geometry
 
@@ -293,6 +297,21 @@ ls public/images/guitars/$SLUG/photo-*.webp | sort -V | tail -n +2 \
 
 **Step 6 — write `src/content/guitars/$SLUG.md`** using the template below, pasting that block under `images:`.
 
+**Step 6b — write the Serbian file, `src/content/sr/guitars/$SLUG.md`.** Only the words: the `excerpt`, the description as the body, and under `specs` the values that read differently in Serbian (woods, finishes, decimal commas: `25,5"`). Model names and measurements left out are taken from the English file, and so are the photos, year and type. Add `title` only if the name changes. See [Languages](#languages).
+
+```yaml
+---
+excerpt: "Prva električna gitara iz radionice Vibrum Guitars — …"
+specs:
+  materials:
+    neck: "Plamenasti javor, fosilizovani hrast, mahagoni"
+  technical:
+    scale: "25,5\" (648 mm)"
+---
+
+Opis gitare na srpskom.
+```
+
 **Step 7 — check it**
 
 ```bash
@@ -308,7 +327,7 @@ npm run build      # schema errors surface here
 **Step 8 — commit both the content and the photos**
 
 ```bash
-git add src/content/guitars/$SLUG.md public/images/guitars/$SLUG
+git add src/content/guitars/$SLUG.md src/content/sr/guitars/$SLUG.md public/images/guitars/$SLUG
 git commit -m "Add $SLUG"
 ```
 
@@ -371,9 +390,9 @@ what the wood does, how it plays.
 
 **Required fields:** `title`, `type`, `year`, `coverImage`, `excerpt`. Everything else is optional. Every `specs` field is optional and empty sections are skipped — only fill in what is true. Never invent specs to fill the table.
 
-**Filters** in the gallery sidebar currently offer instrument type only: acoustic and electric. The checkbox groups for `status`, `strings` and `electronics`, and a `bass` checkbox, are in [gallery.astro](src/pages/gallery.astro) commented out (the `<aside class="filters">` block); uncomment one when there is something to filter, and add a checkbox for `jazz` if a jazz guitar is ever added. The filter script reads the `data-*` attributes on each card, so no other change is needed.
+**Filters** in the gallery sidebar currently offer instrument type only: acoustic and electric. The checkbox groups for `status`, `strings` and `electronics`, and a `bass` checkbox, are in [gallery.astro](src/pages/[...lang]/gallery.astro) commented out (the `<aside class="filters">` block); uncomment one when there is something to filter, and add a checkbox for `jazz` if a jazz guitar is ever added (its label goes under `gallery.filters` in both language files). The filter script reads the `data-*` attributes on each card, so no other change is needed.
 
-**Pages.** Every guitar has its own page at `/guitars/<slug>/`, the slug being the filename without its running number: `003-pyrocaster` → `/guitars/pyrocaster/` ([guitars/[slug].astro](src/pages/guitars/[slug].astro)). That is the address to share, link from slides and stories, and the one search engines index. It shows the cover, every other photo in a grid below it, the description, the spec table and every story that features the guitar under "Related stories"; each photo opens the same modal as the gallery, at that photo. Two guitars whose names differ only by the number would collide at the same URL, and the build stops with a message saying so. Gallery cards carry a "Details" link to the page, and the modal a "View more" link under the specs.
+**Pages.** Every guitar has its own page at `/guitars/<slug>/` (and `/sr/guitars/<slug>/` in Serbian), the slug being the filename without its running number: `003-pyrocaster` → `/guitars/pyrocaster/` ([guitars/[slug].astro](src/pages/[...lang]/guitars/[slug].astro)). That is the address to share, link from slides and stories, and the one search engines index. It shows the cover, every other photo in a grid below it, the description, the spec table and every story that features the guitar under "Related stories"; each photo opens the same modal as the gallery, at that photo. Two guitars whose names differ only by the number would collide at the same URL, and the build stops with a message saying so. Gallery cards carry a "Details" link to the page, and the modal a "View more" link under the specs.
 
 **Quick view in a new tab.** Gallery cards, the home strip cards and a story's "View <guitar>" buttons are links to the quick view, `#guitar-<slug>` on the page they sit on. A plain click opens the modal in place ([plainClick.ts](src/lib/plainClick.ts) decides which clicks to intercept); a middle-click, Cmd/Ctrl-click or "open in new tab" opens a new tab on that same page, where the modal opens from the hash on load. Either way the visitor sees the same thing.
 
@@ -407,7 +426,8 @@ Story text in markdown. `##` headings render as section headings.
 ![Caption — what is in the frame](/images/stories/story-003/photo-1.webp)
 ```
 
-4. Build, check (below), push to `main`.
+4. Write the Serbian version as `src/content/sr/stories/story-NNN.md`: `title`, `excerpt` and the body, with the same image lines in the same rows and the captions translated. A link to a guitar page points at its Serbian page there (`/sr/guitars/pyrocaster/`). See [Languages](#languages).
+5. Build, check (below), push to `main`.
 
 **Where stories surface:**
 
@@ -451,9 +471,9 @@ Any filename works (lowercase, no spaces — same rules as everywhere). Keep **o
 
 | Folder in `public/images/backgrounds/` | Where it shows | Crop centre | `object-position` lives in |
 |---|---|---|---|
-| `home-bench/` | Home — "From the bench" feature band | `center 40%` | [index.astro](src/pages/index.astro) |
-| `home-guitars/` | Home — "Recent guitars" band | `center 30%` | [index.astro](src/pages/index.astro) |
-| `home-workshop/` | Home — "More from the workshop" band | `center 62%` | [index.astro](src/pages/index.astro) |
+| `home-bench/` | Home — "From the bench" feature band | `center 40%` | [index.astro](src/pages/[...lang]/index.astro) |
+| `home-guitars/` | Home — "Recent guitars" band | `center 30%` | [index.astro](src/pages/[...lang]/index.astro) |
+| `home-workshop/` | Home — "More from the workshop" band | `center 62%` | [index.astro](src/pages/[...lang]/index.astro) |
 | `home-stay-in-tune/` | Home — "Stay in tune" newsletter band | `center 55%` | [BenchLetter.astro](src/components/BenchLetter.astro) |
 
 Not folder-driven: the link-preview (Open Graph) image stays `/images/og-default.png` — see [SEO](#seo).
@@ -466,12 +486,34 @@ Convert to WebP q82 / 1800 px like everything else (section 1). After swapping, 
 
 ## 6. About page
 
-Copy and photos are both hardcoded in [about.astro](src/pages/about.astro):
+The copy is under `about` in [src/i18n/en.ts](src/i18n/en.ts) and [src/i18n/sr.ts](src/i18n/sr.ts); the layout is [about.astro](src/pages/[...lang]/about.astro):
 
-- Three sections of prose — "The Story", "The Team", "The Work".
-- Three team portraits at `/images/about/ProfilePhoto_0{1,2,3}.webp`, labelled Martin, Bratislav, Ognjen.
+- Three sections of prose — "The Story", "The Team", "The Work" — one list entry per paragraph.
+- Three team portraits at `/images/about/ProfilePhoto_0{1,2,3}.webp`, in the order of `about.team`: Martin, Bratislav, Ognjen, each with its alt text.
 
 Portraits are cropped **1 / 2** — extremely tall. Supply vertical frames, subject centred, and update the `alt` text and `width`/`height` attributes if the source dimensions change.
+
+---
+
+# Languages
+
+The site is in English and Serbian (Latin script). English lives at the root (`/gallery/`), Serbian under `/sr/` (`/sr/gallery/`): the same page at the same path behind one prefix. The flag dropdown in the nav ([LanguageSwitcher.astro](src/components/LanguageSwitcher.astro)) — right of Contact on desktop, left of the menu button on phones — leads to the same page in the other language.
+
+| What | English | Serbian |
+|---|---|---|
+| Words on the pages: nav, buttons, headings, About, Contact, Privacy, form messages | [src/i18n/en.ts](src/i18n/en.ts) | [src/i18n/sr.ts](src/i18n/sr.ts) |
+| Spec table labels and instrument types | [src/lib/specLabels.ts](src/lib/specLabels.ts), `en` | same file, `sr` |
+| Guitars | `src/content/guitars/NNN-slug.md` | `src/content/sr/guitars/NNN-slug.md` |
+| Stories | `src/content/stories/story-NNN.md` | `src/content/sr/stories/story-NNN.md` |
+| Hero slide captions | `alt`, `caption`, `detail` in `slide-N.json` | the `sr` block in the same file |
+
+**The two language files have the same keys.** A key added to one and missing from the other stops the build with a message naming it.
+
+**Serbian content files carry only the words**: `title` (optional for guitars), `excerpt`, the markdown body and, for guitars, the `specs` values that differ. Photos, year, type, date, category, featured guitars and `draft` all come from the English file, so they are only ever edited there. A guitar or story with no Serbian file shows its English text on the Serbian pages, and the build prints `[i18n] src/content/sr/… is missing`. A Serbian file whose English counterpart is gone is ignored, with a warning. [src/i18n/content.ts](src/i18n/content.ts) does the matching.
+
+**Pages** are built once per language from the same files under [src/pages/[...lang]/](src/pages/[...lang]/); every component reads the language from the page URL. The 404 page is the exception: GitHub Pages serves one `404.html` for every missing address, so it is built in English and a small script switches it to Serbian when the address starts with `/sr/`.
+
+**Forms** send a `language` field (English or Serbian) with every contact message and newsletter signup, so the inbox shows which language to reply in. The email subject stays English.
 
 ---
 
@@ -479,18 +521,20 @@ Portraits are cropped **1 / 2** — extremely tall. Supply vertical frames, subj
 
 Everything a search engine or a link preview reads comes from two places: [src/lib/seo.ts](src/lib/seo.ts) (site constants, the Organization record, the Product builder) and [BaseLayout.astro](src/layouts/BaseLayout.astro) (the `<head>`). Pages pass `title`, `description`, optionally `ogImage` and a `schema` object; the layout does the rest.
 
-**What every page gets:** `<title>`, meta description, canonical URL, Open Graph and Twitter card tags (with image size and alt), and a schema.org `Organization` record (name, logo, Belgrade address, email, phone, Instagram and Facebook) as JSON-LD.
+**What every page gets:** `<title>`, meta description, canonical URL, Open Graph and Twitter card tags (with image size and alt), and a schema.org `Organization` record (name, logo, Belgrade address, email, phone, Instagram and Facebook) as JSON-LD. All of it in the page's language: `<html lang="sr-Latn">` and `og:locale` `sr_RS` on Serbian pages, and `inLanguage` in the structured data.
+
+**Languages:** every indexed page links its English and Serbian versions (`<link rel="alternate" hreflang="en|sr">`, with `x-default` on English), and the sitemap pairs them the same way.
 
 **Per page:**
 
 | Page | Extra structured data | Notes |
 |---|---|---|
-| Home | `WebSite` | Title and description are `SITE_DESCRIPTION` in seo.ts |
+| Home | `WebSite` | Title and description are `home.title` and `site.description` in the language files |
 | Gallery | `CollectionPage` → `ItemList` | One entry per guitar, linking to its page. The meta description lists the guitar names. |
 | Guitar | `Product` | Name, excerpt, every photo, type, woods, every spec row. Title and description come from the frontmatter `title` and `excerpt`; the cover is the link-preview image. |
 | Story | `BlogPosting` + `article:published_time` | Headline, excerpt, cover + every body photo, date, the featured guitars as `about`. The cover is the link-preview image. |
 | About / Contact | `AboutPage` / `ContactPage` | |
-| Privacy, 404 | `noindex` | Privacy is also left out of the sitemap |
+| Privacy, 404 | `noindex` | Privacy is also left out of the sitemap, in both languages |
 
 **Files:** `public/robots.txt` (allow all, sitemap pointer), `sitemap-index.xml` (generated by `@astrojs/sitemap` at build), `public/images/og-default.png` (link-preview image for pages without a photo, 1200×630; regenerate from the logo with `magick -size 1200x630 xc:'srgb(21,21,22)' \( public/images/og-logo.png -trim +repage -resize 420x420 \) -gravity center -composite PNG8:public/images/og-default.png`, or replace it with any 1200×630 PNG/JPG).
 
@@ -518,6 +562,14 @@ src/
     guitars/      ← one .md file per guitar: NNN-slug.md
     stories/      ← one .md file per story: story-NNN.md
     slides/       ← one .json file per hero slide: slide-N.json, numeric order
+    sr/
+      guitars/    ← Serbian text of each guitar, same file name
+      stories/    ← Serbian text of each story, same file name
+  i18n/
+    index.ts      ← languages, URL helpers (/sr/ prefix), date formats
+    en.ts         ← every English word on the pages that is not a content file
+    sr.ts         ← the same keys in Serbian
+    content.ts    ← guitars and stories in a given language
   layouts/
     BaseLayout.astro    ← <html>, <head>, fonts, meta, Open Graph, JSON-LD
     PageLayout.astro    ← nav + footer wrapper
@@ -526,11 +578,13 @@ src/
   lib/
     seo.ts              ← site constants, Organization/WebSite records, Product builder, guitar URLs
     imageSize.ts        ← WebP/PNG pixel size from the file header (story photos, og:image)
-    specLabels.ts       ← display labels for guitar types and spec fields
+    specLabels.ts       ← display labels for guitar types and spec fields, per language
     guitarOrder.ts      ← newest-first sort
     backgrounds.ts      ← section background photo lookup
   components/
     Nav.astro
+    LanguageSwitcher.astro   ← EN/SR flag dropdown in the nav
+    Flag.astro               ← the two small flags, inline SVG
     Footer.astro
     HeroShow.astro           ← hero (rotating slides + fixed copy)
     GuitarCard.astro         ← gallery grid card (9/16)
@@ -542,16 +596,17 @@ src/
     BenchLetter.astro        ← newsletter band (home page)
     PageLogoBg.astro         ← faint inline-SVG logo watermark
   pages/
-    index.astro         ← home (hero, feature story, guitars, stories, newsletter)
-    gallery.astro       ← all guitars + filters; details open in a modal
-    guitars/
-      [slug].astro      ← guitar page: /guitars/<slug without number>/
-    stories/
-      [slug].astro      ← story detail page
-    about.astro
-    contact.astro
-    privacy.astro       ← privacy notice (noindex; linked from the contact + newsletter consent lines)
-    404.astro
+    [...lang]/          ← every page twice: English at /, Serbian at /sr/
+      index.astro         ← home (hero, feature story, guitars, stories, newsletter)
+      gallery.astro       ← all guitars + filters; details open in a modal
+      guitars/
+        [slug].astro      ← guitar page: /guitars/<slug without number>/
+      stories/
+        [slug].astro      ← story detail page
+      about.astro
+      contact.astro
+      privacy.astro       ← privacy notice (noindex; linked from the contact + newsletter consent lines)
+    404.astro           ← one file for both languages, see Languages
   styles/
     global.css
 public/
